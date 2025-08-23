@@ -3,29 +3,24 @@ import { AuthenticationForm } from './mantine-components/AuthenticationForm';
 
 // Import styles of packages that you've installed.
 // All packages except `@mantine/hooks` require styles imports
-import { COGNITO_DOMAIN, COGNITO_CLIENT_ID, COGNITO_REDIRECT_URI } from './config.ts';
+import { COGNITO_CLIENT_ID, COGNITO_REDIRECT_URI } from './config.ts';
 import '@mantine/core/styles.css';
-
-import { MantineProvider } from '@mantine/core';
 
 import { useAuth } from "react-oidc-context";
 
 function App() {
-    const auth = useAuth();
+  const auth = useAuth();
 
-    const signOutRedirect = () => {
-    const clientId = COGNITO_CLIENT_ID;
-    const logoutUri = COGNITO_REDIRECT_URI;
-    const cognitoDomain = `https://${COGNITO_DOMAIN}`;
-    window.location.href = `${cognitoDomain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(logoutUri)}`;
+  const signOutRedirect = () => {
+    auth.signoutRedirect({
+      post_logout_redirect_uri: COGNITO_REDIRECT_URI, // keep the standard param
+      extraQueryParams: {
+        client_id: COGNITO_CLIENT_ID,             // required by Cognito
+        logout_uri: COGNITO_REDIRECT_URI              // required by Cognito
+      },
+    });
   };
   
-  // return (
-  //   <MantineProvider>
-  //     <AuthenticationForm>
-  //     </AuthenticationForm>
-  //   </MantineProvider>
-  // )
   if (auth.isLoading) {
     return <div>Loading...</div>;
   }
@@ -42,7 +37,7 @@ function App() {
         <pre> Access Token: {auth.user?.access_token} </pre>
         <pre> Refresh Token: {auth.user?.refresh_token} </pre>
 
-        <button onClick={() => auth.removeUser()}>Sign out</button>
+        <button onClick={() => signOutRedirect()}>Sign out</button>
       </div>
     );
   }
@@ -50,7 +45,8 @@ function App() {
   return (
     <div>
       <button onClick={() => auth.signinRedirect()}>Sign in</button>
-      <button onClick={() => signOutRedirect()}>Sign out</button>
+      <AuthenticationForm>
+      </AuthenticationForm>
     </div>
   );
 }

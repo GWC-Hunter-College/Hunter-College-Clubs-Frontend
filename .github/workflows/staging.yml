@@ -8,6 +8,11 @@ on:
 jobs:
   deploy-staging:
     runs-on: ubuntu-latest
+    env:
+      VITE_COGNITO_DOMAIN: ${{ vars.VITE_COGNITO_DOMAIN }}
+      VITE_COGNITO_CLIENT_ID: ${{ secrets.VITE_COGNITO_CLIENT_ID }}
+      VITE_COGNITO_REDIRECT_URI: ${{ vars.VITE_COGNITO_REDIRECT_URI }}
+      VITE_COGNITO_ISSUER: ${{ vars.VITE_COGNITO_ISSUER }}
 
     steps:
       - name: Checkout repo

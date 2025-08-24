@@ -1,7 +1,7 @@
 import {
-  Anchor,
+  // Anchor,
   Button,
-  Checkbox,
+  // Checkbox,
   Divider,
   Group,
   Paper,
@@ -13,22 +13,21 @@ import {
 import type { PaperProps } from '@mantine/core';
 
 import { useForm } from '@mantine/form';
-import { upperFirst, useToggle } from '@mantine/hooks';
+// import { upperFirst, useToggle } from '@mantine/hooks';
 import { GoogleButton } from './GoogleButton';
-// import { TwitterButton } from './TwitterButton';
 
 type AuthFormProps = PaperProps & {
   onGoogleClick: () => void;
+  // onEmailAuth: (email: string, password: string) => Promise<void> | void;
 };
 
 export default function AuthenticationForm({ onGoogleClick, ...props }: AuthFormProps){
-  const [type, toggle] = useToggle(['login', 'register']);
+  // const [type, toggle] = useToggle(['login', 'register']);
   const form = useForm({
     initialValues: {
       email: '',
       name: '',
       password: '',
-      terms: true,
     },
 
     validate: {
@@ -40,7 +39,8 @@ export default function AuthenticationForm({ onGoogleClick, ...props }: AuthForm
   return (
     <Paper radius="md" p="lg" withBorder {...props}>
       <Text size="lg" fw={500}>
-        Welcome to Mantine, {type} with
+        {/* Welcome to Mantine, {type} with */}
+        Welcome! Sign Up/Login with
       </Text>
 
       <Group grow mb="md" mt="md">
@@ -52,7 +52,7 @@ export default function AuthenticationForm({ onGoogleClick, ...props }: AuthForm
 
       <form onSubmit={form.onSubmit(() => {})}>
         <Stack>
-          {type === 'register' && (
+          {/* {type === 'register' && (
             <TextInput
               label="Name"
               placeholder="Your name"
@@ -60,7 +60,7 @@ export default function AuthenticationForm({ onGoogleClick, ...props }: AuthForm
               onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
               radius="md"
             />
-          )}
+          )} */}
 
           <TextInput
             required
@@ -82,23 +82,24 @@ export default function AuthenticationForm({ onGoogleClick, ...props }: AuthForm
             radius="md"
           />
 
-          {type === 'register' && (
+          {/* {type === 'register' && (
             <Checkbox
               label="I accept terms and conditions"
               checked={form.values.terms}
               onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
             />
-          )}
+          )} */}
         </Stack>
 
         <Group justify="space-between" mt="xl">
-          <Anchor component="button" type="button" c="dimmed" onClick={() => toggle()} size="xs">
+          {/* <Anchor component="button" type="button" c="dimmed" onClick={() => toggle()} size="xs">
             {type === 'register'
               ? 'Already have an account? Login'
               : "Don't have an account? Register"}
-          </Anchor>
+          </Anchor> */}
           <Button type="submit" radius="xl">
-            {upperFirst(type)}
+            {/* {upperFirst(type)} */}
+            Register / Sign Up
           </Button>
         </Group>
       </form>

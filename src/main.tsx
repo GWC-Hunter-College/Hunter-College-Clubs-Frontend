@@ -20,6 +20,7 @@ const cognitoAuthConfig = {
   // sign out stufff
   // metadata: { end_session_endpoint: `https://${COGNITO_DOMAIN}/logout` },
   // post_logout_redirect_uri: COGNITO_REDIRECT_URI,
+  popup_redirect_uri: COGNITO_REDIRECT_URI,
 
 };
 

@@ -1,5 +1,5 @@
 import './App.css'
-import { AuthenticationForm } from './mantine-components/AuthenticationForm';
+import AuthenticationForm from './mantine-components/AuthenticationForm';
 
 // Import styles of packages that you've installed.
 // All packages except `@mantine/hooks` require styles imports
@@ -20,6 +20,12 @@ function App() {
       },
     });
   };
+
+  const googlePopUp = () =>
+    auth.signinPopup({
+      // Force Google in the Hosted UI
+      extraQueryParams: { identity_provider: "Google", prompt: "select_account" },
+    });
   
   if (auth.isLoading) {
     return <div>Loading...</div>;
@@ -45,7 +51,7 @@ function App() {
   return (
     <div>
       <button onClick={() => auth.signinRedirect()}>Sign in</button>
-      <AuthenticationForm>
+      <AuthenticationForm onGoogleClick={googlePopUp}>
       </AuthenticationForm>
     </div>
   );

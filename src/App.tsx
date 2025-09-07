@@ -1,59 +1,20 @@
 import './App.css'
-import AuthenticationForm from './mantine-components/AuthenticationForm';
-
-// Import styles of packages that you've installed.
-// All packages except `@mantine/hooks` require styles imports
-import { COGNITO_CLIENT_ID, COGNITO_REDIRECT_URI } from './config.ts';
-import '@mantine/core/styles.css';
-
-import { useAuth } from "react-oidc-context";
-
+import { Routes, Route } from "react-router-dom";
+import Auth from "./pages/Auth";
+import Home from "./pages/Home";
+import Club from "./pages/Club";
+import Event from "./pages/Event";
 function App() {
-  const auth = useAuth();
 
-  const signOutRedirect = () => {
-    auth.signoutRedirect({
-      post_logout_redirect_uri: COGNITO_REDIRECT_URI, // keep the standard param
-      extraQueryParams: {
-        client_id: COGNITO_CLIENT_ID,             // required by Cognito
-        logout_uri: COGNITO_REDIRECT_URI              // required by Cognito
-      },
-    });
-  };
-
-  const googlePopUp = () =>
-    auth.signinPopup({
-      // Force Google in the Hosted UI
-      extraQueryParams: { identity_provider: "Google", prompt: "select_account" },
-    });
-  
-  if (auth.isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (auth.error) {
-    return <div>Encountering error... {auth.error.message}</div>;
-  }
-
-  if (auth.isAuthenticated) {
-    return (
-      <div>
-        <pre> Hello: {auth.user?.profile.email} </pre>
-        <pre> ID Token: {auth.user?.id_token} </pre>
-        <pre> Access Token: {auth.user?.access_token} </pre>
-        <pre> Refresh Token: {auth.user?.refresh_token} </pre>
-
-        <button onClick={() => signOutRedirect()}>Sign out</button>
-      </div>
-    );
-  }
 
   return (
-    <div>
-      <button onClick={() => auth.signinRedirect()}>Sign in</button>
-      <AuthenticationForm onGoogleClick={googlePopUp}>
-      </AuthenticationForm>
-    </div>
+    <Routes> 
+      <Route path="/home" element={<Home />} />
+      <Route path="/club" element={<Club />} />
+      <Route path="/event" element={<Event />} />
+      <Route path="/auth" element={<Auth />} />
+    </Routes>
+    
   );
 }
 

@@ -1,24 +1,25 @@
-import { Container, Skeleton, Stack, Title } from "@mantine/core";
+import { Flex, Box, Stack } from "@mantine/core";
+import MyClubs from "../components/HomePage/MyClubs"
+import Admin from "../components/HomePage/Admin"
+import Heading from "../components/HomePage/Heading"
+import Hero from "../components/HomePage/Hero"
 
 export default function Home() {
-  return (
-    <Container size="lg" py="xl">
-      <Title order={1} mb="lg">
-        Home Page
-      </Title>
+    return (
+        
+        <Flex gap="2rem" direction="row" align="stretch">
 
-      <Stack gap="md">
-        {/* Hero section */}
-        <Skeleton height={50} radius="md" />
+            <Flex direction="row" gap="2rem">
+                <Heading />
+                <Hero />
+            </Flex>
 
-        {/* Cards / content placeholders */}
-        <Skeleton height={200} radius="md" />
-        <Skeleton height={200} radius="md" />
-        <Skeleton height={200} radius="md" />
+            <Flex gap= "2rem" direction="column" align='stretch'>
+                <MyClubs />
+                <Admin />
+            </Flex>
 
-        {/* Footer / CTA placeholder */}
-        <Skeleton height={60} radius="md" />
-      </Stack>
-    </Container>
-  );
+        </Flex>
+
+    );
 }

@@ -28,7 +28,22 @@ const cognitoAuthConfig = {
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <MantineProvider>
+    <MantineProvider
+      defaultColorScheme="dark"
+      theme={{
+        fontFamily: "Inter, sans-serif",
+        headings: { fontFamily: "Space Mono, monospace", fontWeight: "700" },
+        primaryColor: "grape", // you can swap to a custom palette
+        defaultRadius: "md",
+        components: {
+          Card: {
+            defaultProps: { withBorder: true, radius: "lg", shadow: "sm" },
+          },
+          Button: {
+            defaultProps: { radius: "xl" },
+          },
+        },
+      }}>
       <AuthProvider {...cognitoAuthConfig}>
         <BrowserRouter>
           <App />

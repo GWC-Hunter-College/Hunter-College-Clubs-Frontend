@@ -1,8 +1,12 @@
-import { Container, Skeleton, Stack, Title } from "@mantine/core";
+import { Skeleton, Stack, Title } from "@mantine/core";
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-import { Card, Image, Text, Group, Button, Grid } from "@mantine/core";
+import { Box, Container } from "@mantine/core";
+import ClubHeroCard from "../components/ClubPage/ClubHero";
+
+import placeholderLogo from "../assets/logo.png";
+
 
 type Club = {
   name: string;
@@ -11,7 +15,7 @@ type Club = {
   tags: string[];
 };
 
-export default function Home() {
+export default function ClubPage() {
   let { clubId } = useParams();
 
   const [club, setClub] = useState<Club | null>(null);
@@ -19,13 +23,15 @@ export default function Home() {
   useEffect(() => {
     const fetchedClub: Club = {
       name: "Girls Who Code",
-      logo: "/images/gwc.png", // put your logo path here
+      logo: placeholderLogo, // put your logo path here
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...",
-      tags: ["Tech", "Academic"],
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+      // tags: ["Tech", "Academic"],
+      tags: [],
     };
 
     setClub(fetchedClub);
+    // setClub(null);
   }, []); 
 
   if(!club){
@@ -52,29 +58,33 @@ export default function Home() {
   }
 
   return (
-    <Card shadow="md" radius="md" padding="lg" withBorder>
-      <Grid>
-        <Grid.Col span={{ base: 12, md: 4 }}>
-          <Image src={club.logo} radius="md" alt={club.name} />
-        </Grid.Col>
-
-        <Grid.Col span={{ base: 12, md: 8 }}>
-          <Text fw={700} fz="xl">
-            {club.name}
-          </Text>
-          <Text mt="sm" c="dimmed">
-            {club.description}
-          </Text>
-
-          <Group mt="md">
-            {club.tags.map((tag) => (
-              <Button key={tag} variant="light">
-                {tag}
-              </Button>
-            ))}
-          </Group>
-        </Grid.Col>
-      </Grid>
-    </Card>
+    <Box style={{ minHeight: "100dvh" }}>
+      <Container fluid px={0} style={{ minHeight: "100dvh" }}>
+        <Box
+          style={{
+            minHeight: "100dvh",
+            display: "grid",
+            placeItems: "center",
+            // responsive page padding
+            padding: "min(4vw, 32px)",
+          }}
+        >
+          <div
+            style={{
+              width: "100%",
+              maxWidth: "clamp(320px, 92vw, 1100px)",
+              marginInline: "auto",
+            }}
+          >
+            <ClubHeroCard
+              name={club.name}
+              logo={club.logo}
+              description={club.description}
+              tags={club.tags}
+            />
+          </div>
+        </Box>
+      </Container>
+    </Box>
   );
 }

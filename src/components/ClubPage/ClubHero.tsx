@@ -1,5 +1,16 @@
 // components/ClubPage/ClubHero.tsx
-import { Box, Flex, Image, Title, Text, Group, Button } from "@mantine/core";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Image,
+  Title,
+  Text,
+  Group,
+  Button,
+  Anchor,
+  Grid,
+} from "@mantine/core";
 
 type Props = {
   name: string;
@@ -7,6 +18,8 @@ type Props = {
   description: string;
   tags: string[];
   className?: string;
+  onBack?: () => void;
+  backFallbackHref?: string;
 };
 
 export default function ClubHeroCard({
@@ -15,56 +28,86 @@ export default function ClubHeroCard({
   description,
   tags,
   className,
+  onBack,
+  backFallbackHref,
 }: Props) {
+  const navigate = useNavigate();
+  const [hovered, setHovered] = useState(false);
+
+  const handleBack = () => {
+    if (onBack) return onBack();
+    if (window.history.length > 1) navigate(-1);
+    else if (backFallbackHref) navigate(backFallbackHref);
+    else navigate("/");
+  };
+
   return (
     <Box
       className={className}
       style={{
+        position: "relative",
         width: "100%",
         background: "rgba(231, 214, 255, .15)",
         borderRadius: 16,
-        // responsive inner padding
         padding: "clamp(16px, 2.5vw, 28px)",
         boxShadow: "0 6px 20px rgba(0,0,0,0.35)",
         border: "1px solid rgba(255,255,255,0.08)",
       }}
     >
-      <Flex gap={24} align="stretch" direction={{ base: "column", md: "row" }}>
-        {/* Left: Logo (square, scales with viewport) */}
-        <Box
-          style={{
-            flex: "0 0 auto",
-            width: "min(320px, 40vw)", // shrink on half screens
-            aspectRatio: "1 / 1",      // keep it square
-            alignSelf: "flex-start",
-          }}
-        >
-          <Image
-            src={logo}
-            alt={`${name} logo`}
-            radius="md"
-            fit="cover"
-            h="100%"
-            w="100%"
-          />
-        </Box>
+      {/* Back link — top-left */}
+      <Anchor
+        component="button"
+        onClick={handleBack}
+        underline="hover"
+        c={hovered ? "white" : "gray.6"}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        style={{
+          position: "absolute",
+          top: 10,
+          left: 12,
+          background: "transparent",
+          border: 0,
+          padding: 0,
+          cursor: "pointer",
+          fontWeight: 600,
+          letterSpacing: 0.2,
+          transition: "color 120ms ease",
+        }}
+        aria-label="Go back"
+      >
+        {"← Go back"}
+      </Anchor>
 
-        {/* Right: Content */}
-        <Flex direction="column" gap={12} style={{ flex: 1, minWidth: 0 }}>
-          <Title
-            order={1}
-            // responsive font size for nicer half-screen layout
-            fz={{ base: 28, sm: 32, md: 36 }}
-            style={{ color: "white", letterSpacing: 1, lineHeight: 1.1 }}
+      {/* Title row */}
+      <Title
+        order={1}
+        fz={{ base: 30, sm: 34, md: 38, lg: 42 }}
+        style={{ color: "white", letterSpacing: 1, lineHeight: 1.1, marginTop: 12, marginBottom: 16 }}
+      >
+        {name.toUpperCase()}
+      </Title>
+
+      {/* Content grid: image left, text right; stacks on small */}
+      <Grid gutter={24}>
+        <Grid.Col span={{ base: 12, md: 4 }}>
+          <Box
+            style={{
+              // keep it prominent but not huge
+              width: "clamp(180px, 22vw, 260px)",
+              aspectRatio: "1 / 1",
+            }}
           >
-            {name.toUpperCase()}
-          </Title>
+            <Image src={logo} alt={`${name} logo`} radius="md" fit="cover" w="100%" h="100%" />
+          </Box>
+        </Grid.Col>
 
-          <Text c="gray.3" lh={1.6}>
+        <Grid.Col span={{ base: 12, md: 8 }}>
+          <Text c="gray.3" lh={1.6} mb="md">
             {description}
           </Text>
 
-          <Group mt={8} gap="md" wrap="wrap">
+          <Group gap="md" wrap="wrap">
             {tags.map((t) => (
               <Button
                 key={t}
@@ -83,8 +126,8 @@ export default function ClubHeroCard({
               </Button>
             ))}
           </Group>
-        </Flex>
-      </Flex>
+        </Grid.Col>
+      </Grid>
     </Box>
   );
 }

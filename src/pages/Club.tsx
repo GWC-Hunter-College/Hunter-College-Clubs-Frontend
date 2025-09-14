@@ -1,90 +1,72 @@
-import { Skeleton, Stack, Title } from "@mantine/core";
-import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-
-import { Box, Container } from "@mantine/core";
+// ClubPage.tsx
+import { Box, Container, Stack, Skeleton, Title } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import ClubHeroCard from "../components/ClubPage/ClubHero";
-
+import EventList from "../components/Events/EventList";
 import placeholderLogo from "../assets/logo.png";
-
 
 type Club = {
   name: string;
   logo: string;
-  description: string;
+  description: string;   // keep this
   tags: string[];
 };
 
 export default function ClubPage() {
-  let { clubId } = useParams();
-
+  const { clubId } = useParams();
   const [club, setClub] = useState<Club | null>(null);
 
   useEffect(() => {
-    const fetchedClub: Club = {
+    setClub({
       name: "Girls Who Code",
-      logo: placeholderLogo, // put your logo path here
+      logo: placeholderLogo,
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      // tags: ["Tech", "Academic"],
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...",
       tags: [],
-    };
+    });
+  }, []);
 
-    setClub(fetchedClub);
-    // setClub(null);
-  }, []); 
-
-  if(!club){
+  if (!club) {
     return (
       <Container size="lg" py="xl">
-        <Title order={1} mb="lg">
-          Club Page {clubId}
-        </Title>
-
+        <Title order={1} mb="lg">Club Page {clubId}</Title>
         <Stack gap="md">
-          {/* Hero section */}
-          <Skeleton height={50} radius="md" />
-
-          {/* Cards / content placeholders */}
-          <Skeleton height={200} radius="md" />
-          <Skeleton height={200} radius="md" />
-          <Skeleton height={200} radius="md" />
-
-          {/* Footer / CTA placeholder */}
-          <Skeleton height={60} radius="md" />
+          <Skeleton h={50} radius="md" />
+          <Skeleton h={200} radius="md" />
+          <Skeleton h={200} radius="md" />
+          <Skeleton h={200} radius="md" />
+          <Skeleton h={60} radius="md" />
         </Stack>
       </Container>
     );
   }
 
   return (
-    <Box style={{ minHeight: "100dvh" }}>
-      <Container fluid px={0} style={{ minHeight: "100dvh" }}>
-        <Box
-          style={{
-            minHeight: "100dvh",
-            display: "grid",
-            placeItems: "center",
-            // responsive page padding
-            padding: "min(4vw, 32px)",
-          }}
-        >
-          <div
-            style={{
-              width: "100%",
-              maxWidth: "clamp(320px, 92vw, 1100px)",
-              marginInline: "auto",
-            }}
-          >
-            <ClubHeroCard
-              name={club.name}
-              logo={club.logo}
-              description={club.description}
-              tags={club.tags}
-            />
-          </div>
+    <Box mih="100dvh">
+      {/* ==== Section 1: Hero ==== */}
+      <Box px={{ base: "md", sm: "lg" }} py="lg">
+        <Box maw={1100} w="100%" mx="auto">
+          <ClubHeroCard
+            name={club.name}
+            logo={club.logo}
+            description={club.description}
+            tags={club.tags}
+          />
         </Box>
-      </Container>
+      </Box>
+      
+
+      {/* ==== Section 2: Events (same centering) ==== */}
+      <Box px={{ base: "md", sm: "lg" }} py="lg">
+        <Box maw={1100} w="100%" mx="auto">
+          <EventList
+            title="Upcoming Events"
+            views={["My Clubs", "Global"]}
+            onChangeView={(v) => console.log("selected:", v)}
+          />
+        </Box>
+      </Box>
     </Box>
   );
 }

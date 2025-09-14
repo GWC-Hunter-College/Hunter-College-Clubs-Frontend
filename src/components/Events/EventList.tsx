@@ -6,11 +6,17 @@ import View from "../HomePage/View";
 
 type Event = {
   id: string;
+  title: string;
+  location: string;
+  start: string; // ISO
+  end: string;   // ISO
   flyer: string;
   logo: string;
-  month: string;       // e.g. "SEPTEMBER 2025"
+  month: string; // "SEPTEMBER 2025"
   altText?: string;
 };
+
+
 
 type EventsListProps = {
   title: string;
@@ -128,8 +134,13 @@ export default function EventList({
               key={e.id}
               flyer={e.flyer}
               logo={e.logo}
+              title={e.title}
+              location={e.location}
+              start={e.start}
+              end={e.end}
               altText={e.altText}
             />
+
           ))}
         </Box>
       </Box>

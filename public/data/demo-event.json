@@ -1,0 +1,125 @@
+{
+  "events": [
+    {
+      "id": 1,
+      "title": "First Kickoff Meeting",
+      "location": "Room 101, Hunter College",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-09-15 17:00:00",
+      "endDate": "2025-09-15 19:00:00",
+      "thumbnailUrl": "/card.png"
+    },
+    {
+      "id": 2,
+      "title": "cs workshop",
+      "location": "Room 304, narnia",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-10-28 11:00:00",
+      "endDate": "2025-10-28 19:00:00",
+      "thumbnailUrl": "/hero.png"
+    },
+    {
+      "id": 3,
+      "title": "cooking workshop",
+      "location": "Room 505, hogwarts",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-11-28 10:00:00",
+      "endDate": "2025-11-28 13:00:00",
+      "thumbnailUrl": "/react.svg"
+    },
+
+    {
+      "id": 4,
+      "title": "Intro to React",
+      "location": "Online (Zoom)",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-09-22 18:30:00",
+      "endDate": "2025-09-22 20:00:00",
+      "thumbnailUrl": "/hero.png"
+    },
+    {
+      "id": 5,
+      "title": "Resume Review Night",
+      "location": "Career Center, 3rd Floor",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-09-29 17:00:00",
+      "endDate": "2025-09-29 19:00:00",
+      "thumbnailUrl": "/card.png"
+    },
+    {
+      "id": 6,
+      "title": "Git & GitHub 101",
+      "location": "Lab 204",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-10-03 16:00:00",
+      "endDate": "2025-10-03 18:00:00",
+      "thumbnailUrl": "/react.svg"
+    },
+    {
+      "id": 7,
+      "title": "Hack Night",
+      "location": "Library West",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-10-11 13:00:00",
+      "endDate": "2025-10-11 17:00:00",
+      "thumbnailUrl": "/card.png"
+    },
+    {
+      "id": 8,
+      "title": "Alumni Panel",
+      "location": "Auditorium A",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-10-20 18:00:00",
+      "endDate": "2025-10-20 20:00:00",
+      "thumbnailUrl": "/hero.png"
+    },
+    {
+      "id": 9,
+      "title": "Data Structures Study Jam",
+      "location": "Room 110",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-11-05 17:30:00",
+      "endDate": "2025-11-05 19:30:00",
+      "thumbnailUrl": "/react.svg"
+    },
+    {
+      "id": 10,
+      "title": "Women in Tech Roundtable",
+      "location": "Community Room B",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-11-12 18:00:00",
+      "endDate": "2025-11-12 20:00:00",
+      "thumbnailUrl": "/card.png"
+    },
+    {
+      "id": 11,
+      "title": "Interview Prep Night",
+      "location": "Room 220",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-11-19 17:00:00",
+      "endDate": "2025-11-19 19:00:00",
+      "thumbnailUrl": "/hero.png"
+    },
+    {
+      "id": 12,
+      "title": "Holiday Social",
+      "location": "Student Lounge",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-11-03 17:00:00",
+      "endDate": "2025-11-03 19:00:00",
+      "thumbnailUrl": "/card.png"
+    }
+  ]
+}

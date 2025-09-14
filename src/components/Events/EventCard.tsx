@@ -1,23 +1,84 @@
 // components/Events/EventCard.tsx
-import { Box, Image } from "@mantine/core";
+import { Box, Image, Text } from "@mantine/core";
 
-type EventCardProps = { flyer: string; logo: string; altText?: string };
+type EventCardProps = {
+  flyer: string;
+  logo: string;
+  title: string;
+  location: string;
+  start: string;  // ISO
+  end: string;    // ISO
+  altText?: string;
+};
 
-export default function EventCard({ flyer, logo, altText = "Event flyer" }: EventCardProps) {
+function formatRange(startIso: string, endIso: string) {
+  const s = new Date(startIso);
+  const e = new Date(endIso);
+
+  const day = s.toLocaleDateString(undefined, {
+    weekday: "short",
+    month: "short",
+    day: "numeric"
+  });
+
+  const fmtTime = (d: Date) =>
+    d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+
+  const sameDay = s.toDateString() === e.toDateString();
+  const timeRange = sameDay
+    ? `${fmtTime(s)}–${fmtTime(e)}`
+    : `${fmtTime(s)} → ${e.toLocaleDateString()} ${fmtTime(e)}`;
+
+  return { day, timeRange };
+}
+
+export default function EventCard({
+  flyer,
+  logo,
+  title,
+  location,
+  start,
+  end,
+  altText = "Event flyer",
+}: EventCardProps) {
+  const { day, timeRange } = formatRange(start, end);
+
   return (
     <Box
       pos="relative"
-      w="100%"                       // fills the grid column
-      style={{
-        aspectRatio: "1 / 1",       // square crop
-        borderRadius: 16,
-        overflow: "hidden",
-      }}
+      w="100%"
+      style={{ aspectRatio: "1 / 1", borderRadius: 16, overflow: "hidden" }}
     >
-      <Image src={flyer} alt={altText} w="100%" h="100%" fit="cover" />
+      <Image src={flyer} alt={altText} fit="cover" h="100%" w="100%" />
+
+      {/* Bottom overlay with details */}
       <Box
         pos="absolute"
-        bottom="4%"
+        bottom={0}
+        left={0}
+        right={0}
+        style={{
+          padding: "12px",
+          background:
+            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 40%, rgba(0,0,0,0.85) 100%)",
+          color: "white",
+        }}
+      >
+        <Text fw={700} size="lg" style={{ lineHeight: 1.2 }}>
+          {title}
+        </Text>
+        <Text size="sm" style={{ opacity: 0.9 }}>
+          {location}
+        </Text>
+        <Text size="sm" style={{ opacity: 0.9 }}>
+          {day} • {timeRange}
+        </Text>
+      </Box>
+
+      {/* Logo badge */}
+      <Box
+        pos="absolute"
+        top="4%"
         right="4%"
         bg="white"
         p={6}

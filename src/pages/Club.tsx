@@ -19,31 +19,26 @@ type Club = {
   tags: string[];
 };
 
+type IncomingClubEvent = {
+  id: number | string;
+  title: string;
+  location: string;
+  rsvpLink: string;
+  status: "posted" | "draft" | string;
+  startDate: string; // "YYYY-MM-DD HH:mm:ss"
+  endDate: string;   // "YYYY-MM-DD HH:mm:ss"
+  // Support both spellings just in case:
+  thumbnailURL?: string;
+  thumbnailUrl?: string;
+};
+
+
 
 export default function ClubPage() {
   const { clubId } = useParams();
   const [club, setClub] = useState<Club | null>(null);
-  const demoEvents = [
-    { id: "1", flyer: flyer, logo: logo, month: "SEPTEMBER 2025" },
-    { id: "2", flyer: flyer2, logo: logo, month: "SEPTEMBER 2025" },
-    { id: "3", flyer: flyer, logo: logo, month: "SEPTEMBER 2025" },
-    { id: "4", flyer: flyer2, logo: logo, month: "OCTOBER 2025" },
-    { id: "5", flyer: flyer, logo: logo, month: "OCTOBER 2025" },
-    { id: "6", flyer: flyer, logo: logo, month: "dfsR 2025" },
-    { id: "7", flyer: flyer2, logo: logo, month: "dfsR 2025" },
-    { id: "8", flyer: flyer, logo: logo, month: "dfsR 2025" },
-    { id: "6", flyer: flyer3, logo: logo, month: "dfsR 2025" },
-    { id: "7", flyer: flyer, logo: logo, month: "dfsR 2025" },
-    { id: "8", flyer: flyer, logo: logo, month: "dfsR 2025" },
-    { id: "6", flyer: flyer2, logo: logo, month: "dfsR 2025" },
-    { id: "7", flyer: flyer, logo: logo, month: "dfsR 2025" },
-    { id: "8", flyer: flyer2, logo: logo, month: "dfsR 2025" },
-    { id: "6", flyer: flyer3, logo: logo, month: "dfsR 2025" },
-    { id: "7", flyer: flyer, logo: logo, month: "dfsR 2025" },
-    { id: "8", flyer: flyer, logo: logo, month: "dfsR 2025" },
+    const [events, setEvents] = useState<any[]>([]);
 
-  ];
-  
   useEffect(() => {
     setClub({
       name: "Girls Who Code",
@@ -53,7 +48,60 @@ export default function ClubPage() {
       tags: [],
     });
     // setClub(null);
-  }, []);
+
+  // match the file you actually have
+  const url = (import.meta.env.BASE_URL ?? "/") + "data/demo-event.json";
+  console.log("[Club] fetching:", url);
+}, []);
+
+  useEffect(()=>{
+     // match the file you actually have
+  const url = (import.meta.env.BASE_URL ?? "/") + "data/demo-event.json";
+  console.log("[Club] fetching:", url);
+
+  fetch(url)
+    .then((res) => {
+      console.log("[Club] status:", res.status, res.headers.get("content-type"));
+      // Guard: ensure it’s JSON, not HTML fallback
+      const ct = res.headers.get("content-type") || "";
+      if (!res.ok || !ct.includes("application/json")) {
+        throw new Error(`Bad response for ${url}: ${res.status} ${ct}`);
+      }
+      return res.json();
+    })
+    .then((data: { events: IncomingClubEvent[] }) => {
+      const parseLocal = (s: string) => new Date(s.replace(" ", "T"));
+      const monthKey = (d: Date) =>
+        d.toLocaleString(undefined, { month: "long", year: "numeric" }).toUpperCase();
+
+      const mapped = (data?.events ?? []).map((c) => {
+        const s = parseLocal(c.startDate);
+        const e = parseLocal(c.endDate);
+        return {
+          id: String(c.id),
+          title: c.title,
+          location: c.location,
+          start: s.toISOString(),
+          end: e.toISOString(),
+          flyer: c.thumbnailUrl,
+          // flyer: flyer2,
+          logo: club?.logo,
+          // logo: logo,
+          month: monthKey(s),
+          altText: c.title,
+        };
+      });
+
+      console.log("[Club] mapped events:", mapped);
+      setEvents(mapped);
+    })
+    .catch((err) => {
+      console.error("[Club] failed to load demo-event.json:", err);
+      setEvents([]);
+    });
+  },[club]);
+
+
 
   if (!club) {
     return (
@@ -89,11 +137,11 @@ export default function ClubPage() {
       {/* ==== Section 2: Events (same centering) ==== */}
       <Box py="lg">  {/* no inner width cap */}
         <EventList
-  title="Club Events"
-  views={["Upcoming", "Previous"]}
-  onChangeView={(v) => console.log("selected:", v)}
-  events={demoEvents}
-/>
+          title="Club Events"
+          views={["Upcoming", "Previous"]}
+          onChangeView={(v) => console.log("selected:", v)}
+          events={events}
+        />
       </Box>
     </Box>
   );

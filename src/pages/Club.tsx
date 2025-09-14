@@ -1,111 +1,146 @@
 // ClubPage.tsx
-import { Box, Container, Stack, Skeleton, Title } from "@mantine/core";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import ClubHeroCard from "../components/ClubPage/ClubHero";
+import { Box, Container, Stack, Skeleton } from "@mantine/core";
+import { useEffect, useMemo, useState } from "react";
+import { default as ClubHeroCard } from "../components/ClubPage/ClubHero";
 import EventList from "../components/Events/EventList";
 
+// 👇 uses the same asset you had before for the club logo
 import placeholderLogo from "../assets/logo.png";
-import flyer from "../assets/card.png";
-// import flyer2 from "../assets/card.png";
-import flyer2 from "../assets/hero.png";
-import flyer3 from "../assets/react.svg";
-import logo from "../assets/logo.png";
 
-
-type Club = {
-  name: string;
-  logo: string;
-  description: string;   // keep this
-  tags: string[];
-};
-
-type IncomingClubEvent = {
-  id: number | string;
+// --- helpers ---
+type DemoEvent = {
+  id: number;
   title: string;
   location: string;
   rsvpLink: string;
-  status: "posted" | "draft" | string;
+  status: string;
   startDate: string; // "YYYY-MM-DD HH:mm:ss"
   endDate: string;   // "YYYY-MM-DD HH:mm:ss"
-  // Support both spellings just in case:
-  thumbnailURL?: string;
-  thumbnailUrl?: string;
-  owners?: EventOwners;
+  thumbnailUrl: string;
+  owners?: {
+    owner?: { id: number; thumbnailUrl?: string };
+    associates?: Array<{ id: number; thumbnailUrl?: string }>;
+  };
 };
 
-type ClubRef = { id: number | string; thumbnailUrl?: string };
-type EventOwners = { owner: ClubRef; associates: ClubRef[] };
+// This is the shape EventList expects
+type UiEvent = {
+  id: string;
+  title: string;
+  location: string;
+  start: string; // ISO
+  end: string;   // ISO
+  flyer: string;
+  logo: string;
+  month: string; // can remain (unused by child) or remove if you prefer
+  altText?: string;
+};
+
+// Safely turn "YYYY-MM-DD HH:mm:ss" into a real ISO date for Date()
+const toIso = (s: string) => s.replace(" ", "T");
+
+// "SEPTEMBER 2025"
+const monthLabel = (iso: string) => {
+  const d = new Date(iso);
+  return `${d.toLocaleString("en-US", { month: "long" }).toUpperCase()} ${d.getFullYear()}`;
+};
+
+// --- (new) club hero props (same shape you used before) ---
+type Club = {
+  name: string;
+  logo: string;
+  description: string;
+  tags: string[];
+};
 
 export default function ClubPage() {
-  const { clubId } = useParams();
-  const [club, setClub] = useState<Club | null>(null);
-    const [events, setEvents] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [rawEvents, setRawEvents] = useState<DemoEvent[]>([]);
+  const [view, setView] = useState<"Upcoming" | "Previous">("Upcoming");
 
-  useEffect(() => {
-    setClub({
-      name: "Girls Who Code",
-      logo: placeholderLogo,
-      description:
+  // Minimal club info for the hero (matches your previous usage)
+  const club: Club = {
+    name: "Girls Who Code",
+    logo: placeholderLogo,
+    description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-      tags: [],
-    });
-    // setClub(null);
-}, []);
+    tags: [],
+  };
 
-  useEffect(()=>{
-     // match the file you actually have
-  const url = (import.meta.env.BASE_URL ?? "/") + "data/demo-event.json";
-  console.log("[Club] fetching:", url);
-
-  fetch(url)
-    .then((res) => {
-      console.log("[Club] status:", res.status, res.headers.get("content-type"));
-      // Guard: ensure it’s JSON, not HTML fallback
-      const ct = res.headers.get("content-type") || "";
-      if (!res.ok || !ct.includes("application/json")) {
-        throw new Error(`Bad response for ${url}: ${res.status} ${ct}`);
+  // Load demo events once
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/data/demo-event.json");
+        const json = await res.json();
+        if (!cancelled) setRawEvents(json.events ?? []);
+      } catch (e) {
+        console.error("Failed to load demo-event.json", e);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      return res.json();
-    })
-    .then((data: { events: IncomingClubEvent[] }) => {
-      const parseLocal = (s: string) => new Date(s.replace(" ", "T"));
-      const monthKey = (d: Date) =>
-        d.toLocaleString(undefined, { month: "long", year: "numeric" }).toUpperCase();
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-      const mapped = (data?.events ?? []).map((c) => {
-        const s = parseLocal(c.startDate);
-        const e = parseLocal(c.endDate);
-        return {
-          id: String(c.id),
-          title: c.title,
-          location: c.location,
-          start: s.toISOString(),
-          end: e.toISOString(),
-          flyer: c.thumbnailUrl,
-          // flyer: flyer2,
-          logo: c.owners?.owner?.thumbnailUrl,
-          // logo: logo,
-          month: monthKey(s),
-          altText: c.title,
-        };
-      });
+  // Map demo → UI shape once
+  const allUiEvents: UiEvent[] = useMemo(() => {
+    return (rawEvents ?? []).map((e) => {
+      const startIso = toIso(e.startDate);
+      const endIso = toIso(e.endDate);
 
-      console.log("[Club] mapped events:", mapped);
-      setEvents(mapped);
-    })
-    .catch((err) => {
-      console.error("[Club] failed to load demo-event.json:", err);
-      setEvents([]);
+      // Prefer the club owner logo if present; fall back to the card image
+      const logo = e.owners?.owner?.thumbnailUrl ?? "/logo.png";
+      const flyer = e.thumbnailUrl ?? "/card.png";
+
+      return {
+        id: String(e.id),
+        title: e.title,
+        location: e.location,
+        start: startIso,
+        end: endIso,
+        flyer,
+        logo,
+        month: monthLabel(startIso),
+        altText: e.title,
+      };
     });
-  },[club]);
+  }, [rawEvents]);
 
+  // Helpers (day-based comparisons)
+  const startOfDay = (d: Date) => {
+    const x = new Date(d);
+    x.setHours(0, 0, 0, 0);
+    return x;
+  };
+  const dateOnlyGTE = (aIso: string, bDate: Date) =>
+    startOfDay(new Date(aIso)).getTime() >= startOfDay(bDate).getTime();
 
+  // Partition by END DAY (your new rule): if the event ends today or later → Upcoming
+  const { upcoming, previous } = useMemo(() => {
+    const now = new Date();
+    const up: UiEvent[] = [];
+    const prev: UiEvent[] = [];
 
-  if (!club) {
+    for (const ev of allUiEvents) {
+      if (dateOnlyGTE(ev.end, now)) up.push(ev);
+      else prev.push(ev);
+    }
+
+    // Sorts
+    up.sort((a, b) => +new Date(a.start) - +new Date(b.start)); // soonest first
+    prev.sort((a, b) => +new Date(b.start) - +new Date(a.start)); // most recent first
+    return { upcoming: up, previous: prev };
+  }, [allUiEvents]);
+
+  const filtered = view === "Upcoming" ? upcoming : previous;
+
+  if (loading) {
     return (
-      <Container size="lg" py="xl">
-        <Title order={1} mb="lg">Club Page {clubId}</Title>
+      <Container py="lg">
         <Stack gap="md">
           <Skeleton h={50} radius="md" />
           <Skeleton h={200} radius="md" />
@@ -119,27 +154,26 @@ export default function ClubPage() {
 
   return (
     <Box mih="100dvh">
-      {/* ==== Section 1: Hero ==== */}
+      {/* ==== Section 1: Hero (restored, same centering/spacing as before) ==== */}
       <Box px={{ base: "md", sm: "lg" }} py="lg">
-  {/* NOTE: no mx="auto" here, so it won't be centered */}
-  <Box maw={1100} w="100%">
-    <ClubHeroCard
-      name={club.name}
-      logo={club.logo}
-      description={club.description}
-      tags={club.tags}
-    />
-  </Box>
-</Box>
-      
+        {/* NOTE: no mx="auto" here, so it won't be centered edge-to-edge */}
+        <Box maw={1100} w="100%">
+          <ClubHeroCard
+            name={club.name}
+            logo={club.logo}
+            description={club.description}
+            tags={club.tags}
+          />
+        </Box>
+      </Box>
 
-      {/* ==== Section 2: Events (same centering) ==== */}
-      <Box py="lg">  {/* no inner width cap */}
+      {/* ==== Section 2: Events ==== */}
+      <Box py="lg">
         <EventList
           title="Club Events"
           views={["Upcoming", "Previous"]}
-          onChangeView={(v) => console.log("selected:", v)}
-          events={events}
+          onChangeView={(v) => setView(v as "Upcoming" | "Previous")}
+          events={filtered}
         />
       </Box>
     </Box>

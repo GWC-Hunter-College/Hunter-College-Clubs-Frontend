@@ -31,7 +31,7 @@ type EventsListProps = {
 // top of file (or above the return)
 const CARD_SIZE = "clamp(200px, 17vw, 260px)"; // <= max 260px so 3 cols + gaps fit in 60vw
 const GAP       = "clamp(12px, 2vw, 16px)";
-const BAND_MAX  = "60vw";
+// const BAND_MAX  = "60vw";
 
 export default function EventList({
   title,

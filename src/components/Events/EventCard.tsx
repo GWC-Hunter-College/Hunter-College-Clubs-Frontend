@@ -1,27 +1,20 @@
 // components/Events/EventCard.tsx
 import { Box, Image } from "@mantine/core";
 
-type EventCardProps = {
-  flyer: string;
-  logo: string;
-  altText?: string;
-};
+type EventCardProps = { flyer: string; logo: string; altText?: string };
 
 export default function EventCard({ flyer, logo, altText = "Event flyer" }: EventCardProps) {
   return (
     <Box
       pos="relative"
-      w="100%"
-      maw={360}                // tighter cap so cards never get huge
-      miw={220}
+      w="100%"                       // fills the grid column
       style={{
-        aspectRatio: "1 / 1",
+        aspectRatio: "1 / 1",       // square crop
         borderRadius: 16,
         overflow: "hidden",
       }}
     >
       <Image src={flyer} alt={altText} w="100%" h="100%" fit="cover" />
-
       <Box
         pos="absolute"
         bottom="4%"

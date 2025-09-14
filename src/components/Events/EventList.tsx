@@ -22,6 +22,11 @@ type EventsListProps = {
   events: Event[];
 };
 
+// top of file (or above the return)
+const CARD_SIZE = "clamp(200px, 17vw, 260px)"; // <= max 260px so 3 cols + gaps fit in 60vw
+const GAP       = "clamp(12px, 2vw, 16px)";
+const BAND_MAX  = "60vw";
+
 export default function EventList({
   title,
   views,
@@ -93,32 +98,44 @@ export default function EventList({
       </Flex>
 
       {/* Months */}
-      {monthBuckets.map(([month, items]) => (
-      // inside EventList.tsx where you render each month bucket
-      <Box key={month} mt="2rem">
-        <Section month={month} />
+{monthBuckets.map(([month, items]) => {
+  // Wider band for months with more items so they can add another column
+  const bandMax =
+    items.length >= 8
+      ? "min(95vw, 1600px)" // 5 cols possible on huge screens
+      : items.length >= 4
+      ? "min(80vw, 1280px)" // allow 4 cols
+      : "min(60vw, 1040px)"; // default ~3/5 width (what you liked before)
 
-        {/* Full width on small; cap to ~3/5 on large */}
-        <Box w="100%" style={{ maxWidth: "60vw" }}>
-          <Box
-            /* AUTO-FIT columns with a minimum card width;
-              grid adds/removes columns fluidly */
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-              gap: "clamp(0.75rem, 2vw, 1.5rem)",
-              justifyItems: "start", // keep cells left-aligned when card hits its max
-            }}
-          >
-            {items.map((e) => (
-              <EventCard key={e.id} flyer={e.flyer} logo={e.logo} altText={e.altText} />
-            ))}
-          </Box>
+  return (
+    <Box key={month} mt="2rem">
+      <Section month={month} />
+
+      {/* Full width on small; capped by bandMax on large */}
+      <Box w="100%" style={{ maxWidth: bandMax }}>
+        <Box
+          style={{
+            display: "grid",
+            // Identical column width everywhere; grid auto-fits more columns when band gets wider
+            gridTemplateColumns: `repeat(auto-fit, minmax(${CARD_SIZE}, ${CARD_SIZE}))`,
+            gap: GAP,
+            justifyContent: "start", // pack left; leave right side empty
+            alignItems: "start",
+          }}
+        >
+          {items.map((e) => (
+            <EventCard
+              key={e.id}
+              flyer={e.flyer}
+              logo={e.logo}
+              altText={e.altText}
+            />
+          ))}
         </Box>
       </Box>
-
-
-      ))}
+    </Box>
+  );
+})}
     </>
   );
 }

@@ -9,6 +9,7 @@ import placeholderLogo from "../assets/logo.png";
 import flyer from "../assets/card.png";
 // import flyer2 from "../assets/card.png";
 import flyer2 from "../assets/hero.png";
+import flyer3 from "../assets/react.svg";
 import logo from "../assets/logo.png";
 
 type Club = {
@@ -28,6 +29,18 @@ export default function ClubPage() {
     { id: "3", flyer: flyer, logo: logo, month: "SEPTEMBER 2025" },
     { id: "4", flyer: flyer2, logo: logo, month: "OCTOBER 2025" },
     { id: "5", flyer: flyer, logo: logo, month: "OCTOBER 2025" },
+    { id: "6", flyer: flyer, logo: logo, month: "dfsR 2025" },
+    { id: "7", flyer: flyer2, logo: logo, month: "dfsR 2025" },
+    { id: "8", flyer: flyer, logo: logo, month: "dfsR 2025" },
+    { id: "6", flyer: flyer3, logo: logo, month: "dfsR 2025" },
+    { id: "7", flyer: flyer, logo: logo, month: "dfsR 2025" },
+    { id: "8", flyer: flyer, logo: logo, month: "dfsR 2025" },
+    { id: "6", flyer: flyer2, logo: logo, month: "dfsR 2025" },
+    { id: "7", flyer: flyer, logo: logo, month: "dfsR 2025" },
+    { id: "8", flyer: flyer2, logo: logo, month: "dfsR 2025" },
+    { id: "6", flyer: flyer3, logo: logo, month: "dfsR 2025" },
+    { id: "7", flyer: flyer, logo: logo, month: "dfsR 2025" },
+    { id: "8", flyer: flyer, logo: logo, month: "dfsR 2025" },
 
   ];
   

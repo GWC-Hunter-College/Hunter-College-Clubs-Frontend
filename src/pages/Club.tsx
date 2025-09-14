@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ClubHeroCard from "../components/ClubPage/ClubHero";
 import EventList from "../components/Events/EventList";
-import placeholderLogo from "../assets/logo.png";
 
+import placeholderLogo from "../assets/logo.png";
 import flyer from "../assets/card.png";
 // import flyer2 from "../assets/card.png";
 import flyer2 from "../assets/hero.png";
 import flyer3 from "../assets/react.svg";
 import logo from "../assets/logo.png";
+
 
 type Club = {
   name: string;
@@ -30,9 +31,11 @@ type IncomingClubEvent = {
   // Support both spellings just in case:
   thumbnailURL?: string;
   thumbnailUrl?: string;
+  owners?: EventOwners;
 };
 
-
+type ClubRef = { id: number | string; thumbnailUrl?: string };
+type EventOwners = { owner: ClubRef; associates: ClubRef[] };
 
 export default function ClubPage() {
   const { clubId } = useParams();
@@ -48,10 +51,6 @@ export default function ClubPage() {
       tags: [],
     });
     // setClub(null);
-
-  // match the file you actually have
-  const url = (import.meta.env.BASE_URL ?? "/") + "data/demo-event.json";
-  console.log("[Club] fetching:", url);
 }, []);
 
   useEffect(()=>{
@@ -85,7 +84,7 @@ export default function ClubPage() {
           end: e.toISOString(),
           flyer: c.thumbnailUrl,
           // flyer: flyer2,
-          logo: club?.logo,
+          logo: c.owners?.owner?.thumbnailUrl,
           // logo: logo,
           month: monthKey(s),
           altText: c.title,

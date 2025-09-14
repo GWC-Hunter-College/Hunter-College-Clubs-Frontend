@@ -6,9 +6,15 @@
       "location": "Room 101, Hunter College",
       "rsvpLink": "https://www.hunterhacks.com/",
       "status": "posted",
-      "startDate": "2025-09-15 17:00:00",
-      "endDate": "2025-09-15 19:00:00",
-      "thumbnailUrl": "/card.png"
+      "startDate": "2025-09-14 17:00:00",
+      "endDate": "2025-09-14 19:00:00",
+      "thumbnailUrl": "/card.png",
+      "owners": {
+        "owner": { "id": 2, "thumbnailUrl": "/logo.png" },
+        "associates": [
+          { "id": 3, "thumbnailUrl": "/hero.png" }
+        ]
+      }
     },
     {
       "id": 2,
@@ -16,9 +22,15 @@
       "location": "Room 304, narnia",
       "rsvpLink": "https://www.hunterhacks.com/",
       "status": "posted",
-      "startDate": "2025-10-28 11:00:00",
-      "endDate": "2025-10-28 19:00:00",
-      "thumbnailUrl": "/hero.png"
+      "startDate": "2025-10-14 11:00:00",
+      "endDate": "2025-10-14 19:00:00",
+      "thumbnailUrl": "/hero.png",
+      "owners": {
+        "owner": { "id": 3, "thumbnailUrl": "/hero.png" },
+        "associates": [
+          { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" }
+        ]
+      }
     },
     {
       "id": 3,
@@ -28,9 +40,14 @@
       "status": "posted",
       "startDate": "2025-11-28 10:00:00",
       "endDate": "2025-11-28 13:00:00",
-      "thumbnailUrl": "/react.svg"
+      "thumbnailUrl": "/react.svg",
+      "owners": {
+        "owner": { "id": 1, "thumbnailUrl": "/card.png" },
+        "associates": [
+          { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" }
+        ]
+      }
     },
-
     {
       "id": 4,
       "title": "Intro to React",
@@ -39,7 +56,13 @@
       "status": "posted",
       "startDate": "2025-09-22 18:30:00",
       "endDate": "2025-09-22 20:00:00",
-      "thumbnailUrl": "/hero.png"
+      "thumbnailUrl": "/hero.png",
+      "owners": {
+        "owner": { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" },
+        "associates": [
+          { "id": 3, "thumbnailUrl": "/hero.png" }
+        ]
+      }
     },
     {
       "id": 5,
@@ -49,7 +72,11 @@
       "status": "posted",
       "startDate": "2025-09-29 17:00:00",
       "endDate": "2025-09-29 19:00:00",
-      "thumbnailUrl": "/card.png"
+      "thumbnailUrl": "/card.png",
+      "owners": {
+        "owner": { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" },
+        "associates": []
+      }
     },
     {
       "id": 6,
@@ -59,7 +86,13 @@
       "status": "posted",
       "startDate": "2025-10-03 16:00:00",
       "endDate": "2025-10-03 18:00:00",
-      "thumbnailUrl": "/react.svg"
+      "thumbnailUrl": "/react.svg",
+      "owners": {
+        "owner": { "id": 3, "thumbnailUrl": "/hero.png" },
+        "associates": [
+          { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" }
+        ]
+      }
     },
     {
       "id": 7,
@@ -69,7 +102,14 @@
       "status": "posted",
       "startDate": "2025-10-11 13:00:00",
       "endDate": "2025-10-11 17:00:00",
-      "thumbnailUrl": "/card.png"
+      "thumbnailUrl": "/card.png",
+      "owners": {
+        "owner": { "id": 3, "thumbnailUrl": "/hero.png" },
+        "associates": [
+          { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" },
+          { "id": 1, "thumbnailUrl": "/card.png" }
+        ]
+      }
     },
     {
       "id": 8,
@@ -79,7 +119,13 @@
       "status": "posted",
       "startDate": "2025-10-20 18:00:00",
       "endDate": "2025-10-20 20:00:00",
-      "thumbnailUrl": "/hero.png"
+      "thumbnailUrl": "/hero.png",
+      "owners": {
+        "owner": { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" },
+        "associates": [
+          { "id": 1, "thumbnailUrl": "/card.png" }
+        ]
+      }
     },
     {
       "id": 9,
@@ -89,7 +135,13 @@
       "status": "posted",
       "startDate": "2025-11-05 17:30:00",
       "endDate": "2025-11-05 19:30:00",
-      "thumbnailUrl": "/react.svg"
+      "thumbnailUrl": "/react.svg",
+      "owners": {
+        "owner": { "id": 3, "thumbnailUrl": "/hero.png" },
+        "associates": [
+          { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" }
+        ]
+      }
     },
     {
       "id": 10,
@@ -99,7 +151,13 @@
       "status": "posted",
       "startDate": "2025-11-12 18:00:00",
       "endDate": "2025-11-12 20:00:00",
-      "thumbnailUrl": "/card.png"
+      "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat",
+      "owners": {
+        "owner": { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" },
+        "associates": [
+          { "id": 3, "thumbnailUrl": "/hero.png" }
+        ]
+      }
     },
     {
       "id": 11,
@@ -109,7 +167,13 @@
       "status": "posted",
       "startDate": "2025-11-19 17:00:00",
       "endDate": "2025-11-19 19:00:00",
-      "thumbnailUrl": "/hero.png"
+      "thumbnailUrl": "/hero.png",
+      "owners": {
+        "owner": { "id": 3, "thumbnailUrl": "/hero.png" },
+        "associates": [
+          { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" }
+        ]
+      }
     },
     {
       "id": 12,
@@ -119,7 +183,14 @@
       "status": "posted",
       "startDate": "2025-11-03 17:00:00",
       "endDate": "2025-11-03 19:00:00",
-      "thumbnailUrl": "/card.png"
+      "thumbnailUrl": "/card.png",
+      "owners": {
+        "owner": { "id": 1, "thumbnailUrl": "/card.png" },
+        "associates": [
+          { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" },
+          { "id": 3, "thumbnailUrl": "/hero.png" }
+        ]
+      }
     }
   ]
 }

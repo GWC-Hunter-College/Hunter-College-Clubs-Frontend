@@ -7,20 +7,9 @@ import {
   Avatar,
   Box,
   useMantineTheme,
-  rem,
 } from "@mantine/core";
 import classes from "./EventCard.module.css";
-
-type UiEvent = {
-  id: string;
-  title: string;
-  location: string;
-  start: string; // ISO
-  end: string;   // ISO
-  flyer: string; // image url
-  logo: string;  // image url (club/logo)
-  altText?: string;
-};
+import type { Event } from "../../types/events"; 
 
 function formatRange(startIso: string, endIso: string) {
   const s = new Date(startIso);
@@ -43,7 +32,7 @@ function formatRange(startIso: string, endIso: string) {
   return `${day} • ${timeRange}`;
 }
 
-export default function EventCard({ event }: { event: UiEvent }) {
+export default function EventCard({ event }: { event: Event }) {
   const theme = useMantineTheme();
   const to = `/event/${event.id}`;
 
@@ -64,11 +53,11 @@ export default function EventCard({ event }: { event: UiEvent }) {
         {/* Overlay for readability */}
         <Box className={classes.overlay} />
 
-        {/* Club logo — top-right */}
-        {event.logo && (
+        {/* Club logo — top-right (owner only, for now) */}
+        {event.owner?.logo && (
           <Avatar
-            src={event.logo}
-            alt="Club logo"
+            src={event.owner.logo}
+            alt={`Owner ${event.owner.id}`}
             radius="xl"
             size={44}
             className={classes.logo}

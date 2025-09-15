@@ -4,20 +4,7 @@ import { Flex, Divider, Text, Box } from "@mantine/core";
 import Section from "../HomePage/Section";
 import EventCard from "./EventCard";
 import View from "../HomePage/View";
-
-type Event = {
-  id: string;
-  title: string;
-  location: string;
-  start: string; // ISO
-  end: string;   // ISO
-  flyer: string;
-  logo: string;
-  // month: string; // "SEPTEMBER 2025"
-  altText?: string;
-};
-
-
+import type { Event } from "../../types/events"; // ⬅️ use canonical Event
 
 type EventsListProps = {
   title: string;
@@ -25,7 +12,7 @@ type EventsListProps = {
   active?: string;
   onChangeView?: (label: string) => void;
 
-  // NEW: events to render
+  // events to render (canonical Event[])
   events: Event[];
 };
 
@@ -39,7 +26,6 @@ const monthLabel = (iso: string) => {
   const d = new Date(iso);
   return `${d.toLocaleString("en-US", { month: "long" }).toUpperCase()} ${d.getFullYear()}`;
 };
-
 
 export default function EventList({
   title,
@@ -69,8 +55,9 @@ export default function EventList({
   const monthBuckets = useMemo(() => {
     const map = new Map<string, Event[]>();
     for (const e of events) {
-      if (!map.has(monthLabel(e.start))) map.set(monthLabel(e.start), []);
-      map.get(monthLabel(e.start))!.push(e);
+      const key = monthLabel(e.start);
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(e);
     }
     return Array.from(map.entries()); // [ [month, Event[]], ... ]
   }, [events]);
@@ -112,43 +99,39 @@ export default function EventList({
       </Flex>
 
       {/* Months */}
-{monthBuckets.map(([month, items]) => {
-  // Wider band for months with more items so they can add another column
-  const bandMax =
-    items.length >= 8
-      ? "min(95vw, 1600px)" // 5 cols possible on huge screens
-      : items.length >= 4
-      ? "min(80vw, 1280px)" // allow 4 cols
-      : "min(60vw, 1040px)"; // default ~3/5 width (what you liked before)
+      {monthBuckets.map(([month, items]) => {
+        // Wider band for months with more items so they can add another column
+        const bandMax =
+          items.length >= 8
+            ? "min(95vw, 1600px)" // 5 cols possible on huge screens
+            : items.length >= 4
+            ? "min(80vw, 1280px)" // allow 4 cols
+            : "min(60vw, 1040px)"; // default ~3/5 width (what you liked before)
 
-  return (
-    <Box key={month} mt="2rem">
-      <Section month={month} />
+        return (
+          <Box key={month} mt="2rem">
+            <Section month={month} />
 
-      {/* Full width on small; capped by bandMax on large */}
-      <Box w="100%" style={{ maxWidth: bandMax }}>
-        <Box
-          style={{
-            display: "grid",
-            // Identical column width everywhere; grid auto-fits more columns when band gets wider
-            gridTemplateColumns: `repeat(auto-fit, minmax(${CARD_SIZE}, ${CARD_SIZE}))`,
-            gap: GAP,
-            justifyContent: "start", // pack left; leave right side empty
-            alignItems: "start",
-          }}
-        >
-          {items.map((ev) => (
-            <EventCard
-              key={ev.id}
-              event={ev}
-            />
-          ))}
-
-        </Box>
-      </Box>
-    </Box>
-  );
-})}
+            {/* Full width on small; capped by bandMax on large */}
+            <Box w="100%" style={{ maxWidth: bandMax }}>
+              <Box
+                style={{
+                  display: "grid",
+                  // Identical column width everywhere; grid auto-fits more columns when band gets wider
+                  gridTemplateColumns: `repeat(auto-fit, minmax(${CARD_SIZE}, ${CARD_SIZE}))`,
+                  gap: GAP,
+                  justifyContent: "start", // pack left; leave right side empty
+                  alignItems: "start",
+                }}
+              >
+                {items.map((ev) => (
+                  <EventCard key={ev.id} event={ev} />
+                ))}
+              </Box>
+            </Box>
+          </Box>
+        );
+      })}
     </>
   );
 }

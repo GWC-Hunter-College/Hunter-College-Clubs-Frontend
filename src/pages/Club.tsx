@@ -32,18 +32,18 @@ type UiEvent = {
   end: string;   // ISO
   flyer: string;
   logo: string;
-  month: string; // can remain (unused by child) or remove if you prefer
+  // month: string; // can remain (unused by child) or remove if you prefer
   altText?: string;
 };
 
 // Safely turn "YYYY-MM-DD HH:mm:ss" into a real ISO date for Date()
 const toIso = (s: string) => s.replace(" ", "T");
 
-// "SEPTEMBER 2025"
-const monthLabel = (iso: string) => {
-  const d = new Date(iso);
-  return `${d.toLocaleString("en-US", { month: "long" }).toUpperCase()} ${d.getFullYear()}`;
-};
+// // "SEPTEMBER 2025"
+// const monthLabel = (iso: string) => {
+//   const d = new Date(iso);
+//   return `${d.toLocaleString("en-US", { month: "long" }).toUpperCase()} ${d.getFullYear()}`;
+// };
 
 // --- (new) club hero props (same shape you used before) ---
 type Club = {
@@ -104,7 +104,7 @@ export default function ClubPage() {
         end: endIso,
         flyer,
         logo,
-        month: monthLabel(startIso),
+        // month: monthLabel(startIso),
         altText: e.title,
       };
     });
@@ -126,7 +126,7 @@ export default function ClubPage() {
     const prev: UiEvent[] = [];
 
     for (const ev of allUiEvents) {
-      if (dateOnlyGTE(ev.end, now)) up.push(ev);
+      if (dateOnlyGTE(ev.end ?? ev.start, now)) up.push(ev);
       else prev.push(ev);
     }
 

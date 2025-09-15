@@ -12,7 +12,7 @@ type Event = {
   end: string;   // ISO
   flyer: string;
   logo: string;
-  month: string; // "SEPTEMBER 2025"
+  // month: string; // "SEPTEMBER 2025"
   altText?: string;
 };
 
@@ -32,6 +32,13 @@ type EventsListProps = {
 const CARD_SIZE = "clamp(200px, 17vw, 260px)"; // <= max 260px so 3 cols + gaps fit in 60vw
 const GAP       = "clamp(12px, 2vw, 16px)";
 // const BAND_MAX  = "60vw";
+
+// "SEPTEMBER 2025"
+const monthLabel = (iso: string) => {
+  const d = new Date(iso);
+  return `${d.toLocaleString("en-US", { month: "long" }).toUpperCase()} ${d.getFullYear()}`;
+};
+
 
 export default function EventList({
   title,
@@ -61,8 +68,8 @@ export default function EventList({
   const monthBuckets = useMemo(() => {
     const map = new Map<string, Event[]>();
     for (const e of events) {
-      if (!map.has(e.month)) map.set(e.month, []);
-      map.get(e.month)!.push(e);
+      if (!map.has(monthLabel(e.start))) map.set(monthLabel(e.start), []);
+      map.get(monthLabel(e.start))!.push(e);
     }
     return Array.from(map.entries()); // [ [month, Event[]], ... ]
   }, [events]);

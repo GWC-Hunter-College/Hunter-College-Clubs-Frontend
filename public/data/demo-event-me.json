@@ -1,0 +1,86 @@
+{
+  "events": [
+    {
+      "id": 1,
+      "title": "First Kickoff Meeting",
+      "location": "Room 101, Hunter College",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-09-12 17:00:00",
+      "endDate": "2025-09-13 19:00:00",
+      "thumbnailUrl": "/card.png",
+      "owners": {
+        "owner": { "id": 2, "thumbnailUrl": "/logo.png" },
+        "associates": [
+          { "id": 3, "thumbnailUrl": "/hero.png" }
+        ]
+      }
+    },
+
+    {
+      "id": 3,
+      "title": "cooking workshop",
+      "location": "Room 505, hogwarts",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-11-28 10:00:00",
+      "endDate": "2025-11-28 13:00:00",
+      "thumbnailUrl": "/react.svg",
+      "owners": {
+        "owner": { "id": 1, "thumbnailUrl": "/card.png" },
+        "associates": [
+          { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" }
+        ]
+      }
+    },
+   
+    {
+      "id": 9,
+      "title": "Data Structures Study Jam",
+      "location": "Room 110",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-11-05 17:30:00",
+      "endDate": "2025-11-05 19:30:00",
+      "thumbnailUrl": "/react.svg",
+      "owners": {
+        "owner": { "id": 3, "thumbnailUrl": "/hero.png" },
+        "associates": [
+          { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" }
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "title": "Women in Tech Roundtable",
+      "location": "Community Room B",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-11-12 18:00:00",
+      "endDate": "2025-11-12 20:00:00",
+      "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat",
+      "owners": {
+        "owner": { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" },
+        "associates": [
+          { "id": 3, "thumbnailUrl": "/hero.png" }
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "title": "Interview Prep Night",
+      "location": "Room 220",
+      "rsvpLink": "https://www.hunterhacks.com/",
+      "status": "posted",
+      "startDate": "2025-11-19 17:00:00",
+      "endDate": "2025-11-19 19:00:00",
+      "thumbnailUrl": "/hero.png",
+      "owners": {
+        "owner": { "id": 3, "thumbnailUrl": "/hero.png" },
+        "associates": [
+          { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" }
+        ]
+      }
+    }    
+  ]
+}

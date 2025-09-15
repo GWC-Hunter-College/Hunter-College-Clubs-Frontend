@@ -1,5 +1,5 @@
 // import { Flex, Box, Stack } from "@mantine/core";
-import { Flex, Text, Divider } from "@mantine/core";
+import { Flex, Text, Divider, Box} from "@mantine/core";
 import MyClubs from "../components/HomePage/MyClubs";
 import Admin from "../components/HomePage/Admin";
 import Heading from "../components/HomePage/Heading"
@@ -10,6 +10,8 @@ import Hero from "../components/HomePage/Hero"
 // import logo from "../assets/logo.png";
 // import flyer from "../assets/card.png"; 
 // import { useState } from "react";
+import EventList from "../components/Events/EventList";
+
 
 export default function Home() {
     // const [active, setActive] = useState("My Clubs");
@@ -32,6 +34,14 @@ export default function Home() {
             
             
             {/* Micahel you work here */}
+            <Box py="lg">
+                <EventList
+                    title="Upcoming Events"
+                    views={["guh"]}
+                    // onChangeView={}
+                    events={[]}
+                />
+            </Box>
         </Flex>
     );
 }

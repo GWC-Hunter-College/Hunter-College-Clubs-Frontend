@@ -1,5 +1,6 @@
 // import { Flex, Box, Stack } from "@mantine/core";
-import { Flex, Text, Divider, Box} from "@mantine/core";
+// import { Flex, Text, Divider, Box} from "@mantine/core";
+import { Flex, Box} from "@mantine/core";
 import MyClubs from "../components/HomePage/MyClubs";
 import Admin from "../components/HomePage/Admin";
 import Heading from "../components/HomePage/Heading"

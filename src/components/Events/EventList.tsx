@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Flex, Divider, Text, SimpleGrid, Box } from "@mantine/core";
+// import { Flex, Divider, Text, SimpleGrid, Box } from "@mantine/core";
+import { Flex, Divider, Text, Box } from "@mantine/core";
 import Section from "../HomePage/Section";
 import EventCard from "./EventCard";
 import View from "../HomePage/View";

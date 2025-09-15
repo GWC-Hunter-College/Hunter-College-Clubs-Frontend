@@ -22,17 +22,25 @@ type UiEvent = {
   altText?: string;
 };
 
-function formatRange(startISO: string, endISO: string) {
-  const start = new Date(startISO);
-  const end = new Date(endISO);
-  const day = start.toLocaleString("en-US", {
+function formatRange(startIso: string, endIso: string) {
+  const s = new Date(startIso);
+  const e = new Date(endIso);
+
+  const day = s.toLocaleDateString(undefined, {
     weekday: "short",
     month: "short",
-    day: "numeric",
+    day: "numeric"
   });
-  const startTime = start.toLocaleString("en-US", { hour: "numeric", minute: "2-digit" });
-  const endTime = end.toLocaleString("en-US", { hour: "numeric", minute: "2-digit" });
-  return `${day} • ${startTime} – ${endTime}`;
+
+  const fmtTime = (d: Date) =>
+    d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
+
+  const sameDay = s.toDateString() === e.toDateString();
+  const timeRange = sameDay
+    ? `${fmtTime(s)}–${fmtTime(e)}`
+    : `${fmtTime(s)} → ${e.toLocaleDateString()} ${fmtTime(e)}`;
+
+  return `${day} • ${timeRange}`;
 }
 
 export default function EventCard({ event }: { event: UiEvent }) {

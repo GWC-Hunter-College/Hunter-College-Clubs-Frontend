@@ -1,0 +1,78 @@
+.tile {
+  position: relative;
+}
+
+/* Square tile */
+.square {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+@supports not (aspect-ratio: 1 / 1) {
+  .square::before {
+    content: "";
+    display: block;
+    padding-top: 100%;
+  }
+}
+
+/* Image */
+.bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;     /* cover: no stretching */
+  background-position: center;
+  transform: scale(1);
+  transition: transform 180ms ease;
+}
+.tile:hover .bg {
+  transform: scale(1.05);     /* subtle zoom */
+}
+
+/* Overlay */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0,0,0,0.06) 0%,
+    rgba(0,0,0,0.28) 55%,
+    rgba(0,0,0,0.55) 100%
+  );
+}
+
+/* Logo: top-right */
+.logo {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+
+/* Text block (tighter to avoid covering image) */
+.content {
+  position: absolute;
+  left: 12px;
+  right: 12px;     /* brings it in from both sides */
+  bottom: 10px;    /* closer to bottom edge */
+  z-index: 2;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.45);
+}
+
+/* Title and meta spacing tightened */
+.title {
+  margin: 0;
+  line-height: 1.1;           /* compact */
+}
+
+.meta {
+  margin-top: 4px;            /* small gap under title */
+  margin-bottom: 2px;         /* tighter before location */
+}
+
+.subtle {
+  opacity: 0.92;
+  line-height: 1.15;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+}

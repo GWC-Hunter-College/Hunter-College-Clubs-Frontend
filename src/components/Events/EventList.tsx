@@ -137,19 +137,13 @@ export default function EventList({
             alignItems: "start",
           }}
         >
-          {items.map((e) => (
+          {items.map((ev) => (
             <EventCard
-              key={e.id}
-              flyer={e.flyer}
-              logo={e.logo}
-              title={e.title}
-              location={e.location}
-              start={e.start}
-              end={e.end}
-              altText={e.altText}
+              key={ev.id}
+              event={ev}
             />
-
           ))}
+
         </Box>
       </Box>
     </Box>

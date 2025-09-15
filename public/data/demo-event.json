@@ -24,9 +24,9 @@
       "status": "posted",
       "startDate": "2025-10-14 11:00:00",
       "endDate": "2025-10-14 19:00:00",
-      "thumbnailUrl": "/hero.png",
+      "thumbnailUrl": "/ra.png",
       "owners": {
-        "owner": { "id": 3, "thumbnailUrl": "/hero.png" },
+        "owner": { "id": 3, "thumbnailUrl": "/logo.png" },
         "associates": [
           { "id": 2, "thumbnailUrl": "https://bit.ly/fcc-relaxing-cat" }
         ]

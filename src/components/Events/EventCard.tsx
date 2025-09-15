@@ -1,15 +1,15 @@
 // components/Events/EventCard.tsx
-import { Box, Image, Text } from "@mantine/core";
-
-type EventCardProps = {
-  flyer: string;
-  logo: string;
-  title: string;
-  location: string;
-  start: string;  // ISO
-  end: string;    // ISO
-  altText?: string;
-};
+import { Link } from "react-router-dom";
+import {
+  Card,
+  Group,
+  Text,
+  Avatar,
+  Box,
+  useMantineTheme,
+} from "@mantine/core";
+import classes from "./EventCard.module.css";
+import type { Event } from "../../types/events"; 
 
 function formatRange(startIso: string, endIso: string) {
   const s = new Date(startIso);
@@ -29,68 +29,62 @@ function formatRange(startIso: string, endIso: string) {
     ? `${fmtTime(s)}–${fmtTime(e)}`
     : `${fmtTime(s)} → ${e.toLocaleDateString()} ${fmtTime(e)}`;
 
-  return { day, timeRange };
+  return `${day} • ${timeRange}`;
 }
 
-export default function EventCard({
-  flyer,
-  logo,
-  title,
-  location,
-  start,
-  end,
-  altText = "Event flyer",
-}: EventCardProps) {
-  const { day, timeRange } = formatRange(start, end);
+export default function EventCard({ event }: { event: Event }) {
+  const theme = useMantineTheme();
+  const to = `/event/${event.id}`;
 
   return (
-    <Box
-      pos="relative"
-      w="100%"
-      style={{ aspectRatio: "1 / 1", borderRadius: 16, overflow: "hidden" }}
+    <Card
+      className={classes.tile}
+      component={Link}
+      to={to}
+      shadow="lg"
+      radius="md"
+      p={0}
+      style={{ overflow: "hidden", textDecoration: "none" }}
     >
-      <Image src={flyer} alt={altText} fit="cover" h="100%" w="100%" />
+      {/* Square aspect wrapper */}
+      <Box className={classes.square} aria-label={event.altText || event.title}>
+        {/* Background image with cover + hover zoom */}
+        <Box className={classes.bg} style={{ backgroundImage: `url(${event.flyer})` }} />
+        {/* Overlay for readability */}
+        <Box className={classes.overlay} />
 
-      {/* Bottom overlay with details */}
-      <Box
-        pos="absolute"
-        bottom={0}
-        left={0}
-        right={0}
-        style={{
-          padding: "12px",
-          background:
-            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 40%, rgba(0,0,0,0.85) 100%)",
-          color: "white",
-        }}
-      >
-        <Text fw={700} size="lg" style={{ lineHeight: 1.2 }}>
-          {title}
-        </Text>
-        <Text size="sm" style={{ opacity: 0.9 }}>
-          {location}
-        </Text>
-        <Text size="sm" style={{ opacity: 0.9 }}>
-          {day} • {timeRange}
-        </Text>
-      </Box>
+        {/* Club logo — top-right (owner only, for now) */}
+        {event.owner?.logo && (
+          <Avatar
+            src={event.owner.logo}
+            alt={`Owner ${event.owner.id}`}
+            radius="xl"
+            size={44}
+            className={classes.logo}
+            style={{
+              border: `2px solid ${theme.colors.dark[7]}`,
+              boxShadow: theme.shadows.md,
+            }}
+          />
+        )}
 
-      {/* Logo badge */}
-      <Box
-        pos="absolute"
-        top="4%"
-        right="4%"
-        bg="white"
-        p={6}
-        style={{
-          borderRadius: 12,
-          width: "min(22%, 60px)",
-          aspectRatio: "1 / 1",
-          boxShadow: "0 2px 10px rgba(0,0,0,0.25)",
-        }}
-      >
-        <Image src={logo} alt="Club logo" fit="contain" />
+        {/* Compact content over image */}
+        <Box className={classes.content}>
+          <Text size="lg" fw={700} className={classes.title}>
+            {event.title}
+          </Text>
+
+          <Group gap={4} className={classes.meta}>
+            <Text size="sm" className={classes.subtle}>
+              {formatRange(event.start, event.end)}
+            </Text>
+          </Group>
+
+          <Text size="sm" className={classes.subtle}>
+            {event.location}
+          </Text>
+        </Box>
       </Box>
-    </Box>
+    </Card>
   );
 }

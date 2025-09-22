@@ -12,27 +12,28 @@ import {
   Grid,
 } from "@mantine/core";
 
-type Props = {
-  name: string;
-  logo: string;
-  description: string;
-  tags: string[];
+import type { Club } from "../../types/club";
+
+type Common = {
   className?: string;
   onBack?: () => void;
   backFallbackHref?: string;
 };
 
-export default function ClubHeroCard({
-  name,
-  logo,
-  description,
-  tags,
-  className,
-  onBack,
-  backFallbackHref,
-}: Props) {
+type Props =
+   ({
+      club: Club;
+    } & Common);
+
+export default function ClubHeroCard(props: Props){
   const navigate = useNavigate();
   const [hovered, setHovered] = useState(false);
+
+
+  const onBack = props.onBack ?? undefined;
+  const backFallbackHref = props.backFallbackHref ?? undefined;
+
+  const className = props.className ?? undefined;
 
   const handleBack = () => {
     if (onBack) return onBack();
@@ -85,7 +86,7 @@ export default function ClubHeroCard({
         fz={{ base: 30, sm: 34, md: 38, lg: 42 }}
         style={{ color: "white", letterSpacing: 1, lineHeight: 1.1, marginTop: 12, marginBottom: 16 }}
       >
-        {name.toUpperCase()}
+        {props.club.name.toUpperCase()}
       </Title>
 
       {/* Content grid: image left, text right; stacks on small */}
@@ -98,17 +99,17 @@ export default function ClubHeroCard({
               aspectRatio: "1 / 1",
             }}
           >
-            <Image src={logo} alt={`${name} logo`} radius="md" fit="cover" w="100%" h="100%" />
+            <Image src={props.club.logo} alt={`${props.club.name} logo`} radius="md" fit="cover" w="100%" h="100%" />
           </Box>
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 8 }}>
           <Text c="gray.3" lh={1.6} mb="md">
-            {description}
+            {props.club.description}
           </Text>
 
           <Group gap="md" wrap="wrap">
-            {tags.map((t) => (
+            {props.club.tags.map((t) => (
               <Button
                 key={t}
                 variant="default"

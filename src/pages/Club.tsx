@@ -4,55 +4,59 @@ import { useEffect, useMemo, useState } from "react";
 import { default as ClubHeroCard } from "../components/ClubPage/ClubHero";
 import EventList from "../components/Events/EventList";
 
-import placeholderLogo from "../assets/logo.png";
+// import placeholderLogo from "../assets/logo.png";
 
 // unified Event type + normalizer func
 import type { Event } from "../types/events";
 import { fromJsonEvents } from "../types/events";
 
-// --- club hero props (probs placholder??) ---
-type Club = {
-  name: string;
-  logo: string;
-  description: string;
-  tags: string[];
-};
+import type { Club } from "../types/club";
+import { fromJsonClub } from "../types/club";
 
 export default function ClubPage() {
   const [loading, setLoading] = useState(true);
+
+  const [club, setClub] = useState<Club | null>(null);
+
   const [eventsAll, setEventsAll] = useState<Event[]>([]);
   const [view, setView] = useState<"Upcoming" | "Previous">("Upcoming");
 
-  const club: Club = {
-    name: "Girls Who Code",
-    logo: placeholderLogo,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    tags: [],
-  };
-
-  // Load demo events once -> normalize to canonical Event[]
+  // load club and club events
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const res = await fetch("/data/demo-event.json");
-        const json = await res.json();
-        if (cancelled) return;
+  let cancelled = false;
 
-        // file shape: { events: [...] }
-        const normalized = fromJsonEvents(json?.events);
-        setEventsAll(normalized);
-      } catch (e) {
-        console.error("Failed to load demo-event.json", e);
-      } finally {
-        if (!cancelled) setLoading(false);
+  (async () => {
+    try {
+      // --- Fetch club info ---
+      const resClub = await fetch("/data/demo-club.json");
+      const jsonClub = await resClub.json();
+      
+      if (!cancelled) {
+        const normalizedClub = fromJsonClub(jsonClub) 
+        setClub(normalizedClub);
       }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+
+      // --- Fetch events ---
+      const resEvents = await fetch("/data/demo-event.json");
+      const jsonEvents = await resEvents.json();
+
+      if (!cancelled) {
+        const normalizedEvents = fromJsonEvents(jsonEvents?.events);
+        setEventsAll(normalizedEvents);
+      }
+
+    } catch (e) {
+      console.error("Failed to load demo JSON", e);
+    } finally {
+      if (!cancelled) setLoading(false);
+    }
+  })();
+
+  return () => {
+    cancelled = true;
+  };
+}, []);
+
 
   // Helpers (day-based comparisons)
   const startOfDay = (d: Date) => {
@@ -102,12 +106,7 @@ export default function ClubPage() {
       {/* ==== Section 1: Hero (unchanged layout) ==== */}
       <Box px={{ base: "md", sm: "lg" }} py="lg">
         <Box maw={1100} w="100%">
-          <ClubHeroCard
-            name={club.name}
-            logo={club.logo}
-            description={club.description}
-            tags={club.tags}
-          />
+          {club && <ClubHeroCard club={club} />}
         </Box>
       </Box>
 

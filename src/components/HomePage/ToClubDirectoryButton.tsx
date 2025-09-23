@@ -1,14 +1,23 @@
 import { Box, Flex, Text, Image } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
 import arrowImage from "../../assets/arrow.png"; // straight arrow →
 
 export default function Admin() {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/clubs");
+  };
+
   return (
     <Box
       p="lg"
       style={{
         borderRadius: 20,
         backgroundColor: "#E7D6FF26",
+        cursor: "pointer", // whole card clickable
       }}
+      onClick={handleClick}
     >
       <Flex justify="space-between" align="center">
         <Box>
@@ -21,11 +30,7 @@ export default function Admin() {
               lineHeight: 1.3,
             }}
           >
-            Club
-            <br />
-            Admin
-            <br />
-            Settings
+           See All Clubs!
           </Text>
         </Box>
 
@@ -39,17 +44,16 @@ export default function Admin() {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            cursor: "pointer",
           }}
         >
-        <Image
-        src={arrowImage}
-        alt="arrow"
-        w={35}
-        h={57}
-        fit="contain"
-        style={{ transform: "rotate(-45deg)" }}
-        />
+          <Image
+            src={arrowImage}
+            alt="arrow"
+            w={35}
+            h={57}
+            fit="contain"
+            style={{ transform: "rotate(-45deg)" }}
+          />
         </Box>
       </Flex>
     </Box>

@@ -2,7 +2,7 @@
 // import { Flex, Text, Divider, Box} from "@mantine/core";
 import { Flex, Box} from "@mantine/core";
 import MyClubs from "../components/HomePage/MyClubs";
-import Admin from "../components/HomePage/Admin";
+import ToClubDirectory from "../components/HomePage/ToClubDirectoryButton"
 import Heading from "../components/HomePage/Heading"
 import Hero from "../components/HomePage/Hero"
 import { Container, Stack, Skeleton } from "@mantine/core";
@@ -88,7 +88,7 @@ export default function Home() {
 
         <Flex gap= "2rem" direction="column" align='stretch'>
           <MyClubs />
-          <Admin />
+          <ToClubDirectory />
         </Flex>
 
       </Flex>

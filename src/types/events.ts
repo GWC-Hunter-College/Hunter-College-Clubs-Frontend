@@ -7,14 +7,14 @@ export type Event = {
   start: string;            // ISO
   end: string;              // ISO
 
-  flyer: string;            // event  thumbnail
+  flyer?: string;            // event  thumbnail
 
   owner?: {
     id: number;
     logo?: string;
   };
 
-  associates: Array<{
+  associates?: Array<{
     id: number;
     logo?: string;
   }>;

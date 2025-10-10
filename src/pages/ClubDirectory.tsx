@@ -131,7 +131,9 @@ export default function Home() {
               <Grid.Col key={i} span={{ base: 6, sm: 4, md: 3 }}>
                 <Flex direction="column" gap="xs">
                   <Box
+                    onClick={() => navigate("/club/2")}
                     style={{
+                      cursor: "pointer",
                       aspectRatio: "1 / 1",
                       width: "100%",
                       borderRadius: 16,

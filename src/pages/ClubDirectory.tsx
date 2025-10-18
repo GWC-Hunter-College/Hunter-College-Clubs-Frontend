@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react";
+import { API_BASE_URL } from "../config";
+import placeholderImg from "../assets/placeholder.png";
+import MyClubs from "../components/Other/MyClubs";
+import SearchBar from "../components/ClubPage/SearchBar";
 import {
   Box,
   Button,
@@ -9,144 +13,250 @@ import {
   Skeleton,
   Stack,
   Text,
-  TextInput,
   Title,
+  Center,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 
-export default function Home() {
+type Club = {
+  id: number;
+  name: string;
+  image?: string;
+  description?: string;
+};
+
+export default function ClubDirectory() {
+  const [clubs, setClubs] = useState<Club[]>([]);
+  const [filteredClubs, setFilteredClubs] = useState<Club[]>([]);
   const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    setLoading(true);
-  const t = setTimeout(() => setLoading(false), 0);
-  return () => clearTimeout(t);
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/clubs?verified=true`);
+        if (!res.ok) throw new Error("Failed to fetch clubs");
+
+        const data = await res.json();
+        if (cancelled) return;
+
+        setClubs(data.clubs || []);
+        setFilteredClubs(data.clubs || []);
+      } catch (err) {
+        console.error("❌ Failed to fetch clubs:", err);
+        setClubs([]);
+        setFilteredClubs([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
+  // === Loading ===
   if (loading) {
     return (
       <Container size="lg" py="xl">
         <Title order={1} mb="lg">
           Club Directory
         </Title>
-
         <Stack gap="md">
           <Skeleton height={50} radius="md" />
           <Skeleton height={200} radius="md" />
           <Skeleton height={200} radius="md" />
           <Skeleton height={200} radius="md" />
-          <Skeleton height={60} radius="md" />
         </Stack>
       </Container>
     );
   }
 
+  // === No clubs at all ===
+  if (!clubs || clubs.length === 0) {
+    return (
+      <Container size="lg" py="xl">
+        <Title order={1} mb="lg">
+          Club Directory
+        </Title>
+        <Center py="xl">
+          <Text size="lg" c="red.4" fw={600}>
+            Uh oh — no clubs found 😢
+          </Text>
+        </Center>
+      </Container>
+    );
+  }
+
+  // === Main Layout ===
   return (
     <Container size="lg" py="xl">
-      {/* Back button */}
-      <Button
-        variant="subtle"
-        onClick={() => navigate("/")}
-        mb="md"
-        radius="xl"
+      <Title
+        order={1}
+        mb="lg"
+        style={{
+          fontFamily: "Roboto Mono, monospace",
+          fontWeight: 700,
+          color: "white",
+          letterSpacing: "1px",
+        }}
       >
-        ← Back
-      </Button>
-
-      <Title order={1} mb="lg">
-        Club Directory
+        CLUB DIRECTORY
       </Title>
 
       <Flex gap="2rem" align="stretch">
-        {/* Left rail */}
-        <Paper
-          p="lg"
-          radius="md"
-          style={{ width: 260, minHeight: 400, background: "#1f1631" }}
-        >
-          <Text fw={700} size="sm" mb="sm" style={{ opacity: 0.7 }}>
-            MY CLUBS
-          </Text>
-          <Box
-            mt="md"
-            p="md"
+        {/* LEFT SIDEBAR */}
+        <MyClubs />
+
+        {/* MAIN CONTENT */}
+        <Flex direction="column" gap="1.5rem" style={{ flex: 1 }}>
+          {/* === ACTION PANEL === */}
+          <Paper
+            p="xl"
+            radius="md"
             style={{
-              borderRadius: 12,
-              background: "rgba(255,255,255,0.06)",
-              minHeight: 300,
+              background: "#2A1F3F",
+              border: "1px solid rgba(255,255,255,0.1)",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
             }}
           >
-            <Text size="sm" style={{ opacity: 0.6 }}>
-              Looking a bit empty...
-            </Text>
-          </Box>
-        </Paper>
-
-        {/* Main column */}
-        <Flex direction="column" gap="1.25rem" style={{ flex: 1 }}>
-          {/* Replace featured card with two big buttons */}
-          <Paper p="xl" radius="md" style={{ background: "#2a1f3f" }}>
             <Flex direction="column" gap="lg">
               <Button
                 size="xl"
-                radius="md"
+                radius="xl"
                 onClick={() => navigate("/club/create")}
+                style={{
+                  backgroundColor: "#B57FFF",
+                  color: "white",
+                  fontFamily: "Roboto Mono, monospace",
+                  fontWeight: 700,
+                  letterSpacing: "0.5px",
+                }}
               >
-                Create New Club
+                CREATE NEW CLUB
               </Button>
 
               <Button
                 size="xl"
-                radius="md"
+                radius="xl"
                 onClick={() => navigate("/event/create")}
+                style={{
+                  backgroundColor: "#7D5CFF",
+                  color: "white",
+                  fontFamily: "Roboto Mono, monospace",
+                  fontWeight: 700,
+                  letterSpacing: "0.5px",
+                }}
               >
-                Create an Event for a Club
+                CREATE AN EVENT FOR A CLUB
               </Button>
             </Flex>
           </Paper>
 
-          {/* Section header */}
+          {/* === Divider === */}
           <Flex align="center" gap="sm" mt="sm">
-            <Box style={{ flex: 1, height: 2, background: "rgba(255,255,255,0.2)" }} />
-            <Title order={3} style={{ letterSpacing: 2 }}>
+            <Box
+              style={{
+                flex: 1,
+                height: 2,
+                background: "rgba(255,255,255,0.2)",
+              }}
+            />
+            <Title
+              order={3}
+              style={{
+                color: "white",
+                letterSpacing: 2,
+                fontFamily: "Roboto Mono, monospace",
+              }}
+            >
               CLUB GALLERY
             </Title>
-            <Box style={{ flex: 1, height: 2, background: "rgba(255,255,255,0.2)" }} />
-          </Flex>
-
-          {/* Search row */}
-          <Flex gap="sm" align="center">
-            <TextInput
-              placeholder="Search clubs..."
-              style={{ flex: 1 }}
-              radius="xl"
+            <Box
+              style={{
+                flex: 1,
+                height: 2,
+                background: "rgba(255,255,255,0.2)",
+              }}
             />
-            <Button radius="xl">Search</Button>
           </Flex>
 
-          {/* Gallery grid placeholders */}
-          <Grid gutter="md">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <Grid.Col key={i} span={{ base: 6, sm: 4, md: 3 }}>
-                <Flex direction="column" gap="xs">
-                  <Box
-                    onClick={() => navigate("/club/2")}
-                    style={{
-                      cursor: "pointer",
-                      aspectRatio: "1 / 1",
-                      width: "100%",
-                      borderRadius: 16,
-                      background: i % 2 === 0 ? "#5a3ea6" : "#ffffff12",
-                    }}
-                  />
-                  <Text size="sm" ta="center" style={{ opacity: 0.9 }}>
-                    CLUB NAME
-                  </Text>
-                </Flex>
-              </Grid.Col>
-            ))}
-          </Grid>
+          {/* === SEARCH BAR === */}
+          <SearchBar
+            onSearch={(query) => {
+              const q = query.trim().toLowerCase();
+              if (!q) {
+                setFilteredClubs(clubs);
+                return;
+              }
+              const filtered = clubs.filter((club) =>
+                club.name.toLowerCase().includes(q)
+              );
+              setFilteredClubs(filtered);
+            }}
+          />
+
+          {/* === CLUB GALLERY === */}
+          {filteredClubs.length === 0 ? (
+            <Center py="xl">
+              <Text size="sm" c="dimmed">
+                No matching clubs found.
+              </Text>
+            </Center>
+          ) : (
+            <Grid gutter="md" mt="md">
+              {filteredClubs.map((club) => (
+                <Grid.Col key={club.id} span={{ base: 6, sm: 4, md: 3 }}>
+                  <Flex direction="column" gap="xs">
+                    <Box
+                      onClick={() => navigate(`/club/${club.id}`)}
+                      style={{
+                        cursor: "pointer",
+                        aspectRatio: "1 / 1",
+                        borderRadius: 16,
+                        overflow: "hidden",
+                        background: "#ffffff12",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        transition: "transform 0.2s ease",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.transform = "scale(1.05)")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.transform = "scale(1)")
+                      }
+                    >
+                      <img
+                        src={placeholderImg}
+                        alt={club.name}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                    </Box>
+                    <Text
+                      ta="center"
+                      style={{
+                        fontFamily: "Roboto Mono, monospace",
+                        fontWeight: 700,
+                        fontSize: "16px",
+                        color: "white",
+                        marginTop: "0.5rem",
+                      }}
+                    >
+                      {club.name}
+                    </Text>
+                  </Flex>
+                </Grid.Col>
+              ))}
+            </Grid>
+          )}
         </Flex>
       </Flex>
     </Container>

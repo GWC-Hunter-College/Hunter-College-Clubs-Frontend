@@ -1,64 +1,91 @@
-// ClubPage.tsx
 import { Box, Container, Stack, Skeleton } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import { default as ClubHeroCard } from "../components/ClubPage/ClubHero";
 import EventList from "../components/Events/EventList";
+import FeaturedClubCard from "../components/ClubPage/ClubHer";
+import { API_BASE_URL } from "../config";
+import placeholderLogo from "../assets/placeholder.png";
 
-// import placeholderLogo from "../assets/logo.png";
-
-// unified Event type + normalizer func
 import type { Event } from "../types/events";
 import { fromJsonEvents } from "../types/events";
-
 import type { Club } from "../types/club";
 import { fromJsonClub } from "../types/club";
 
 export default function ClubPage() {
   const [loading, setLoading] = useState(true);
-
   const [club, setClub] = useState<Club | null>(null);
-
   const [eventsAll, setEventsAll] = useState<Event[]>([]);
   const [view, setView] = useState<"Upcoming" | "Previous">("Upcoming");
+  const { clubId } = useParams<{ clubId: string }>();
 
-  // load club and club events
   useEffect(() => {
-  let cancelled = false;
+    let cancelled = false;
 
-  (async () => {
-    try {
-      // --- Fetch club info ---
-      const resClub = await fetch("/data/demo-club.json");
-      const jsonClub = await resClub.json();
-      
-      if (!cancelled) {
-        const normalizedClub = fromJsonClub(jsonClub) 
-        setClub(normalizedClub);
+    (async () => {
+      try {
+        let clubData = null;
+
+        // ✅ Correct API fetch for single club
+        try {
+          const res = await fetch(`${API_BASE_URL}/clubs/${clubId}`);
+          const json = await res.json();
+
+          if (json.club) {
+            clubData = json.club;
+            console.log(`✅ Loaded club ${clubData.name} from API`);
+          }
+        } catch (err) {
+          console.warn("⚠️ API fetch failed, using demo data instead", err);
+        }
+
+        // 🟣 Fallback to demo JSON if needed
+        if (!clubData) {
+          console.warn("⚙️ Falling back to demo JSON");
+          const resClub = await fetch("/data/demo-club.json");
+          const jsonClub = await resClub.json();
+
+          if (Array.isArray(jsonClub.clubs)) {
+            clubData =
+              jsonClub.clubs.find(
+                (c: any) => String(c.id) === String(clubId)
+              ) || jsonClub.clubs[0];
+          } else {
+            clubData = jsonClub;
+          }
+        }
+
+        // ✅ Always include a placeholder logo if missing
+        if (clubData) {
+          clubData.image = placeholderLogo;
+        }
+
+        if (!cancelled && clubData) {
+          const normalizedClub = fromJsonClub(clubData);
+          setClub(normalizedClub);
+        }
+
+        // --- Load demo events (same for now) ---
+        const resEvents = await fetch("/data/demo-event.json");
+        const jsonEvents = await resEvents.json();
+
+        if (!cancelled) {
+          const normalizedEvents = fromJsonEvents(jsonEvents?.events);
+          setEventsAll(normalizedEvents);
+        }
+      } catch (e) {
+        console.error("❌ Failed to load club page", e);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
+    })();
 
-      // --- Fetch events ---
-      const resEvents = await fetch("/data/demo-event.json");
-      const jsonEvents = await resEvents.json();
+    return () => {
+      cancelled = true;
+    };
+  }, [clubId]);
 
-      if (!cancelled) {
-        const normalizedEvents = fromJsonEvents(jsonEvents?.events);
-        setEventsAll(normalizedEvents);
-      }
-
-    } catch (e) {
-      console.error("Failed to load demo JSON", e);
-    } finally {
-      if (!cancelled) setLoading(false);
-    }
-  })();
-
-  return () => {
-    cancelled = true;
-  };
-}, []);
-
-
-  // Helpers (day-based comparisons)
+  // === Event filtering logic ===
   const startOfDay = (d: Date) => {
     const x = new Date(d);
     x.setHours(0, 0, 0, 0);
@@ -67,21 +94,17 @@ export default function ClubPage() {
   const dateOnlyGTE = (aIso: string, bDate: Date) =>
     startOfDay(new Date(aIso)).getTime() >= startOfDay(bDate).getTime();
 
-  // Partition by END DAY: if event ends today or later → Upcoming
   const { upcoming, previous } = useMemo(() => {
     const now = new Date();
     const up: Event[] = [];
     const prev: Event[] = [];
-
     for (const ev of eventsAll) {
       const endIso = ev.end ?? ev.start;
       if (dateOnlyGTE(endIso, now)) up.push(ev);
       else prev.push(ev);
     }
-
-    // Sorts
-    up.sort((a, b) => +new Date(a.start) - +new Date(b.start));   // soonest first
-    prev.sort((a, b) => +new Date(b.start) - +new Date(a.start)); // most recent first
+    up.sort((a, b) => +new Date(a.start) - +new Date(b.start));
+    prev.sort((a, b) => +new Date(b.start) - +new Date(a.start));
     return { upcoming: up, previous: prev };
   }, [eventsAll]);
 
@@ -103,14 +126,14 @@ export default function ClubPage() {
 
   return (
     <Box mih="100dvh">
-      {/* ==== Section 1: Hero (unchanged layout) ==== */}
+      {/* ==== Section 1: Hero ==== */}
       <Box px={{ base: "md", sm: "lg" }} py="lg">
         <Box maw={1100} w="100%">
-          {club && <ClubHeroCard club={club} />}
+          {club && <FeaturedClubCard club={club} />}
         </Box>
       </Box>
 
-      {/* ==== Section 2: Events (same controls) ==== */}
+      {/* ==== Section 2: Events ==== */}
       <Box py="lg">
         <EventList
           title="Club Events"

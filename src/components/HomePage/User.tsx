@@ -1,14 +1,20 @@
 import { Avatar, Box, Button, Flex, Text } from "@mantine/core";
-import { useAuth } from "react-oidc-context";
-import bunny from "../../assets/bunny.png";
+// import { useAuth } from "react-oidc-context";
+import admin from "../../assets/admin.png";
 
-export default function Admin() {
-  const auth = useAuth();
-  const user = auth.user;
-  const email = user?.profile.email;
+type AdminProps = {
+  email?: string;
+  signedIn: boolean;
+  onSignIn: () => void;
+};
+
+export default function User({ email, signedIn, onSignIn }: AdminProps) {
+  // const auth = useAuth();
+  // const user = auth.user;
+  // const email = user?.profile.email;
 
   // === If user not signed in, show Sign In button ===
-  if (!user) {
+  if (!signedIn) {
     return (
       <Flex
         align="center"
@@ -21,7 +27,7 @@ export default function Admin() {
         }}
       >
         <Button
-          onClick={() => auth.signinRedirect?.()}
+          onClick={onSignIn}
           radius="xl"
           style={{
             backgroundColor: "#B57FFF",
@@ -50,7 +56,7 @@ export default function Admin() {
       gap="sm"
     >
       <Box style={{ position: "relative" }}>
-        <Avatar src={bunny} size={70} radius="xl" />
+        <Avatar src={admin} size={70} radius="xl" />
       </Box>
 
       <Box>

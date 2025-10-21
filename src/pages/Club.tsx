@@ -1,9 +1,8 @@
-import { Box, Container, Stack, Skeleton } from "@mantine/core";
+import { Box, Container, Stack, Skeleton, Anchor, Space, Title, Button } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
-import { default as ClubHeroCard } from "../components/ClubPage/ClubHero";
+import { useParams, useNavigate } from "react-router-dom";
 import EventList from "../components/Events/EventList";
-import FeaturedClubCard from "../components/ClubPage/ClubHer";
+import FeaturedClubCard from "../components/ClubPage/FeaturedClubCard";
 import { API_BASE_URL } from "../config";
 import placeholderLogo from "../assets/placeholder.png";
 
@@ -17,8 +16,12 @@ export default function ClubPage() {
   const [club, setClub] = useState<Club | null>(null);
   const [eventsAll, setEventsAll] = useState<Event[]>([]);
   const [view, setView] = useState<"Upcoming" | "Previous">("Upcoming");
+  const [hovered, setHovered] = useState(false);
   const { clubId } = useParams<{ clubId: string }>();
+  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
+  // load club and club events
   useEffect(() => {
     let cancelled = false;
 
@@ -26,7 +29,7 @@ export default function ClubPage() {
       try {
         let clubData = null;
 
-        // ✅ Correct API fetch for single club
+        // --- Fetch club info ---
         try {
           const res = await fetch(`${API_BASE_URL}/clubs/${clubId}`);
           const json = await res.json();
@@ -36,26 +39,13 @@ export default function ClubPage() {
             console.log(`✅ Loaded club ${clubData.name} from API`);
           }
         } catch (err) {
-          console.warn("⚠️ API fetch failed, using demo data instead", err);
+          console.warn("⚠️ API fetch failed", err);
         }
-
-        // 🟣 Fallback to demo JSON if needed
         if (!clubData) {
-          console.warn("⚙️ Falling back to demo JSON");
-          const resClub = await fetch("/data/demo-club.json");
-          const jsonClub = await resClub.json();
-
-          if (Array.isArray(jsonClub.clubs)) {
-            clubData =
-              jsonClub.clubs.find(
-                (c: any) => String(c.id) === String(clubId)
-              ) || jsonClub.clubs[0];
-          } else {
-            clubData = jsonClub;
-          }
+          setError("Club not found");
+          return;
         }
-
-        // ✅ Always include a placeholder logo if missing
+        // ✅ Ensure placeholder logo if missing
         if (clubData) {
           clubData.image = placeholderLogo;
         }
@@ -65,7 +55,7 @@ export default function ClubPage() {
           setClub(normalizedClub);
         }
 
-        // --- Load demo events (same for now) ---
+        // Load demo events
         const resEvents = await fetch("/data/demo-event.json");
         const jsonEvents = await resEvents.json();
 
@@ -85,7 +75,7 @@ export default function ClubPage() {
     };
   }, [clubId]);
 
-  // === Event filtering logic ===
+  // Helpers (day-based comparisons)
   const startOfDay = (d: Date) => {
     const x = new Date(d);
     x.setHours(0, 0, 0, 0);
@@ -94,6 +84,7 @@ export default function ClubPage() {
   const dateOnlyGTE = (aIso: string, bDate: Date) =>
     startOfDay(new Date(aIso)).getTime() >= startOfDay(bDate).getTime();
 
+  // Partition by END DAY: if event ends today or later → Upcoming
   const { upcoming, previous } = useMemo(() => {
     const now = new Date();
     const up: Event[] = [];
@@ -103,13 +94,31 @@ export default function ClubPage() {
       if (dateOnlyGTE(endIso, now)) up.push(ev);
       else prev.push(ev);
     }
+    // Sorts
     up.sort((a, b) => +new Date(a.start) - +new Date(b.start));
     prev.sort((a, b) => +new Date(b.start) - +new Date(a.start));
     return { upcoming: up, previous: prev };
   }, [eventsAll]);
 
   const filtered = view === "Upcoming" ? upcoming : previous;
-
+  if (error) {
+    return (
+      <Container py="xl">
+        <Title order={2} c="red.4" mb="md">
+          {error}
+        </Title>
+        <Button
+          variant="subtle"
+          onClick={() => navigate(-1)}
+          leftSection="←"
+        >
+          Go Back
+        </Button>
+      </Container>
+    );
+  }
+  
+  // === Loading skeleton ===
   if (loading) {
     return (
       <Container py="lg">
@@ -124,12 +133,43 @@ export default function ClubPage() {
     );
   }
 
+  // === Main page ===
   return (
     <Box mih="100dvh">
       {/* ==== Section 1: Hero ==== */}
       <Box px={{ base: "md", sm: "lg" }} py="lg">
         <Box maw={1100} w="100%">
-          {club && <FeaturedClubCard club={club} />}
+          {/* ← Go Back link */}
+          <Anchor
+            component="button"
+            onClick={() => navigate(-1)}
+            underline="hover"
+            c={hovered ? "white" : "gray.6"}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+            style={{
+              background: "transparent",
+              border: 0,
+              padding: 0,
+              cursor: "pointer",
+              fontWeight: 600,
+              letterSpacing: 0.2,
+              transition: "color 120ms ease",
+              marginBottom: "0.5rem",
+            }}
+            aria-label="Go back"
+          >
+            {"← Go back"}
+          </Anchor>
+
+          <Space h="md" />
+
+          {/* Club Info */}
+          {club ? (
+            <FeaturedClubCard club={club} />
+          ) : (
+            <div style={{ height: 200 }} /> // placeholder avoids hook order changes
+          )}
         </Box>
       </Box>
 

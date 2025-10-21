@@ -12,7 +12,7 @@ import { Container, Stack, Skeleton } from "@mantine/core";
 // import logo from "../assets/logo.png";
 // import flyer from "../assets/card.png"; 
 import { useState, useEffect, useMemo } from "react";
-
+import { useAuth } from "react-oidc-context";
 import type { Event } from "../types/events";
 import { fromJsonEvents } from "../types/events";
 
@@ -20,6 +20,10 @@ import EventList from "../components/Events/EventList";
 
 
 export default function Home() {
+  const auth = useAuth();
+  const user = auth.user;
+  const email = user?.profile.email;
+
   const [globalEvents, setGlobalEvents] = useState<Event[]>([]);
   const [myClubEvents, setMyClubEvents] = useState<Event[]>([]);
   const [view, setView] = useState<"MY CLUBS" | "GLOBAL">("MY CLUBS");
@@ -83,7 +87,10 @@ export default function Home() {
 
         <Flex direction="row" gap="2rem">
           <Heading />
-          <Hero />
+          <Hero  email={email}
+        signedIn={!!user}
+        onSignIn={() => auth.signinRedirect?.()}
+  />
         </Flex>
 
         <Flex gap= "2rem" direction="column" align='stretch'>

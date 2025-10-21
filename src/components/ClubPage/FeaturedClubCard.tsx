@@ -80,7 +80,7 @@ export default function FeaturedClubCard({ club }: FeaturedClubCardProps) {
             <Flex gap="sm" mt="md">
               {(club.tags?.length
                 ? club.tags
-                : ["Tech", "Academic"]
+                : []
               ).map((tag) => (
                 <Button
                   key={tag}
@@ -105,7 +105,9 @@ export default function FeaturedClubCard({ club }: FeaturedClubCardProps) {
         <Button
           radius="xl"
           size="lg"
-          onClick={() => navigate(`/club/${club.id}`)}
+          onClick={() => {
+            console.log(`Joined club: ${club.name} (ID: ${club.id})`);
+          }}
           style={{
             backgroundColor: "#B57FFF",
             color: "white",

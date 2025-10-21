@@ -3,6 +3,7 @@ import { API_BASE_URL } from "../config";
 import placeholderImg from "../assets/placeholder.png";
 import MyClubs from "../components/Other/MyClubs";
 import SearchBar from "../components/ClubPage/SearchBar";
+import { Anchor, Space } from "@mantine/core"; 
 import {
   Box,
   Button,
@@ -76,25 +77,35 @@ export default function ClubDirectory() {
     );
   }
 
-  // === No clubs at all ===
-  if (!clubs || clubs.length === 0) {
-    return (
-      <Container size="lg" py="xl">
-        <Title order={1} mb="lg">
-          Club Directory
-        </Title>
-        <Center py="xl">
-          <Text size="lg" c="red.4" fw={600}>
-            Uh oh — no clubs found 😢
-          </Text>
-        </Center>
-      </Container>
-    );
-  }
+
 
   // === Main Layout ===
   return (
     <Container size="lg" py="xl">
+          <Anchor
+      component="button"
+      onClick={() => navigate(-1)}
+      underline="hover"
+      c="gray.4"
+      style={{
+        background: "transparent",
+        border: 0,
+        padding: 0,
+        cursor: "pointer",
+        fontFamily: "Roboto Mono, monospace",
+        fontWeight: 600,
+        letterSpacing: "0.5px",
+        marginBottom: "0.75rem",
+        transition: "color 0.2s ease",
+      }}
+      onMouseEnter={(e) => (e.currentTarget.style.color = "white")}
+      onMouseLeave={(e) => (e.currentTarget.style.color = "gray")}
+      aria-label="Go back"
+    >
+      {"← Go back"}
+    </Anchor>
+
+    <Space h="xs" />
       <Title
         order={1}
         mb="lg"

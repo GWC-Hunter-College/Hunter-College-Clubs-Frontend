@@ -2,7 +2,14 @@ import { Box } from "@mantine/core";
 import User from "./User";
 import bgImage from "../../assets/hero.png";
 
-export default function Hero() {
+
+type HeroProps = {
+  email?: string;
+  signedIn: boolean;
+  onSignIn: () => void;
+};
+
+export default function Hero({ email, signedIn, onSignIn }: HeroProps) {
   return (
     <Box
       style={{
@@ -32,7 +39,7 @@ export default function Hero() {
           padding: "1rem",
         }}
       >
-        <User />
+        <User email={email} signedIn={signedIn} onSignIn={onSignIn} />
       </Box>
     </Box>
   );

@@ -1,7 +1,49 @@
-import { Avatar, Box, Flex, Text} from "@mantine/core";
-import bunny from "../../assets/bunny.png";
+import { Avatar, Box, Button, Flex, Text } from "@mantine/core";
+// import { useAuth } from "react-oidc-context";
+import admin from "../../assets/admin.png";
 
-export default function Admin() {
+type AdminProps = {
+  email?: string;
+  signedIn: boolean;
+  onSignIn: () => void;
+};
+
+export default function User({ email, signedIn, onSignIn }: AdminProps) {
+  // const auth = useAuth();
+  // const user = auth.user;
+  // const email = user?.profile.email;
+
+  // === If user not signed in, show Sign In button ===
+  if (!signedIn) {
+    return (
+      <Flex
+        align="center"
+        justify="center"
+        p="md"
+        style={{
+          backgroundColor: "#2D203E",
+          borderRadius: "16px",
+          width: "fit-content",
+        }}
+      >
+        <Button
+          onClick={onSignIn}
+          radius="xl"
+          style={{
+            backgroundColor: "#B57FFF",
+            color: "white",
+            fontFamily: "Roboto Mono, monospace",
+            fontWeight: 700,
+            letterSpacing: "0.5px",
+          }}
+        >
+          SIGN IN
+        </Button>
+      </Flex>
+    );
+  }
+
+  // === Otherwise, display user info ===
   return (
     <Flex
       align="center"
@@ -14,17 +56,16 @@ export default function Admin() {
       gap="sm"
     >
       <Box style={{ position: "relative" }}>
-        <Avatar src={bunny} size={70} radius="xl" />
+        <Avatar src={admin} size={70} radius="xl" />
       </Box>
 
-      {/* Text section */}
       <Box>
         <Text
           fw={700}
           size="lg"
           style={{ fontFamily: "Roboto Mono, monospace" }}
         >
-          eboardmember
+          {email}
         </Text>
 
         <Flex align="center" gap="xs">

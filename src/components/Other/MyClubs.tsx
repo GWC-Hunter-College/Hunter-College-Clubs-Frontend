@@ -13,19 +13,21 @@ export default function MyClubs() {
   const [loading, setLoading] = useState(true);
   const [clubs, setClubs] = useState<Club[]>([]);
 
+  
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
         const res = await fetch("/api/me/clubs");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         if (cancelled) return;
-
+      
         const data = Array.isArray(json) ? json : json?.clubs ?? json;
         setClubs(Array.isArray(data) ? data : [data].filter(Boolean));
       } catch (e) {
-        console.error("Failed to fetch /me/clubs", e);
-        setClubs([]);
+        console.warn("Club API not available yet:", e);
+        setClubs([]); // show empty state gracefully
       } finally {
         if (!cancelled) setLoading(false);
       }

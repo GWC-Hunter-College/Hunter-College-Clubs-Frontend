@@ -1,14 +1,14 @@
 import { Box, Flex, Title, Text, Button, Paper } from "@mantine/core";
 import placeholderImg from "../../assets/placeholder.png";
 import type { Club } from "../../types/club";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 type FeaturedClubCardProps = {
   club: Club;
 };
 
 export default function FeaturedClubCard({ club }: FeaturedClubCardProps) {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <Paper

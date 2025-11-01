@@ -1,7 +1,7 @@
 // import { Flex, Box, Stack } from "@mantine/core";
 // import { Flex, Text, Divider, Box} from "@mantine/core";
 import { Flex, Box} from "@mantine/core";
-import MyClubs from "../components/Other/MyClubs";
+import MyClubs from "../components/HomePage/MyClubs";
 import ToClubDirectory from "../components/HomePage/ToClubDirectoryButton"
 import Heading from "../components/HomePage/Heading"
 import Hero from "../components/HomePage/Hero"
@@ -12,7 +12,7 @@ import { Container, Stack, Skeleton } from "@mantine/core";
 // import logo from "../assets/logo.png";
 // import flyer from "../assets/card.png"; 
 import { useState, useEffect, useMemo } from "react";
-import { useAuth } from "react-oidc-context";
+
 import type { Event } from "../types/events";
 import { fromJsonEvents } from "../types/events";
 
@@ -20,10 +20,6 @@ import EventList from "../components/Events/EventList";
 
 
 export default function Home() {
-  const auth = useAuth();
-  const user = auth.user;
-  const email = user?.profile.email;
-
   const [globalEvents, setGlobalEvents] = useState<Event[]>([]);
   const [myClubEvents, setMyClubEvents] = useState<Event[]>([]);
   const [view, setView] = useState<"MY CLUBS" | "GLOBAL">("MY CLUBS");
@@ -87,10 +83,7 @@ export default function Home() {
 
         <Flex direction="row" gap="2rem">
           <Heading />
-          <Hero  email={email}
-        signedIn={!!user}
-        onSignIn={() => auth.signinRedirect?.()}
-  />
+          <Hero />
         </Flex>
 
         <Flex gap= "2rem" direction="column" align='stretch'>

@@ -45,6 +45,7 @@ export default function Hero({ auth, title }: HeroProps) {
       >
         <User
           auth={auth}
+          title={title ?? ""}
         />
       </Box>
     </Box>

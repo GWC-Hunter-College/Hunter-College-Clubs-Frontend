@@ -18,6 +18,7 @@ import { fromJsonEvents } from "../types/events";
 
 import EventList from "../components/Events/EventList";
 
+import { signOutRedirect } from "../types/auth";
 
 export default function Home() {
   const auth = useAuth();
@@ -90,6 +91,7 @@ export default function Home() {
           <Hero  email={email}
         signedIn={!!user}
         onSignIn={() => auth.signinRedirect?.()}
+        onSignOut={() => signOutRedirect(auth)}
   />
         </Flex>
 

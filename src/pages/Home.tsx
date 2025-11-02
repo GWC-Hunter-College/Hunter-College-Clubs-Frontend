@@ -18,22 +18,12 @@ import { fromJsonEvents } from "../types/events";
 
 import EventList from "../components/Events/EventList";
 
-import { COGNITO_CLIENT_ID, COGNITO_REDIRECT_URI } from "../config";
+import { signOutRedirect } from "../types/auth";
 
 export default function Home() {
   const auth = useAuth();
   const user = auth.user;
   const email = user?.profile.email;
-
-  const signOutRedirect = () => {
-      auth.signoutRedirect({
-        post_logout_redirect_uri: COGNITO_REDIRECT_URI,
-        extraQueryParams: {
-          client_id: COGNITO_CLIENT_ID,
-          logout_uri: COGNITO_REDIRECT_URI,
-        },
-      });
-    };
 
   const [globalEvents, setGlobalEvents] = useState<Event[]>([]);
   const [myClubEvents, setMyClubEvents] = useState<Event[]>([]);
@@ -101,7 +91,7 @@ export default function Home() {
           <Hero  email={email}
         signedIn={!!user}
         onSignIn={() => auth.signinRedirect?.()}
-        onSignOut={signOutRedirect}
+        onSignOut={() => signOutRedirect(auth)}
   />
         </Flex>
 

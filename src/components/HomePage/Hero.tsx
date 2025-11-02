@@ -1,5 +1,5 @@
 import { Box } from "@mantine/core";
-import User from "./User";
+import User from "../Other/User.tsx";
 import bgImage from "../../assets/hero.png";
 
 

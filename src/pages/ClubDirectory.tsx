@@ -20,8 +20,10 @@ import {
 import { useNavigate } from "react-router-dom";
 
 import BackButton from "../components/Other/BackButton";
+
 import { useAuth } from "react-oidc-context";
-import { signOutRedirect } from "../types/auth";
+import { deriveAuthInfo } from "../types/auth";
+
 import User from "../components/Other/User.tsx";
 
 type Club = {
@@ -39,8 +41,7 @@ export default function ClubDirectory() {
   const navigate = useNavigate();
 
   const auth = useAuth();
-  const user = auth.user;
-  const email = user?.profile.email;
+  const { email, signedIn, signIn, signOut } = deriveAuthInfo(auth);
 
   useEffect(() => {
     let cancelled = false;
@@ -126,9 +127,10 @@ export default function ClubDirectory() {
         <Box>
           <User
             email={email}
-            signedIn={!!user}
-            onSignIn={() => auth.signinRedirect()}
-            onSignOut={() => signOutRedirect(auth)}
+            signedIn={signedIn}
+            onSignIn={signIn}
+            onSignOut={signOut}
+            // title="Member"
           />
         </Box>
       </Box>

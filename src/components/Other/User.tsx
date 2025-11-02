@@ -10,7 +10,13 @@ type UserProps = {
   title?: string;           
 };
 
-export default function User({ email, signedIn, onSignIn, onSignOut, title }: UserProps) {
+export default function User({
+  email,
+  signedIn,
+  onSignIn,
+  onSignOut,
+  title,
+}: UserProps) {
   const showMenu = signedIn && typeof onSignOut === "function";
 
   if (!signedIn) {

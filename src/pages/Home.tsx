@@ -11,18 +11,18 @@ import Hero from "../components/HomePage/Hero"
 // import logo from "../assets/logo.png";
 // import flyer from "../assets/card.png"; 
 import { useState, useEffect, useMemo } from "react";
+
 import { useAuth } from "react-oidc-context";
+import { deriveAuthInfo } from "../types/auth";
+
 import type { Event } from "../types/events";
 import { fromJsonEvents } from "../types/events";
 
 import EventList from "../components/Events/EventList";
 
-import { signOutRedirect } from "../types/auth";
-
 export default function Home() {
   const auth = useAuth();
-  const user = auth.user;
-  const email = user?.profile.email;
+  const { email, signedIn, signIn, signOut } = deriveAuthInfo(auth);
 
   const [globalEvents, setGlobalEvents] = useState<Event[]>([]);
   const [myClubEvents, setMyClubEvents] = useState<Event[]>([]);
@@ -93,9 +93,10 @@ export default function Home() {
           <Box style={{ flex: 1, minHeight: 0 }}>
             <Hero
               email={email}
-              signedIn={!!user}
-              onSignIn={() => auth.signinRedirect()}
-              onSignOut={() => signOutRedirect(auth)}
+              signedIn={signedIn}
+              onSignIn={signIn}
+              onSignOut={signOut}
+              // title="Member"
             />
           </Box>
         </Grid.Col>

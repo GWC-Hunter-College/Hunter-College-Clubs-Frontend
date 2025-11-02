@@ -16,19 +16,22 @@ export default function Hero({ email, signedIn, onSignIn, onSignOut, title }: He
   return (
     <Box
       style={{
-        display: "grid",
-        borderRadius: "16px",
-        overflow: "hidden",
+        position: "relative",
+        width: "100%",
+        height: "100%",        
+        borderRadius: 16,
+        overflow: "hidden",    
       }}
     >
 
-      <img
-        src={bgImage}
-        alt="Retro landscape"
+      <Box
         style={{
-          gridArea: "1/1", 
-          width: "100%",
-          height: "auto",
+          position: "absolute",
+          inset: 0,
+          backgroundImage: `url(${bgImage})`,
+          backgroundSize: "cover",     
+          backgroundPosition: "center", 
+          backgroundRepeat: "no-repeat",
         }}
       />
 

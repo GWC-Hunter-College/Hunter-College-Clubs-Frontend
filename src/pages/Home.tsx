@@ -81,14 +81,16 @@ export default function Home() {
   }
   return (
     <Container fluid style={{ paddingTop: "3.5rem" }}>
-      <Grid gutter="2rem" align="flex-start">
-        {/* Row 1 (small): Heading 3/12 + Hero 9/12 */}
+      <Grid gutter="2rem" align="stretch">
+        {/* Row 1 (small): Heading 3/12 + Hero 9/12; md/lg keep your 2/7/1 -> 8/3 split */}
         <Grid.Col span={{ base: 3, md: 2, lg: 1 }}>
           <Heading />
         </Grid.Col>
 
-        <Grid.Col span={{ base: 9, md: 7, lg: 8 }}>
-          <Box style={{ aspectRatio: "16 / 9", overflow: "hidden", borderRadius: 16 }}>
+        {/* Make this column stretch to the tallest sibling and let Hero fill it */}
+        <Grid.Col span={{ base: 9, md: 7, lg: 8 }} style={{ display: "flex" }}>
+          {/* Wrapper makes the child fill column height */}
+          <Box style={{ flex: 1, minHeight: 0 }}>
             <Hero
               email={email}
               signedIn={!!user}
@@ -98,7 +100,7 @@ export default function Home() {
           </Box>
         </Grid.Col>
 
-        {/* Row 2 (small): right rail becomes its own row; md+: fixed 3/12 */}
+        {/* Right rail becomes its own row on small; stacks on md+ */}
         <Grid.Col span={{ base: 12, md: 3, lg: 3 }}>
           <SimpleGrid cols={{ base: 2, md: 1 }} spacing="1.25rem">
             <MyClubs />
@@ -117,4 +119,5 @@ export default function Home() {
       </Box>
     </Container>
   );
+
 }

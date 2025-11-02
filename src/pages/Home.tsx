@@ -1,11 +1,10 @@
 // import { Flex, Box, Stack } from "@mantine/core";
 // import { Flex, Text, Divider, Box} from "@mantine/core";
-import { Flex, Box} from "@mantine/core";
+import { Grid, Container, Stack, Skeleton, SimpleGrid, Box } from "@mantine/core"; // add Grid, keep existing
 import MyClubs from "../components/Other/MyClubs";
 import ToClubDirectory from "../components/HomePage/ToClubDirectoryButton"
 import Heading from "../components/HomePage/Heading"
 import Hero from "../components/HomePage/Hero"
-import { Container, Stack, Skeleton } from "@mantine/core";
 // import EventCard from "../components/HomePage/EventCard"
 // import Section from "../components/HomePage/Section"
 // import View from "../components/HomePage/View"
@@ -80,38 +79,45 @@ export default function Home() {
       </Container>
     );
   }
-
   return (
-    <Flex gap="5rem" direction="column" align="stretch" style={{ paddingTop: "3.5rem" }} > 
-
-      <Flex gap="3rem" direction="row" align="stretch" >
-
-        <Flex direction="row" gap="2rem">
+    <Container fluid style={{ paddingTop: "3.5rem" }}>
+      <Grid gutter="2rem" align="stretch">
+        {/* Row 1 (small): Heading 3/12 + Hero 9/12; md/lg keep your 2/7/1 -> 8/3 split */}
+        <Grid.Col span={{ base: 3, md: 2, lg: 1 }}>
           <Heading />
-          <Hero  email={email}
-        signedIn={!!user}
-        onSignIn={() => auth.signinRedirect?.()}
-        onSignOut={() => signOutRedirect(auth)}
-  />
-        </Flex>
+        </Grid.Col>
 
-        <Flex gap= "2rem" direction="column" align='stretch'>
-          <MyClubs />
-          <ToClubDirectory />
-        </Flex>
+        {/* Make this column stretch to the tallest sibling and let Hero fill it */}
+        <Grid.Col span={{ base: 9, md: 7, lg: 8 }} style={{ display: "flex" }}>
+          {/* Wrapper makes the child fill column height */}
+          <Box style={{ flex: 1, minHeight: 0 }}>
+            <Hero
+              email={email}
+              signedIn={!!user}
+              onSignIn={() => auth.signinRedirect()}
+              onSignOut={() => signOutRedirect(auth)}
+            />
+          </Box>
+        </Grid.Col>
 
-      </Flex>
+        {/* Right rail becomes its own row on small; stacks on md+ */}
+        <Grid.Col span={{ base: 12, md: 3, lg: 3 }}>
+          <SimpleGrid cols={{ base: 2, md: 1 }} spacing="1.25rem">
+            <MyClubs />
+            <ToClubDirectory />
+          </SimpleGrid>
+        </Grid.Col>
+      </Grid>
 
-
-      {/* Micahel you work here */}
       <Box py="lg">
         <EventList
           title="Upcoming Events"
-          views={["MY CLUBS", "GLOBAL"]} 
+          views={["MY CLUBS", "GLOBAL"]}
           onChangeView={(v) => setView(v as "MY CLUBS" | "GLOBAL")}
           events={events}
         />
       </Box>
-    </Flex>
+    </Container>
   );
+
 }

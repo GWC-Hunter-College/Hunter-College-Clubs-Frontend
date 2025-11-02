@@ -3,7 +3,7 @@ import { API_BASE_URL } from "../config";
 import placeholderImg from "../assets/placeholder.png";
 import MyClubs from "../components/Other/MyClubs";
 import SearchBar from "../components/ClubPage/SearchBar";
-import { Anchor, Space } from "@mantine/core"; 
+import { Group, Space } from "@mantine/core"; 
 import {
   Box,
   Button,
@@ -19,6 +19,11 @@ import {
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 
+import BackButton from "../components/Other/BackButton";
+import { useAuth } from "react-oidc-context";
+import { signOutRedirect } from "../types/auth";
+import User from "../components/Other/User.tsx";
+
 type Club = {
   id: number;
   name: string;
@@ -32,6 +37,10 @@ export default function ClubDirectory() {
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
+
+  const auth = useAuth();
+  const user = auth.user;
+  const email = user?.profile.email;
 
   useEffect(() => {
     let cancelled = false;
@@ -82,42 +91,47 @@ export default function ClubDirectory() {
   // === Main Layout ===
   return (
     <Container size="lg" py="xl">
-          <Anchor
-      component="button"
-      onClick={() => navigate(-1)}
-      underline="hover"
-      c="gray.4"
-      style={{
-        background: "transparent",
-        border: 0,
-        padding: 0,
-        cursor: "pointer",
-        fontFamily: "Roboto Mono, monospace",
-        fontWeight: 600,
-        letterSpacing: "0.5px",
-        marginBottom: "0.75rem",
-        transition: "color 0.2s ease",
-      }}
-      onMouseEnter={(e) => (e.currentTarget.style.color = "white")}
-      onMouseLeave={(e) => (e.currentTarget.style.color = "gray")}
-      aria-label="Go back"
-    >
-      {"← Go back"}
-    </Anchor>
+
+
 
     <Space h="xs" />
-      <Title
-        order={1}
-        mb="lg"
+      <Box
         style={{
-          fontFamily: "Roboto Mono, monospace",
-          fontWeight: 700,
-          color: "white",
-          letterSpacing: "1px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 16,
+          marginBottom: 24,
         }}
       >
-        CLUB DIRECTORY
-      </Title>
+        <Group gap="md" align="center">
+          <BackButton />
+          <Title
+            order={1}
+            style={{
+              fontFamily: "Roboto Mono, monospace",
+              fontWeight: 700,
+              color: "white",
+              fontSize: 42,
+              lineHeight: 1,
+              letterSpacing: 1.5,
+              textTransform: "uppercase",
+            }}
+          >
+            Club Directory
+          </Title>
+        </Group>
+
+        {/* Reuse the same User component as on home.tsx */}
+        <Box>
+          <User
+            email={email}
+            signedIn={!!user}
+            onSignIn={() => auth.signinRedirect()}
+            onSignOut={() => signOutRedirect(auth)}
+          />
+        </Box>
+      </Box>
 
       <Flex gap="2rem" align="stretch">
         {/* LEFT SIDEBAR */}

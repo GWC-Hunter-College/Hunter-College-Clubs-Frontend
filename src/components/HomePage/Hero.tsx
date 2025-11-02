@@ -7,9 +7,12 @@ type HeroProps = {
   email?: string;
   signedIn: boolean;
   onSignIn: () => void;
+  onSignOut?: () => void;
+  title?: string;
 };
 
-export default function Hero({ email, signedIn, onSignIn }: HeroProps) {
+
+export default function Hero({ email, signedIn, onSignIn, onSignOut, title }: HeroProps) {
   return (
     <Box
       style={{
@@ -39,7 +42,13 @@ export default function Hero({ email, signedIn, onSignIn }: HeroProps) {
           padding: "1rem",
         }}
       >
-        <User email={email} signedIn={signedIn} onSignIn={onSignIn} />
+        <User
+          email={email}
+          signedIn={signedIn}
+          onSignIn={onSignIn}
+          onSignOut={onSignOut}
+          title={title}
+        />
       </Box>
     </Box>
   );

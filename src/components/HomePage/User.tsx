@@ -1,19 +1,18 @@
-import { Avatar, Box, Button, Flex, Text } from "@mantine/core";
-// import { useAuth } from "react-oidc-context";
+import { Avatar, Box, Button, Flex, Text, Menu, ActionIcon } from "@mantine/core";
+import { IconDotsVertical, IconLogout } from "@tabler/icons-react";
 import admin from "../../assets/admin.png";
 
-type AdminProps = {
+type UserProps = {
   email?: string;
   signedIn: boolean;
   onSignIn: () => void;
+  onSignOut?: () => void;  
+  title?: string;           
 };
 
-export default function User({ email, signedIn, onSignIn }: AdminProps) {
-  // const auth = useAuth();
-  // const user = auth.user;
-  // const email = user?.profile.email;
+export default function User({ email, signedIn, onSignIn, onSignOut, title }: UserProps) {
+  const showMenu = signedIn && typeof onSignOut === "function";
 
-  // === If user not signed in, show Sign In button ===
   if (!signedIn) {
     return (
       <Flex
@@ -29,66 +28,63 @@ export default function User({ email, signedIn, onSignIn }: AdminProps) {
         <Button
           onClick={onSignIn}
           radius="xl"
-          style={{
-            backgroundColor: "#B57FFF",
-            color: "white",
-            fontFamily: "Roboto Mono, monospace",
-            fontWeight: 700,
-            letterSpacing: "0.5px",
-          }}
+          size="sm"
+          fw={500}
+          style={{ fontStyle: "italic", fontFamily: "Roboto Mono, monospace" }}
         >
-          SIGN IN
+          Sign in
         </Button>
       </Flex>
     );
   }
 
-  // === Otherwise, display user info ===
   return (
-    <Flex
+<Flex
       align="center"
+      gap="sm"
       p="md"
       style={{
         backgroundColor: "#2D203E",
         borderRadius: "16px",
         width: "fit-content",
       }}
-      gap="sm"
     >
-      <Box style={{ position: "relative" }}>
-        <Avatar src={admin} size={70} radius="xl" />
-      </Box>
+      <Avatar src={admin} alt="Profile picture" radius="xl" />
 
       <Box>
-        <Text
-          fw={700}
-          size="lg"
-          style={{ fontFamily: "Roboto Mono, monospace" }}
-        >
-          {email}
-        </Text>
-
+        {/* Email row with inline menu */}
         <Flex align="center" gap="xs">
-          <Box
-            w={20}
-            h={20}
-            style={{
-              borderRadius: "50%",
-              backgroundColor: "#E879F9",
-            }}
-          />
+          <Text size="sm" fw={700}>{email ?? "Unknown"}</Text>
+
+          {showMenu && (
+            <Menu withinPortal position="bottom-end">
+              <Menu.Target>
+                <ActionIcon variant="subtle" aria-label="Open user menu">
+                  <IconDotsVertical size={16} />
+                </ActionIcon>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item leftSection={<IconLogout size={14} />} onClick={onSignOut}>
+                  Sign out
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          )}
+        </Flex>
+
+        {title && (
           <Text
             size="sm"
             fw={500}
-            style={{
-              fontStyle: "italic",
-              fontFamily: "Roboto Mono, monospace",
-            }}
+            style={{ fontStyle: "italic", fontFamily: "Roboto Mono, monospace" }}
           >
-            Admin
+            {title}
           </Text>
-        </Flex>
+        )}
       </Box>
     </Flex>
   );
 }
+
+
+

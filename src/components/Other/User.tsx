@@ -2,22 +2,21 @@ import { Avatar, Box, Button, Flex, Text, Menu, ActionIcon } from "@mantine/core
 import { IconDotsVertical, IconLogout } from "@tabler/icons-react";
 import admin from "../../assets/admin.png";
 
+import type { AuthInfo } from "../../types/auth"; 
+
 type UserProps = {
-  email?: string;
-  signedIn: boolean;
-  onSignIn: () => void;
-  onSignOut?: () => void;  
+  auth?: AuthInfo;
   title?: string;           
 };
 
 export default function User({
-  email,
-  signedIn,
-  onSignIn,
-  onSignOut,
+  auth,
   title,
 }: UserProps) {
-  const showMenu = signedIn && typeof onSignOut === "function";
+  if (!auth) return null;
+  const { email, signedIn, signIn, signOut } = auth;
+  
+  const showMenu = signedIn && typeof signOut === "function";
 
   if (!signedIn) {
     return (
@@ -32,7 +31,7 @@ export default function User({
         }}
       >
         <Button
-          onClick={onSignIn}
+          onClick={signIn}
           radius="xl"
           size="sm"
           fw={500}
@@ -70,7 +69,7 @@ export default function User({
                 </ActionIcon>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Item leftSection={<IconLogout size={14} />} onClick={onSignOut}>
+                <Menu.Item leftSection={<IconLogout size={14} />} onClick={signOut}>
                   Sign out
                 </Menu.Item>
               </Menu.Dropdown>

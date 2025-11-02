@@ -1,6 +1,7 @@
 // auth.ts 
 import { COGNITO_CLIENT_ID, COGNITO_REDIRECT_URI } from "../config";
 
+import { useMemo } from "react";
 import { useAuth } from "react-oidc-context";
 
 export type AuthInfo = {
@@ -40,4 +41,12 @@ export function deriveAuthInfo(auth: ReturnType<typeof useAuth>): AuthInfo {
     signIn,
     signOut,
   };
+}
+
+export function useAuthInfo(): AuthInfo {
+  const raw = useAuth();
+  return useMemo(
+    () => deriveAuthInfo(raw),
+    [raw.isAuthenticated, raw.user] // recompute when these change
+  );
 }

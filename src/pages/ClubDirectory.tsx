@@ -21,8 +21,7 @@ import { useNavigate } from "react-router-dom";
 
 import BackButton from "../components/Other/BackButton";
 
-import { useAuth } from "react-oidc-context";
-import { deriveAuthInfo } from "../types/auth";
+import { useAuthInfo } from "../types/auth";
 
 import User from "../components/Other/User.tsx";
 
@@ -40,8 +39,7 @@ export default function ClubDirectory() {
 
   const navigate = useNavigate();
 
-  const auth = useAuth();
-  const { email, signedIn, signIn, signOut } = deriveAuthInfo(auth);
+  const authInfo = useAuthInfo();
 
   useEffect(() => {
     let cancelled = false;
@@ -126,10 +124,7 @@ export default function ClubDirectory() {
         {/* Reuse the same User component as on home.tsx */}
         <Box>
           <User
-            email={email}
-            signedIn={signedIn}
-            onSignIn={signIn}
-            onSignOut={signOut}
+            auth={authInfo}
             // title="Member"
           />
         </Box>

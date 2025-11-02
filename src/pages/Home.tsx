@@ -1,19 +1,15 @@
-// import { Flex, Box, Stack } from "@mantine/core";
-// import { Flex, Text, Divider, Box} from "@mantine/core";
+// Home.tsx
 import { Grid, Container, Stack, Skeleton, SimpleGrid, Box } from "@mantine/core"; // add Grid, keep existing
 import MyClubs from "../components/Other/MyClubs";
 import ToClubDirectory from "../components/HomePage/ToClubDirectoryButton"
 import Heading from "../components/HomePage/Heading"
 import Hero from "../components/HomePage/Hero"
-// import EventCard from "../components/HomePage/EventCard"
-// import Section from "../components/HomePage/Section"
-// import View from "../components/HomePage/View"
-// import logo from "../assets/logo.png";
-// import flyer from "../assets/card.png"; 
+
 import { useState, useEffect, useMemo } from "react";
 
-import { useAuth } from "react-oidc-context";
-import { deriveAuthInfo } from "../types/auth";
+// import { useAuth } from "react-oidc-context";
+import { useAuthInfo } from "../types/auth";
+
 
 import type { Event } from "../types/events";
 import { fromJsonEvents } from "../types/events";
@@ -21,8 +17,7 @@ import { fromJsonEvents } from "../types/events";
 import EventList from "../components/Events/EventList";
 
 export default function Home() {
-  const auth = useAuth();
-  const { email, signedIn, signIn, signOut } = deriveAuthInfo(auth);
+  const authInfo = useAuthInfo();
 
   const [globalEvents, setGlobalEvents] = useState<Event[]>([]);
   const [myClubEvents, setMyClubEvents] = useState<Event[]>([]);
@@ -92,10 +87,7 @@ export default function Home() {
           {/* Wrapper makes the child fill column height */}
           <Box style={{ flex: 1, minHeight: 0 }}>
             <Hero
-              email={email}
-              signedIn={signedIn}
-              onSignIn={signIn}
-              onSignOut={signOut}
+              auth={authInfo}
               // title="Member"
             />
           </Box>

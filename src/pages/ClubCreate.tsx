@@ -62,32 +62,32 @@ export default function ClubCreatePage() {
       contentGap="lg"
     >
 
-        {!auth.signedIn ? (
-          <SignInPrompt auth={auth} />
-        ) : (
-          <>
-            <Title order={4} mb="xs">
-              Preview
-            </Title>
-            <FeaturedClubCard club={previewClub} />
+      {!auth.signedIn ? (
+        <SignInPrompt auth={auth} />
+      ) : (
+        <>
+          <Title order={4} mb="xs">
+            Preview
+          </Title>
+          <FeaturedClubCard club={previewClub} />
 
-            <Title order={4} mt="md" mb="xs">
-              Club details
-            </Title>
-            <ClubFormPanel
-              titleVal={titleVal}
-              descVal={descVal}
-              logoFile={logoFile}
-              setTitleVal={setTitleVal}
-              setDescVal={setDescVal}
-              setLogoFile={setLogoFile}
-              submitting={submitting}
-              onSubmit={onSubmit}
-              compact
-              minRows={5}
-            />
-          </>
-        )}
+          <Title order={4} mt="md" mb="xs">
+            Club details
+          </Title>
+          <ClubFormPanel
+            titleVal={titleVal}
+            descVal={descVal}
+            logoFile={logoFile}
+            setTitleVal={setTitleVal}
+            setDescVal={setDescVal}
+            setLogoFile={setLogoFile}
+            submitting={submitting}
+            onSubmit={onSubmit}
+            compact
+            minRows={5}
+          />
+        </>
+      )}
     </PageShell>
   );
 }

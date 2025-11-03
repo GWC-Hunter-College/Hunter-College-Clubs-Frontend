@@ -12,7 +12,6 @@ import type { Club } from "../types/club";
 import { fromJsonClub } from "../types/club";
 
 import { useAuthInfo } from "../types/auth";
-import PageHeader from "../components/Other/PageHeader";
 
 import PageShell from "../components/Other/PageShell";
 

@@ -4,6 +4,7 @@ import MyClubs from "../components/Other/MyClubs";
 import ToClubDirectory from "../components/HomePage/ToClubDirectoryButton"
 import Heading from "../components/HomePage/Heading"
 import Hero from "../components/HomePage/Hero"
+import PageShell from "../components/Other/PageShell";
 
 import { useState, useEffect, useMemo } from "react";
 
@@ -75,7 +76,7 @@ export default function Home() {
     );
   }
   return (
-    <Container fluid style={{ paddingTop: "3.5rem" }}>
+    <PageShell showHeader={false} size="xxxl" padded>
       <Grid gutter="2rem" align="stretch">
         {/* Row 1 (small): Heading 3/12 + Hero 9/12; md/lg keep your 2/7/1 -> 8/3 split */}
         <Grid.Col span={{ base: 3, md: 2, lg: 1 }}>
@@ -110,7 +111,7 @@ export default function Home() {
           events={events}
         />
       </Box>
-    </Container>
+    </PageShell>
   );
 
 }

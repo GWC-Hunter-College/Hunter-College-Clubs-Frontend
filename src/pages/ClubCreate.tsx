@@ -1,11 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
-import { Box, Title } from "@mantine/core";
+import { Title } from "@mantine/core";
 import { useAuthInfo } from "../types/auth";
 import type { Club } from "../types/club";
 import SignInPrompt from "../components/Other/SignInPrompt";
-import PageHeader from "../components/Other/PageHeader";
 import FeaturedClubCard from "../components/ClubPage/FeaturedClubCard";
 import ClubFormPanel from "../components/ClubCreate/ClubFormPanel";
+
+import PageShell from "../components/Other/PageShell";
 
 function truncate(s: string, n: number) {
   return s.length > n ? s.slice(0, n - 1) + "…" : s;
@@ -52,9 +53,14 @@ export default function ClubCreatePage() {
   };
 
   return (
-    <Box p="md">
-      <Box maw={1000} mx="auto" w="100%">
-        <PageHeader pageTitle="Club Creation" back={{ size: "md" }} user={{ auth }} />
+    <PageShell
+      pageTitle="Club Creation"
+      back={true}
+      user={{ auth }}
+      size="xl"
+      padded
+      contentGap="lg"
+    >
 
         {!auth.signedIn ? (
           <SignInPrompt auth={auth} />
@@ -82,7 +88,6 @@ export default function ClubCreatePage() {
             />
           </>
         )}
-      </Box>
-    </Box>
+    </PageShell>
   );
 }

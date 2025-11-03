@@ -8,8 +8,6 @@ type FeaturedClubCardProps = {
 };
 
 export default function FeaturedClubCard({ club }: FeaturedClubCardProps) {
-  // const navigate = useNavigate();
-
   return (
     <Paper
       radius="xl"
@@ -39,7 +37,7 @@ export default function FeaturedClubCard({ club }: FeaturedClubCardProps) {
             }}
           >
             <img
-              src={placeholderImg}
+              src={club.logo ?? placeholderImg}
               alt={club.name}
               style={{
                 width: "100%",

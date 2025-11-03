@@ -17,14 +17,32 @@ type PageHeaderProps = {
   back?: BackConfig | boolean;                    // true = show default BackButton
   user?: { auth: AuthInfo; title?: string };     // pass unified auth object
   className?: string;
+
+  titleSize?: "lg" | "md" | "sm";
+  titleTone?: "default" | "muted";
 };
 
-export default function PageHeader({ pageTitle, back = true, user, className }: PageHeaderProps) {
+export default function PageHeader({
+  pageTitle,
+  back = true,
+  user,
+  className,
+  titleSize = "lg",
+  titleTone = "default",
+}: PageHeaderProps) {
   const theme = useMantineTheme();
   const isXs = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
   const showBack = Boolean(back);
   const backProps = typeof back === "object" ? back : {};
+
+  const sizeMap: Record<"lg" | "md" | "sm", string> = {
+    lg: "clamp(24px, 4vw, 48px)",   // default
+    md: "clamp(20px, 3.2vw, 36px)",
+    sm: "clamp(18px, 2.6vw, 28px)",
+  };
+
+  const color = titleTone === "muted" ? "rgba(255, 255, 255, 0.65)" : undefined;
 
   return (
     <Box
@@ -46,13 +64,14 @@ export default function PageHeader({ pageTitle, back = true, user, className }: 
         order={1}
         style={{
           minWidth: 0,                        
-          fontSize: "clamp(24px, 4vw, 48px)",
+          fontSize: sizeMap[titleSize],
           lineHeight: 1,
           letterSpacing: "0.12em",
           textTransform: "uppercase",
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
+          color,
         }}
         title={pageTitle}
       >

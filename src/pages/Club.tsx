@@ -1,4 +1,4 @@
-import { Box, Container, Stack, Skeleton, Anchor, Space, Title, Button } from "@mantine/core";
+import { Box, Container, Stack, Skeleton, Space, Title, Button } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import EventList from "../components/Events/EventList";

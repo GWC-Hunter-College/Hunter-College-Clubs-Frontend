@@ -3,7 +3,6 @@ import { API_BASE_URL } from "../config";
 import placeholderImg from "../assets/placeholder.png";
 import MyClubs from "../components/Other/MyClubs";
 import SearchBar from "../components/ClubPage/SearchBar";
-import { Space } from "@mantine/core"; 
 import {
   Box,
   Button,
@@ -20,7 +19,8 @@ import {
 import { useNavigate } from "react-router-dom";
 
 import { useAuthInfo } from "../types/auth";
-import PageHeader from "../components/Other/PageHeader";
+
+import PageShell from "../components/Other/PageShell";
 
 import type { Club } from "../types/club";
 
@@ -31,7 +31,7 @@ export default function ClubDirectory() {
 
   const navigate = useNavigate();
 
-  const authInfo = useAuthInfo();
+  const auth = useAuthInfo();
 
   useEffect(() => {
     let cancelled = false;
@@ -81,14 +81,13 @@ export default function ClubDirectory() {
 
   // === Main Layout ===
   return (
-    <Container size="lg" py="xl">
-      <Space h="xs" />
-      <PageHeader
-        pageTitle="Club Directory"
-        back={{ size: "md" }}
-        user={{ auth: authInfo}}
-      />
-
+    <PageShell
+      pageTitle="Clubs"
+      back={true}
+      user={{ auth }}
+      size="xl"
+      padded
+    >
       <Flex gap="2rem" align="stretch">
         {/* LEFT SIDEBAR */}
         <MyClubs />
@@ -240,6 +239,6 @@ export default function ClubDirectory() {
           )}
         </Flex>
       </Flex>
-    </Container>
+    </PageShell>
   );
 }

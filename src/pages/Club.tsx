@@ -1,4 +1,4 @@
-import { Box, Container, Stack, Skeleton, Space, Title, Button } from "@mantine/core";
+import { Box, Container, Stack, Skeleton, Title, Button } from "@mantine/core";
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import EventList from "../components/Events/EventList";
@@ -12,7 +12,8 @@ import type { Club } from "../types/club";
 import { fromJsonClub } from "../types/club";
 
 import { useAuthInfo } from "../types/auth";
-import PageHeader from "../components/Other/PageHeader";
+
+import PageShell from "../components/Other/PageShell";
 
 export default function ClubPage() {
   const [loading, setLoading] = useState(true);
@@ -24,7 +25,7 @@ export default function ClubPage() {
   const [error, setError] = useState<string | null>(null);
   
   const navigate = useNavigate();
-  const authInfo = useAuthInfo();
+  const auth = useAuthInfo();
 
   // load club and club events
   useEffect(() => {
@@ -140,19 +141,18 @@ export default function ClubPage() {
 
   // === Main page ===
   return (
-    <Box mih="100dvh">
+    <PageShell
+      pageTitle={club?.name ?? "Club"}
+      back={true}
+      user={{ auth }}
+      size="xl"
+      padded
+    >
       {/* ==== Section 1: Hero ==== */}
       <Box px={{ base: "md", sm: "lg" }} py="lg">
-          <PageHeader
-            pageTitle={`CLUB-${clubId}`}
-            back={{ size: "md" }}
-            user={{ auth: authInfo}}
-            titleSize="md"
-            titleTone="muted"
-          />
         <Box maw={1100} w="100%">
 
-          <Space h="md" />
+          {/* <Space h="md" /> */}
 
           {/* Club Info */}
           {club ? (
@@ -172,6 +172,6 @@ export default function ClubPage() {
           events={filtered}
         />
       </Box>
-    </Box>
+    </PageShell>
   );
 }

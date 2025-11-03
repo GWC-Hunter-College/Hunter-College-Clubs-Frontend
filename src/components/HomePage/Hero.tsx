@@ -2,15 +2,14 @@ import { Box } from "@mantine/core";
 import User from "../Other/User.tsx";
 import bgImage from "../../assets/hero.png";
 
+import type { AuthInfo } from "../../types/auth"; 
+
 type HeroProps = {
-  email?: string;
-  signedIn: boolean;
-  onSignIn: () => void;
-  onSignOut?: () => void;
+  auth?: AuthInfo;
   title?: string;
 };
 
-export default function Hero({ email, signedIn, onSignIn, onSignOut, title }: HeroProps) {
+export default function Hero({ auth, title }: HeroProps) {
   return (
     <Box
       style={{
@@ -45,11 +44,8 @@ export default function Hero({ email, signedIn, onSignIn, onSignOut, title }: He
         }}
       >
         <User
-          email={email}
-          signedIn={signedIn}
-          onSignIn={onSignIn}
-          onSignOut={onSignOut}
-          title={title}
+          auth={auth}
+          title={title ?? ""}
         />
       </Box>
     </Box>

@@ -3,7 +3,7 @@ import { API_BASE_URL } from "../config";
 import placeholderImg from "../assets/placeholder.png";
 import MyClubs from "../components/Other/MyClubs";
 import SearchBar from "../components/ClubPage/SearchBar";
-import { Anchor, Space } from "@mantine/core"; 
+import { Space } from "@mantine/core"; 
 import {
   Box,
   Button,
@@ -19,12 +19,10 @@ import {
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 
-type Club = {
-  id: number;
-  name: string;
-  image?: string;
-  description?: string;
-};
+import { useAuthInfo } from "../types/auth";
+import PageHeader from "../components/Other/PageHeader";
+
+import type { Club } from "../types/club";
 
 export default function ClubDirectory() {
   const [clubs, setClubs] = useState<Club[]>([]);
@@ -32,6 +30,8 @@ export default function ClubDirectory() {
   const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
+
+  const authInfo = useAuthInfo();
 
   useEffect(() => {
     let cancelled = false;
@@ -82,42 +82,12 @@ export default function ClubDirectory() {
   // === Main Layout ===
   return (
     <Container size="lg" py="xl">
-          <Anchor
-      component="button"
-      onClick={() => navigate(-1)}
-      underline="hover"
-      c="gray.4"
-      style={{
-        background: "transparent",
-        border: 0,
-        padding: 0,
-        cursor: "pointer",
-        fontFamily: "Roboto Mono, monospace",
-        fontWeight: 600,
-        letterSpacing: "0.5px",
-        marginBottom: "0.75rem",
-        transition: "color 0.2s ease",
-      }}
-      onMouseEnter={(e) => (e.currentTarget.style.color = "white")}
-      onMouseLeave={(e) => (e.currentTarget.style.color = "gray")}
-      aria-label="Go back"
-    >
-      {"← Go back"}
-    </Anchor>
-
-    <Space h="xs" />
-      <Title
-        order={1}
-        mb="lg"
-        style={{
-          fontFamily: "Roboto Mono, monospace",
-          fontWeight: 700,
-          color: "white",
-          letterSpacing: "1px",
-        }}
-      >
-        CLUB DIRECTORY
-      </Title>
+      <Space h="xs" />
+      <PageHeader
+        pageTitle="Club Directory"
+        back={{ size: "md" }}
+        user={{ auth: authInfo}}
+      />
 
       <Flex gap="2rem" align="stretch">
         {/* LEFT SIDEBAR */}

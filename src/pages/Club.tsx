@@ -11,15 +11,20 @@ import { fromJsonEvents } from "../types/events";
 import type { Club } from "../types/club";
 import { fromJsonClub } from "../types/club";
 
+import { useAuthInfo } from "../types/auth";
+import PageHeader from "../components/Other/PageHeader";
+
 export default function ClubPage() {
   const [loading, setLoading] = useState(true);
   const [club, setClub] = useState<Club | null>(null);
   const [eventsAll, setEventsAll] = useState<Event[]>([]);
   const [view, setView] = useState<"Upcoming" | "Previous">("Upcoming");
-  const [hovered, setHovered] = useState(false);
+
   const { clubId } = useParams<{ clubId: string }>();
-  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
+  
+  const navigate = useNavigate();
+  const authInfo = useAuthInfo();
 
   // load club and club events
   useEffect(() => {
@@ -138,29 +143,14 @@ export default function ClubPage() {
     <Box mih="100dvh">
       {/* ==== Section 1: Hero ==== */}
       <Box px={{ base: "md", sm: "lg" }} py="lg">
+          <PageHeader
+            pageTitle={`CLUB-${clubId}`}
+            back={{ size: "md" }}
+            user={{ auth: authInfo}}
+            titleSize="md"
+            titleTone="muted"
+          />
         <Box maw={1100} w="100%">
-          {/* ← Go Back link */}
-          <Anchor
-            component="button"
-            onClick={() => navigate(-1)}
-            underline="hover"
-            c={hovered ? "white" : "gray.6"}
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-            style={{
-              background: "transparent",
-              border: 0,
-              padding: 0,
-              cursor: "pointer",
-              fontWeight: 600,
-              letterSpacing: 0.2,
-              transition: "color 120ms ease",
-              marginBottom: "0.5rem",
-            }}
-            aria-label="Go back"
-          >
-            {"← Go back"}
-          </Anchor>
 
           <Space h="md" />
 

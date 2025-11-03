@@ -70,24 +70,56 @@ export default function ClubCreatePage() {
         <SignInPrompt auth={auth} />
       ) : (
         <Stack gap="md">
-          <Paper withBorder radius="lg" p="md" component="form" onSubmit={onSubmit}>
+          <Paper withBorder radius="lg" p="md" component="form" onSubmit={onSubmit}
+            style={{
+              backgroundColor: "#2A1F3F",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "white",
+            }}
+          >
             <Stack gap="md">
               <TextInput
-                label="Club title"
-                placeholder="e.g., Hunter CS Club"
+                label="Club Title"
+                placeholder="Enter the Name of the Club Here"
                 value={titleVal}
                 onChange={(e) => setTitleVal(e.currentTarget.value)}
                 required
                 size="lg"
+                variant="unstyled"
+                styles={{
+                  input: {
+                    background: "var(--mantine-color-dark-6)",
+                    border: "1px solid var(--mantine-color-dark-4)",
+                    borderRadius: "30px",
+                    padding: "14px 16px",
+                    color: "var(--mantine-color-white)",
+                    fontSize: "1.05rem",
+                    fontWeight: 600,
+                    backgroundColor: "#a1989825",
+                  },
+                  label: { color: "var(--mantine-color-gray-4)", fontWeight: 600 },
+                }}
               />
 
               <FileInput
-                label="Logo (optional)"
+                label="Club Logo"
                 placeholder="Select an image file"
                 accept="image/*"
                 value={logoFile}
                 onChange={setLogoFile}
                 clearable
+                variant="unstyled"
+                styles={{
+                  input: {
+                    background: "var(--mantine-color-dark-6)",
+                    border: "1px solid var(--mantine-color-dark-4)",
+                    borderRadius: "14px",
+                    padding: "12px 14px",
+                    color: "var(--mantine-color-white)",
+                    backgroundColor: "#a1989825",
+                  },
+                  label: { color: "var(--mantine-color-gray-4)", fontWeight: 600 },
+                }}
               />
 
               {previewUrl && false && (
@@ -108,6 +140,19 @@ export default function ClubCreatePage() {
                 autosize
                 minRows={8}
                 required
+                variant="unstyled"
+                styles={{
+                  input: {
+                    background: "var(--mantine-color-dark-6)",
+                    border: "1px solid var(--mantine-color-dark-4)",
+                    borderRadius: "14px",
+                    padding: "14px 16px",
+                    color: "var(--mantine-color-white)",
+                    lineHeight: 1.5,
+                    backgroundColor: "#a1989825",
+                  },
+                  label: { color: "var(--mantine-color-gray-4)", fontWeight: 600 },
+                }}
               />
 
               <Group justify="flex-end">

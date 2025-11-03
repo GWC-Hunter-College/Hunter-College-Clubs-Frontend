@@ -1,15 +1,20 @@
 import { Box, Flex, Title, Text, Button, Paper } from "@mantine/core";
 import placeholderImg from "../../assets/placeholder.png";
 import type { Club } from "../../types/club";
-// import { useNavigate } from "react-router-dom";
 
 type FeaturedClubCardProps = {
   club: Club;
+  action?: "none" | "join" | "leave";
+  onJoinClick?: () => void;
+  onLeaveClick?: () => void;
 };
 
-export default function FeaturedClubCard({ club }: FeaturedClubCardProps) {
-  // const navigate = useNavigate();
-
+export default function FeaturedClubCard({
+  club,
+  action = "none",
+  onJoinClick,
+  onLeaveClick,
+}: FeaturedClubCardProps) {
   return (
     <Paper
       radius="xl"
@@ -20,15 +25,67 @@ export default function FeaturedClubCard({ club }: FeaturedClubCardProps) {
         color: "white",
       }}
     >
-      <Flex
-        direction="row"
-        align="flex-start"
-        justify="space-between"
-        wrap="wrap"
-        gap="lg"
-      >
-        {/* Club Info */}
-        <Flex direction="row" gap="lg" style={{ flex: 1 }}>
+      <Flex direction="column" gap="lg">
+        {/* Header: title + optional action button */}
+        <Flex align="center" justify="space-between" wrap="nowrap" gap="md">
+          <Title
+            order={2}
+            style={{
+              fontFamily: "Roboto Mono, monospace",
+              fontWeight: 700,
+              fontSize: "36px",
+              lineHeight: "1",
+            }}
+          >
+            {club.name}
+          </Title>
+
+          {action === "join" && (
+            <Button
+              radius="xl"
+              size="md"
+              onClick={() => {
+                onJoinClick?.();
+                if (!onJoinClick) {
+                  console.log(`Joined club: ${club.name} (ID: ${club.id})`);
+                }
+              }}
+              style={{
+                backgroundColor: "#B57FFF",
+                color: "white",
+                fontWeight: 600,
+                fontFamily: "Roboto Mono, monospace",
+              }}
+            >
+              JOIN →
+            </Button>
+          )}
+
+          {action === "leave" && (
+            <Button
+              radius="xl"
+              size="md"
+              color="red"
+              variant="filled"
+              onClick={() => {
+                onLeaveClick?.();
+                if (!onLeaveClick) {
+                  console.log(`Left club: ${club.name} (ID: ${club.id})`);
+                }
+              }}
+            >
+              LEAVE
+            </Button>
+          )}
+        </Flex>
+
+        {/* Content: image + description (stacks on small screens) */}
+        <Flex
+          direction={{ base: "column", sm: "row" }}
+          align={{ base: "flex-start", sm: "stretch" }}
+          gap="lg"
+          wrap="nowrap"
+        >
           <Box
             style={{
               width: 160,
@@ -36,88 +93,55 @@ export default function FeaturedClubCard({ club }: FeaturedClubCardProps) {
               borderRadius: 20,
               overflow: "hidden",
               flexShrink: 0,
+              alignSelf: "flex-start",
             }}
           >
             <img
-              src={placeholderImg}
+              src={club.logo ?? placeholderImg}
               alt={club.name}
               style={{
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
+                display: "block",
               }}
             />
           </Box>
 
-          <Flex direction="column" justify="space-between">
-            <Box>
-              <Title
-                order={2}
-                style={{
-                  fontFamily: "Roboto Mono, monospace",
-                  fontWeight: 700,
-                  fontSize: "36px",
-                  lineHeight: "1",
-                  marginBottom: "1rem",
-                }}
-              >
-                {club.name}
-              </Title>
-              <Text
-                style={{
-                  fontSize: "14px",
-                  lineHeight: "1.5",
-                  color: "#E0E0E0",
-                  maxWidth: 500,
-                }}
-              >
-                {club.description ??
-                  "A community of students empowering each other through coding workshops, mentorship, and projects. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."}
-              </Text>
-            </Box>
-
-            {/* Tags */}
-            <Flex gap="sm" mt="md">
-              {(club.tags?.length
-                ? club.tags
-                : []
-              ).map((tag) => (
-                <Button
-                  key={tag}
-                  radius="xl"
-                  variant="white"
-                  style={{
-                    backgroundColor: "white",
-                    color: "black",
-                    fontFamily: "Roboto Mono, monospace",
-                    fontSize: "12px",
-                    padding: "6px 20px",
-                  }}
-                >
-                  {tag.toUpperCase()}
-                </Button>
-              ))}
-            </Flex>
-          </Flex>
+          <Text
+            style={{
+              fontSize: "14px",
+              lineHeight: 1.5,
+              color: "#E0E0E0",
+              maxWidth: 600,
+            }}
+          >
+            {club.description ??
+              "A community of students empowering each other through coding workshops, mentorship, and projects. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."}
+          </Text>
         </Flex>
 
-        {/* Join Button */}
-        <Button
-          radius="xl"
-          size="lg"
-          onClick={() => {
-            console.log(`Joined club: ${club.name} (ID: ${club.id})`);
-          }}
-          style={{
-            backgroundColor: "#B57FFF",
-            color: "white",
-            fontWeight: 600,
-            fontFamily: "Roboto Mono, monospace",
-            alignSelf: "center",
-          }}
-        >
-          JOIN →
-        </Button>
+        {/* Tags at bottom */}
+        {club.tags?.length ? (
+          <Flex gap="sm" mt="sm" wrap="wrap">
+            {club.tags.map((tag) => (
+              <Button
+                key={tag}
+                radius="xl"
+                variant="white"
+                style={{
+                  backgroundColor: "white",
+                  color: "black",
+                  fontFamily: "Roboto Mono, monospace",
+                  fontSize: "12px",
+                  padding: "6px 20px",
+                }}
+              >
+                {tag.toUpperCase()}
+              </Button>
+            ))}
+          </Flex>
+        ) : null}
       </Flex>
     </Paper>
   );

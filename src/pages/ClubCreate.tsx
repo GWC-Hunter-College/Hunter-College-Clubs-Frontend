@@ -1,16 +1,16 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import {
   Box,
   Title,
   Text,
+  CloseButton,
   Stack,
   TextInput,
   Textarea,
-  FileInput,
   Group,
   Button,
-  Image,
   Paper,
+  Avatar,
 } from "@mantine/core";
 
 import { useAuthInfo } from "../types/auth";
@@ -32,6 +32,7 @@ export default function ClubCreatePage() {
     () => (logoFile ? URL.createObjectURL(logoFile) : null),
     [logoFile]
   );
+
   useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -50,17 +51,26 @@ export default function ClubCreatePage() {
     setSubmitting(false);
   }
 
-  // Build a Club-shaped object for the preview card
   const previewClub: Club = {
     id: 0,
     name: titleVal.trim() || "Your club name",
     description:
       descVal.trim() ||
       "Write a short description about your club’s purpose, activities, and goals.",
-    logo: previewUrl ?? undefined, // NOTE: FeaturedClubCard currently uses a placeholder image
+    logo: previewUrl ?? undefined,
     role: undefined,
     tags: [],
   };
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  function openFileDialog() {
+    fileInputRef.current?.click();
+  }
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const f = e.currentTarget.files?.[0] ?? null;
+    setLogoFile(f);
+    e.currentTarget.value = "";
+  }
 
   return (
     <Box p="md">
@@ -70,7 +80,12 @@ export default function ClubCreatePage() {
         <SignInPrompt auth={auth} />
       ) : (
         <Stack gap="md">
-          <Paper withBorder radius="lg" p="md" component="form" onSubmit={onSubmit}
+          <Paper
+            withBorder
+            radius="lg"
+            p="md"
+            component="form"
+            onSubmit={onSubmit}
             style={{
               backgroundColor: "#2A1F3F",
               border: "1px solid rgba(255,255,255,0.1)",
@@ -101,36 +116,106 @@ export default function ClubCreatePage() {
                 }}
               />
 
-              <FileInput
-                label="Club Logo"
-                placeholder="Select an image file"
-                accept="image/*"
-                value={logoFile}
-                onChange={setLogoFile}
-                clearable
-                variant="unstyled"
-                styles={{
-                  input: {
-                    background: "var(--mantine-color-dark-6)",
-                    border: "1px solid var(--mantine-color-dark-4)",
-                    borderRadius: "14px",
-                    padding: "12px 14px",
-                    color: "var(--mantine-color-white)",
-                    backgroundColor: "#a1989825",
-                  },
-                  label: { color: "var(--mantine-color-gray-4)", fontWeight: 600 },
-                }}
-              />
+              {/* Chip-style logo uploader */}
+              <div>
+                <Text fw={600} c="gray.4" mb={6}>
+                  Club Logo
+                </Text>
 
-              {previewUrl && false && (
-                <Image
-                  src={previewUrl}
-                  alt="Logo preview"
-                  fit="contain"
-                  mah={180}
-                  radius="md"
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  hidden
                 />
-              )}
+
+                {!logoFile ? (
+                  <Button
+                    onClick={openFileDialog}
+                    radius="xl"
+                    variant="outline"
+                    size="sm"
+                    styles={{
+                      root: {
+                        borderStyle: "dashed",
+                        borderColor: "var(--mantine-color-dark-4)",
+                        background: "var(--mantine-color-dark-6)",
+                        color: "var(--mantine-color-gray-1)",
+                        fontWeight: 700,
+                        backgroundColor: "#4e3f63d1",
+                      },
+                    }}
+                  >
+                    + Add image
+                  </Button>
+                ) : (
+                  <Group gap="xs" wrap="nowrap" align="center">
+                    <Paper
+                      radius="xl"
+                      withBorder
+                      p="xs"
+                      px="md"
+                      style={{
+                        background: "#2A1F3F",
+                        backgroundColor: "#3d2f5137",
+                      }}
+                    >
+                      <Group gap="sm" wrap="nowrap" align="center">
+                        <Avatar
+                          src={previewUrl ?? undefined}
+                          size={24}
+                          radius="xl"
+                          styles={{
+                            root: {
+                              background: "#2A1F3F",
+                              border: "1px solid rgba(255,255,255,0.12)",
+                            },
+                          }}
+                        />
+                        <Text
+                          size="sm"
+                          fw={600}
+                          style={{
+                            maxWidth: 360,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            color: "var(--mantine-color-gray-0)",
+                          }}
+                          title={logoFile.name}
+                        >
+                          {logoFile.name}
+                        </Text>
+                      </Group>
+                    </Paper>
+
+                    <CloseButton
+                      aria-label="Remove image"
+                      onClick={() => setLogoFile(null)}
+                      size="lg"
+                      title="Remove"
+                      style={{
+                        background: "#2A1F3F",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        borderRadius: 9999,
+                        color: "var(--mantine-color-gray-2)",
+                        opacity: 0.55,
+                        transition: "opacity .12s ease, filter .12s ease",
+                        filter: "brightness(0.98)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.opacity = "1";
+                        e.currentTarget.style.filter = "brightness(1.05)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.opacity = "0.55";
+                        e.currentTarget.style.filter = "brightness(0.98)";
+                      }}
+                    />
+                  </Group>
+                )}
+              </div>
 
               <Textarea
                 label="Description"
@@ -167,7 +252,6 @@ export default function ClubCreatePage() {
             </Stack>
           </Paper>
 
-          {/* Live Preview */}
           <Stack gap="sm" mt="lg">
             <Title order={3}>Preview</Title>
             <FeaturedClubCard club={previewClub} />

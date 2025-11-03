@@ -7,6 +7,10 @@ import PageHeader from "../components/Other/PageHeader";
 import FeaturedClubCard from "../components/ClubPage/FeaturedClubCard";
 import ClubFormPanel from "../components/ClubCreate/ClubFormPanel";
 
+function truncate(s: string, n: number) {
+  return s.length > n ? s.slice(0, n - 1) + "…" : s;
+}
+
 export default function ClubCreatePage() {
   const auth = useAuthInfo();
 
@@ -24,7 +28,11 @@ export default function ClubCreatePage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
-    console.log("createClub payload (stub):", { title: titleVal, description: descVal, logo: logoFile });
+    console.log("createClub payload (stub):", {
+      title: titleVal,
+      description: descVal,
+      logo: logoFile,
+    });
     await new Promise((r) => setTimeout(r, 150));
     setSubmitting(false);
   }
@@ -32,7 +40,12 @@ export default function ClubCreatePage() {
   const previewClub: Club = {
     id: 0,
     name: titleVal.trim() || "Your club name",
-    description: descVal.trim() || "Write a short description about your club’s purpose, activities, and goals.",
+    description:
+      truncate(
+        (descVal.trim() ||
+          "Write a short description about your club’s purpose, activities, and goals."),
+        220
+      ),
     logo: previewUrl ?? undefined,
     role: undefined,
     tags: [],
@@ -40,27 +53,36 @@ export default function ClubCreatePage() {
 
   return (
     <Box p="md">
-      <PageHeader pageTitle="Club Creation" back={{ size: "md" }} user={{ auth }} />
-      {!auth.signedIn ? (
-        <SignInPrompt auth={auth} />
-      ) : (
-        <Box maw={1100} mx="auto" w="100%">
-          <Title order={3} mb="sm">Preview</Title>
-          <FeaturedClubCard club={previewClub} />
+      <Box maw={1000} mx="auto" w="100%">
+        <PageHeader pageTitle="Club Creation" back={{ size: "md" }} user={{ auth }} />
 
-          <Title order={3} mt="lg" mb="sm">Club details</Title>
-          <ClubFormPanel
-            titleVal={titleVal}
-            descVal={descVal}
-            logoFile={logoFile}
-            setTitleVal={setTitleVal}
-            setDescVal={setDescVal}
-            setLogoFile={setLogoFile}
-            submitting={submitting}
-            onSubmit={onSubmit}
-          />
-        </Box>
-      )}
+        {!auth.signedIn ? (
+          <SignInPrompt auth={auth} />
+        ) : (
+          <>
+            <Title order={4} mb="xs">
+              Preview
+            </Title>
+            <FeaturedClubCard club={previewClub} />
+
+            <Title order={4} mt="md" mb="xs">
+              Club details
+            </Title>
+            <ClubFormPanel
+              titleVal={titleVal}
+              descVal={descVal}
+              logoFile={logoFile}
+              setTitleVal={setTitleVal}
+              setDescVal={setDescVal}
+              setLogoFile={setLogoFile}
+              submitting={submitting}
+              onSubmit={onSubmit}
+              compact
+              minRows={5}
+            />
+          </>
+        )}
+      </Box>
     </Box>
   );
 }

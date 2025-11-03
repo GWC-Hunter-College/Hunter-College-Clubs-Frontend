@@ -20,6 +20,8 @@ type Props = {
   setLogoFile: (f: File | null) => void;
   submitting?: boolean;
   onSubmit: (e: React.FormEvent) => void;
+  minRows?: number;
+  compact?: boolean;
 };
 
 export default function ClubFormPanel({
@@ -31,6 +33,8 @@ export default function ClubFormPanel({
   setLogoFile,
   submitting = false,
   onSubmit,
+  minRows = 8,
+  compact = false,
 }: Props) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const chipBg = "#976bd4d1";
@@ -49,7 +53,7 @@ export default function ClubFormPanel({
     <Paper
       withBorder
       radius="lg"
-      p="md"
+      p={compact ? "sm" : "md"}
       component="form"
       onSubmit={onSubmit}
       style={{
@@ -58,23 +62,23 @@ export default function ClubFormPanel({
         color: "white",
       }}
     >
-      <Stack gap="md">
+      <Stack gap={compact ? "sm" : "md"}>
         <TextInput
           label="Club Title"
           placeholder="Enter the Name of the Club Here"
           value={titleVal}
           onChange={(e) => setTitleVal(e.currentTarget.value)}
           required
-          size="lg"
+          size="md"
           variant="unstyled"
           styles={{
             input: {
               background: "var(--mantine-color-dark-6)",
               border: "1px solid var(--mantine-color-dark-4)",
               borderRadius: "30px",
-              padding: "14px 16px",
+              padding: compact ? "10px 14px" : "14px 16px",
               color: "var(--mantine-color-white)",
-              fontSize: "1.05rem",
+              fontSize: compact ? "1rem" : "1.05rem",
               fontWeight: 600,
               backgroundColor: "#a1989825",
             },
@@ -82,7 +86,6 @@ export default function ClubFormPanel({
           }}
         />
 
-        {/* Club Logo (chip-style uploader) */}
         <div>
           <Text fw={600} c="gray.4" mb={6}>
             Club Logo
@@ -101,7 +104,7 @@ export default function ClubFormPanel({
               onClick={openFileDialog}
               radius="xl"
               variant="outline"
-              size="sm"
+              size={compact ? "xs" : "sm"}
               styles={{
                 root: {
                   borderStyle: "dashed",
@@ -135,8 +138,8 @@ export default function ClubFormPanel({
               >
                 <Group gap="sm" wrap="nowrap" align="center">
                   <Avatar
-                    src={URL.createObjectURL(logoFile)}
-                    size={24}
+                    src={logoFile ? URL.createObjectURL(logoFile) : undefined}
+                    size={22}
                     radius="xl"
                     styles={{
                       root: {
@@ -149,7 +152,7 @@ export default function ClubFormPanel({
                     size="sm"
                     fw={600}
                     style={{
-                      maxWidth: 360,
+                      maxWidth: 320,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
@@ -165,7 +168,7 @@ export default function ClubFormPanel({
               <CloseButton
                 aria-label="Remove image"
                 onClick={() => setLogoFile(null)}
-                size="lg"
+                size="sm"
                 title="Remove"
                 style={{
                   background: chipBg,
@@ -198,17 +201,17 @@ export default function ClubFormPanel({
           value={descVal}
           onChange={(e) => setDescVal(e.currentTarget.value)}
           autosize
-          minRows={8}
-          required
+          minRows={minRows}
+          maxRows={10}
           variant="unstyled"
           styles={{
             input: {
               background: "var(--mantine-color-dark-6)",
               border: "1px solid var(--mantine-color-dark-4)",
               borderRadius: "14px",
-              padding: "14px 16px",
+              padding: compact ? "10px 14px" : "14px 16px",
               color: "var(--mantine-color-white)",
-              lineHeight: 1.5,
+              lineHeight: 1.45,
               backgroundColor: "#a1989825",
             },
             label: { color: "var(--mantine-color-gray-4)", fontWeight: 600 },

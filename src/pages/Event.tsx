@@ -6,16 +6,6 @@ import EventHero from "../components/EventPage/EventHero";
 import EventHeader from "../components/EventPage/EventHeader";
 import EventDetails from "../components/EventPage/EventDetails";
 
-// function formatRange(startIso: string, endIso: string) {
-//   const s = new Date(startIso);
-//   const e = new Date(endIso);
-//   const day = s.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
-//   const fmtTime = (d: Date) => d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
-//   const sameDay = s.toDateString() === e.toDateString();
-//   const timeRange = sameDay ? `${fmtTime(s)}–${fmtTime(e)}` : `${fmtTime(s)} → ${e.toLocaleDateString()} ${fmtTime(e)}`;
-//   return `${day} • ${timeRange}`;
-// }
-
 const DEMO_EVENT: Event = {
   id: 1,
   title: "Girls Who Code — Club Fair",

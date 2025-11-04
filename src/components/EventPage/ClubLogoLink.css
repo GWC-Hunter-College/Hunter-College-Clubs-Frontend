@@ -1,0 +1,76 @@
+/* Base element uses CSS variables; modifiers below set the variables */
+.cllogo__link {
+  --size: 56px;           /* default "md" */
+  --radius: 12px;
+  --offset-rest: 0px;
+  --offset-hover: 5px;    /* default "md" nudge */
+
+  position: relative;
+  display: inline-block;
+  outline: none;
+  text-decoration: none;
+
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--radius);
+}
+
+/* Size modifiers */
+.cllogo--sm { --size: 48px; --radius: 10px; }
+.cllogo--md { --size: 56px; --radius: 12px; }
+.cllogo--lg { --size: 64px; --radius: 14px; }
+
+/* Offset modifiers */
+.cllogo--offset-none { --offset-hover: 0px; }
+.cllogo--offset-sm   { --offset-hover: 3px; }
+.cllogo--offset-md   { --offset-hover: 5px; }
+.cllogo--offset-lg   { --offset-hover: 7px; }
+
+.cllogo__backer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: #fff;
+  transform: translate(var(--offset-rest), var(--offset-rest));
+  transition: transform 160ms ease, opacity 160ms ease;
+  pointer-events: none;
+  opacity: 0.95;
+}
+
+.cllogo__img {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  display: block;
+  background: #0b0a11;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  transform: translate(0, 0);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+  will-change: transform;
+}
+
+/* Hover/focus: nudge image up-left, backer down-right */
+.cllogo__link:hover .cllogo__img,
+.cllogo__link:focus-visible .cllogo__img {
+  transform: translate(calc(-1 * var(--offset-hover)), calc(-1 * var(--offset-hover)));
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4);
+}
+.cllogo__link:hover .cllogo__backer,
+.cllogo__link:focus-visible .cllogo__backer {
+  transform: translate(var(--offset-hover), var(--offset-hover));
+}
+
+/* Accessible focus halo without default outline */
+.cllogo__link:focus-visible {
+  outline: 2px solid transparent;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
+  border-radius: calc(var(--radius) + 2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cllogo__backer,
+  .cllogo__img {
+    transition: none;
+  }
+}

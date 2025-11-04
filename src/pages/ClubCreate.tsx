@@ -55,7 +55,7 @@ export default function ClubCreatePage() {
   return (
     <PageShell
       pageTitle="Club Creation"
-      back={true}
+      back={{to: "/clubs"}}
       user={{ auth }}
       size="xl"
       padded

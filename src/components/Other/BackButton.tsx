@@ -44,7 +44,7 @@ export default function BackButton({
   const navigate = useNavigate();
   const handle = () => {
     onClick?.();
-    to ? navigate(to) : navigate(-1);
+    to ? navigate(to) : navigate("/");
   };
 
   const btnPx = size === "sm" ? 40 : size === "md" ? 48 : 56; // circle diameter

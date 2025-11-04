@@ -83,7 +83,7 @@ export default function ClubDirectory() {
   return (
     <PageShell
       pageTitle="Clubs"
-      back={true}
+      back={{to: "/"}}
       user={{ auth }}
       size="xl"
       padded
@@ -154,7 +154,7 @@ export default function ClubDirectory() {
                 fontFamily: "Roboto Mono, monospace",
               }}
             >
-              CLUB GALLERY
+              CLUB DIRECTORY
             </Title>
             <Box
               style={{

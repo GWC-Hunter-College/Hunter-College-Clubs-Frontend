@@ -1,5 +1,4 @@
 // components/Events/EventCard.tsx
-import { Link } from "react-router-dom";
 import {
   Card,
   Group,
@@ -10,6 +9,8 @@ import {
 } from "@mantine/core";
 import classes from "./EventCard.module.css";
 import type { Event } from "../../types/events"; 
+
+import { useEventModal } from "../../context/EventModalContext";
 
 function formatRange(startIso: string, endIso: string) {
   const s = new Date(startIso);
@@ -32,15 +33,20 @@ function formatRange(startIso: string, endIso: string) {
   return `${day} • ${timeRange}`;
 }
 
-export default function EventCard({ event }: { event: Event }) {
+type Props = { event: Event };
+
+export default function EventCard({ event }: Props) {
   const theme = useMantineTheme();
-  const to = `/event/${event.id}`;
+  const { openEvent } = useEventModal();
+
+  const handleOpen = () => openEvent({ event }); 
 
   return (
     <Card
       className={classes.tile}
-      component={Link}
-      to={to}
+      // component={Link}
+      // to={to}
+      onClick={handleOpen}
       shadow="lg"
       radius="md"
       p={0}

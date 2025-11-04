@@ -83,7 +83,7 @@ export default function ClubDirectory() {
   return (
     <PageShell
       pageTitle="Clubs"
-      back={true}
+      back={{to: "/"}}
       user={{ auth }}
       size="xl"
       padded

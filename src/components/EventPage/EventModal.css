@@ -1,7 +1,7 @@
 /* Scope everything under a unique prefix to avoid collisions */
 /* Outer shell: only bottom corners rounded */
 .event-modal__shell {
-  border-radius: 0 0 16px 16px;   /* ← was 16px all around */
+  border-radius: 0 0 16px 16px;  
   overflow: hidden;
   background: #190b30;
 }
@@ -17,13 +17,13 @@
   border-top-right-radius: 0 !important;
   border-bottom: none;
   padding: 0;
-  min-height: 50px;                 /* ← your previous rule missed units */
+  min-height: 50px;                 
 }
 
 /* Banner should visually blend with shell/panel */
 .event-modal__banner {
   width: 100%;
-  background: #1b1330;       /* ← match #190b30 so no seam */
+  background: #1b1330;       
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,7 +34,7 @@
 .event-modal__coverWrap {
   width: clamp(220px, 60%, 520px);
   aspect-ratio: 1 / 1;
-  border-radius: 16px;           /* rounded poster is fine */
+  border-radius: 16px;           
   overflow: hidden;
 }
 

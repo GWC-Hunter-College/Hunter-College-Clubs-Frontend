@@ -143,7 +143,7 @@ export default function ClubPage() {
   return (
     <PageShell
       pageTitle={club?.name ?? "Club"}
-      back={true}
+      back={{to: "/clubs"}}
       user={{ auth }}
       size="xl"
       padded

@@ -1,5 +1,4 @@
 // components/Events/EventCard.tsx
-import { Link } from "react-router-dom";
 import {
   Card,
   Group,

@@ -1,0 +1,101 @@
+/* Scope everything under a unique prefix to avoid collisions */
+.event-modal__shell {
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Mantine Modal class hooks */
+.event-modal__content {
+  background: transparent;
+}
+.event-modal__body {
+  padding: 0;
+}
+
+/* ---------- Banner (centered, smaller image) ---------- */
+.event-modal__banner {
+  width: 100%;
+  background: #1b1330;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(12px, 2.5vw, 24px) 0;
+}
+
+/* Flyer container: controls the visual size */
+.event-modal__coverWrap {
+  width: clamp(220px, 60%, 520px); /* <-- smaller, responsive width */
+  aspect-ratio: 1 / 1;            /* square like the Figma card */
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Actual <img> */
+.event-modal__cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Panel */
+.event-modal__panel {
+  background: #190b30;
+  color: white;
+  padding: var(--mantine-spacing-lg);
+}
+
+/* Typography */
+.event-modal__title {
+  font-family: "Roboto Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 800;
+  font-size: clamp(1.6rem, 3.2vw, 2.8rem);
+  line-height: 1.1;
+}
+.event-modal__clubName {
+  font-family: "Roboto Mono", monospace;
+}
+
+/* Details */
+.event-modal__detailsLabel {
+  font-family: "Roboto Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 800;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+}
+.event-modal__detailsValue {
+  font-family: "Roboto Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 400;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+}
+
+/* Divider */
+.event-modal__divider {
+  background: rgba(255, 255, 255, 0.08);
+  height: 1px;
+}
+
+/* Description block */
+.event-modal__descWrap {
+  border-left: 3px solid rgba(255, 255, 255, 0.35);
+  padding-left: var(--mantine-spacing-md);
+  margin-top: var(--mantine-spacing-xs);
+}
+.event-modal__descText {
+  color: var(--mantine-color-gray-3);
+  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  line-height: 1.6;
+}
+
+/* Club logo image */
+.event-modal__clubLogo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  object-fit: cover;
+}

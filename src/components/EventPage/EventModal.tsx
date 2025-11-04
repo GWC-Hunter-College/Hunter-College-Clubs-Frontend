@@ -1,4 +1,3 @@
-// src/components/Event/EventModal.tsx
 import { Fragment } from "react";
 import {
   Modal,
@@ -12,11 +11,10 @@ import {
   Image,
   Badge,
 } from "@mantine/core";
-import type { Event } from "../../types/events"; // canonical Event
+import type { Event } from "../../types/events";
+import "./EventModal.css";
 
-// -----------------------
-// Inline EventDetails logic
-// -----------------------
+/* ----- EventDetails logic (styled via global CSS) ----- */
 type DetailsProps = {
   startDate?: string | null;
   endDate?: string | null;
@@ -29,7 +27,7 @@ const parse = (s?: string | null) => {
   return Number.isNaN(d.getTime()) ? null : d;
 };
 const formatDay = (d: Date) =>
-  d.toLocaleDateString(undefined, { month: "short", day: "numeric" }); // no year
+  d.toLocaleDateString(undefined, { month: "numeric", day: "numeric", year: "numeric" });
 const formatTime = (d: Date) =>
   d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 
@@ -70,22 +68,23 @@ function Details({ startDate, endDate, location }: DetailsProps) {
 
   return (
     <Stack gap={6}>
-      <Text fw={700} tt="uppercase">
-        {line1Label} <Text span fw={400}>{line1Value}</Text>
+      <Text className="event-modal__detailsLabel">
+        {line1Label}{" "}
+        <Text span className="event-modal__detailsValue">{line1Value}</Text>
       </Text>
-      <Text fw={700} tt="uppercase">
-        {line2Label} <Text span fw={400}>{line2Value}</Text>
+      <Text className="event-modal__detailsLabel">
+        {line2Label}{" "}
+        <Text span className="event-modal__detailsValue">{line2Value}</Text>
       </Text>
-      <Text fw={700} tt="uppercase">
-        Location: <Text span fw={400}>{locLabel}</Text>
+      <Text className="event-modal__detailsLabel">
+        Location:{" "}
+        <Text span className="event-modal__detailsValue">{locLabel}</Text>
       </Text>
     </Stack>
   );
 }
 
-// -----------------------
-// Event modal
-// -----------------------
+/* ----- Event modal ----- */
 type Props = {
   opened: boolean;
   onClose: () => void;
@@ -94,7 +93,6 @@ type Props = {
 };
 
 export default function EventModal({ opened, onClose, event, onRsvp }: Props) {
-  // Resolve what the UI needs from Event
   const title =
     (event as any).title ??
     (event as any).name ??
@@ -134,58 +132,53 @@ export default function EventModal({ opened, onClose, event, onRsvp }: Props) {
       overlayProps={{ blur: 6, opacity: 0.35 }}
       radius="lg"
       padding={0}
-      styles={{ content: { background: "transparent" }, body: { padding: 0 } }}
+      classNames={{ content: "event-modal__content", body: "event-modal__body" }}
     >
-      <Stack gap={0} style={{ borderRadius: 16, overflow: "hidden" }}>
-        {/* Banner */}
-        <Box
-          style={{
-            position: "relative",
-            width: "100%",
-            aspectRatio: "5 / 4",
-            background: "#1b1330",
-          }}
-        >
+      <Stack gap={0} className="event-modal__shell">
+        {/* Banner with centered, smaller flyer */}
+        <Box className="event-modal__banner">
           {coverImage ? (
-            <Image
-              src={coverImage}
-              alt={title}
-              fit="cover"
-              height="100%"
-              width="100%"
-              style={{ display: "block", objectFit: "cover", height: "100%" }}
-            />
+            <Box className="event-modal__coverWrap">
+              <Image
+                src={coverImage}
+                alt={title}
+                fit="cover"
+                className="event-modal__cover"
+              />
+            </Box>
           ) : null}
         </Box>
 
-        {/* Info */}
-        <Box p="lg" style={{ background: "#190b30", color: "white" }}>
+        {/* Info panel */}
+        <Box className="event-modal__panel">
           <Stack gap="md">
             <Group align="center" justify="space-between" wrap="nowrap">
               <Group gap="sm">
                 {clubLogo ? (
-                  <Image
+                  <img
                     src={clubLogo}
                     alt={clubName ?? ""}
-                    radius="xl"
-                    h={36}
-                    w={36}
-                    style={{ objectFit: "cover" }}
+                    className="event-modal__clubLogo"
                   />
                 ) : null}
                 <Stack gap={2}>
-                  <Title order={3} c="white" style={{ lineHeight: 1.1 }}>
+                  <Title order={2} c="white" className="event-modal__title">
                     {title}
                   </Title>
-                  {clubName ? <Text size="sm" c="dimmed">{clubName}</Text> : null}
+                  {clubName ? (
+                    <Text size="sm" c="dimmed" className="event-modal__clubName">
+                      {clubName}
+                    </Text>
+                  ) : null}
                 </Stack>
               </Group>
-              <Badge variant="light" radius="lg">Club Event</Badge>
+              <Badge variant="light" radius="lg">
+                Club Event
+              </Badge>
             </Group>
 
-            <Divider color="rgba(255,255,255,0.08)" />
+            <Divider className="event-modal__divider" />
 
-            {/* Figma-style details (from your EventDetails) */}
             <Details
               startDate={(event as any).start ?? null}
               endDate={(event as any).end ?? null}
@@ -193,9 +186,11 @@ export default function EventModal({ opened, onClose, event, onRsvp }: Props) {
             />
 
             {(event as any).description ? (
-              <Text size="sm" c="gray.3">
-                {(event as any).description}
-              </Text>
+              <Box className="event-modal__descWrap">
+                <Text className="event-modal__descText">
+                  {(event as any).description}
+                </Text>
+              </Box>
             ) : null}
 
             <Group justify="end" mt="sm">

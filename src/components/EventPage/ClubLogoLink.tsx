@@ -8,14 +8,11 @@ type Offset = "none" | "sm" | "md" | "lg";
 
 type Props = {
   owner?: Event["owner"];
-  /** visual size preset */
-  size?: Size;          // default "md" (56px)
-  /** hover nudge preset */
-  offset?: Offset;      // default "md" (5px)
-  /** fallback logo if none provided */
+  size?: Size;                 // default "md"
+  offset?: Offset;             // default "md"
   fallbackSrc?: string;
-  /** aria-label override when link is present */
   ariaLabel?: string;
+  onClick?: () => void;        // ← new: allow parent to react to clicks
 };
 
 export default function ClubLogoLink({
@@ -24,15 +21,16 @@ export default function ClubLogoLink({
   offset = "md",
   fallbackSrc = "/logo.png",
   ariaLabel,
+  onClick,
 }: Props) {
   const to = owner?.id != null ? `/club/${owner.id}` : null;
   const logoSrc = owner?.logo ?? fallbackSrc;
 
   const className = `cllogo__link cllogo--${size} cllogo--offset-${offset}`;
+
   const contents = (
     <>
       <span className="cllogo__backer" />
-      {/* empty alt since the link itself is labeled */}
       <img className="cllogo__img" src={logoSrc} alt="" />
     </>
   );
@@ -43,14 +41,26 @@ export default function ClubLogoLink({
         to={to}
         className={className}
         aria-label={ariaLabel ?? `Go to ${owner?.id ?? "club"} page`}
+        onClick={onClick}                    // ← close modal before navigating
       >
         {contents}
       </Link>
     );
   }
 
+  // No destination: behave like a button so close still works
   return (
-    <Box className={className} aria-hidden="true">
+    <Box
+      className={className}
+      role="button"
+      tabIndex={0}
+      aria-hidden="false"
+      aria-label={ariaLabel ?? "Close"}
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") onClick?.();
+      }}
+    >
       {contents}
     </Box>
   );

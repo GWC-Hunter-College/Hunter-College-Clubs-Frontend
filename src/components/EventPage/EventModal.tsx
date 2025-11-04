@@ -104,7 +104,7 @@ export default function EventModal({ opened, onClose, event, onRsvp }: Props) {
           <Stack gap="md">
             {/* Header: club logo left, event title right */}
             <Group align="center" justify="flex-start" gap="sm" wrap="nowrap">
-              <ClubLogoLink owner={owner} size="md" offset="md" />
+              <ClubLogoLink owner={owner} size="md" offset="md" onClick={onClose} />
               <Stack gap={2}>
                 <Title order={2} c="white" className="event-modal__title">
                   {title}
@@ -121,7 +121,7 @@ export default function EventModal({ opened, onClose, event, onRsvp }: Props) {
             {description ? (
               <Box className="event-modal__descWrap">
                 <Text className="event-modal__descText">
-                    {/* {description} */}
+                    {description}
                     {/* A community of students empowering each other through coding workshops, mentorship, and projects. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. */}
                 </Text>
               </Box>

@@ -1,25 +1,23 @@
-import { useEffect, useMemo, useState } from "react";
-// import { Flex, Divider, Text, SimpleGrid, Box } from "@mantine/core";
+// src/components/Event/EventList.tsx
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { Flex, Divider, Text, Box } from "@mantine/core";
 import Section from "../HomePage/Section";
 import EventCard from "./EventCard";
 import View from "../HomePage/View";
-import type { Event } from "../../types/events"; // ⬅️ use canonical Event
+import type { Event } from "../../types/events";
+import { useEventModal } from "../../context/EventModalContext";
 
 type EventsListProps = {
   title: string;
   views: string[];
   active?: string;
   onChangeView?: (label: string) => void;
-
-  // events to render (canonical Event[])
   events: Event[];
 };
 
-// top of file (or above the return)
-const CARD_SIZE = "clamp(200px, 17vw, 260px)"; // <= max 260px so 3 cols + gaps fit in 60vw
-const GAP       = "clamp(12px, 2vw, 16px)";
-// const BAND_MAX  = "60vw";
+// Layout constants
+const CARD_SIZE = "clamp(200px, 17vw, 260px)";
+const GAP = "clamp(12px, 2vw, 16px)";
 
 // "SEPTEMBER 2025"
 const monthLabel = (iso: string) => {
@@ -34,6 +32,8 @@ export default function EventList({
   onChangeView,
   events,
 }: EventsListProps) {
+  const { openEvent } = useEventModal();
+
   // default to first view
   const [uncontrolledActive, setUncontrolledActive] = useState<string>(
     controlledActive ?? views[0] ?? ""
@@ -50,6 +50,13 @@ export default function EventList({
     setUncontrolledActive(label);
     onChangeView?.(label);
   };
+
+  const handleOpen = useCallback(
+    (ev: Event) => {
+      openEvent({ event: ev });
+    },
+    [openEvent]
+  );
 
   // Group events by month (preserves first-seen order)
   const monthBuckets = useMemo(() => {
@@ -100,13 +107,12 @@ export default function EventList({
 
       {/* Months */}
       {monthBuckets.map(([month, items]) => {
-        // Wider band for months with more items so they can add another column
         const bandMax =
           items.length >= 8
-            ? "min(95vw, 1600px)" // 5 cols possible on huge screens
+            ? "min(95vw, 1600px)"
             : items.length >= 4
-            ? "min(80vw, 1280px)" // allow 4 cols
-            : "min(60vw, 1040px)"; // default ~3/5 width (what you liked before)
+            ? "min(80vw, 1280px)"
+            : "min(60vw, 1040px)";
 
         return (
           <Box key={month} mt="2rem">
@@ -117,15 +123,25 @@ export default function EventList({
               <Box
                 style={{
                   display: "grid",
-                  // Identical column width everywhere; grid auto-fits more columns when band gets wider
                   gridTemplateColumns: `repeat(auto-fit, minmax(${CARD_SIZE}, ${CARD_SIZE}))`,
                   gap: GAP,
-                  justifyContent: "start", // pack left; leave right side empty
+                  justifyContent: "start",
                   alignItems: "start",
                 }}
               >
                 {items.map((ev) => (
-                  <EventCard key={ev.id} event={ev} />
+                  <Box
+                    key={ev.id}
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => handleOpen(ev)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") handleOpen(ev);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <EventCard event={ev} />
+                  </Box>
                 ))}
               </Box>
             </Box>

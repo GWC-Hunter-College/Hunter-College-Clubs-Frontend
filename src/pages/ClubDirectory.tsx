@@ -154,7 +154,7 @@ export default function ClubDirectory() {
                 fontFamily: "Roboto Mono, monospace",
               }}
             >
-              CLUB GALLERY
+              CLUB DIRECTORY
             </Title>
             <Box
               style={{

@@ -79,16 +79,21 @@ export default function EventModal({ opened, onClose, event, onRsvp }: Props) {
 
   return (
     <Modal
-      opened={opened}
-      onClose={onClose}
-      withCloseButton
-      centered
-      size="lg"
-      overlayProps={{ blur: 6, opacity: 0.35 }}
-      radius="lg"
-      padding={0}
-      classNames={{ content: "event-modal__content", body: "event-modal__body" }}
+        opened={opened}
+        onClose={onClose}
+        withCloseButton
+        centered
+        size="lg"
+        overlayProps={{ blur: 6, opacity: 0.35 }}
+        radius="lg"
+        padding={0}
+        classNames={{
+            content: "event-modal__content",
+            body: "event-modal__body",
+            header: "event-modal__header",        // ← add this
+        }}
     >
+
       <Stack gap={0} className="event-modal__shell">
         {/* Flyer (centered, smaller) */}
         <Box className="event-modal__banner">

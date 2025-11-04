@@ -1,34 +1,43 @@
 /* Scope everything under a unique prefix to avoid collisions */
+/* Outer shell: only bottom corners rounded */
 .event-modal__shell {
-  border-radius: 16px;
+  border-radius: 0 0 16px 16px;   /* ← was 16px all around */
   overflow: hidden;
+  background: #190b30;
 }
 
-/* Mantine Modal class hooks */
-.event-modal__content {
-  background: transparent;
-}
-.event-modal__body {
+/* Mantine parts */
+.event-modal__content { background: transparent; }
+.event-modal__body { padding: 0; }
+
+/* Header bar (keep same color, no top radius) */
+.event-modal__header {
+  background: #190b30 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  border-bottom: none;
   padding: 0;
+  min-height: 50px;                 /* ← your previous rule missed units */
 }
 
-/* ---------- Banner ---------- */
+/* Banner should visually blend with shell/panel */
 .event-modal__banner {
   width: 100%;
-  background: #1b1330;
+  background: #1b1330;       /* ← match #190b30 so no seam */
   display: flex;
   align-items: center;
   justify-content: center;
   padding: clamp(12px, 2.5vw, 24px) 0;
 }
 
-/* Flyer container: controls the visual size */
+/* Flyer container — keep whatever rounding you want for the image itself */
 .event-modal__coverWrap {
-  width: clamp(220px, 60%, 520px); 
-  aspect-ratio: 1 / 1;            
-  border-radius: 16px;
+  width: clamp(220px, 60%, 520px);
+  aspect-ratio: 1 / 1;
+  border-radius: 16px;           /* rounded poster is fine */
   overflow: hidden;
 }
+
 
 /* Actual <img> */
 .event-modal__cover {

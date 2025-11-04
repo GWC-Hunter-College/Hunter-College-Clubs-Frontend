@@ -12,7 +12,7 @@
   padding: 0;
 }
 
-/* ---------- Banner (centered, smaller image) ---------- */
+/* ---------- Banner ---------- */
 .event-modal__banner {
   width: 100%;
   background: #1b1330;
@@ -24,8 +24,8 @@
 
 /* Flyer container: controls the visual size */
 .event-modal__coverWrap {
-  width: clamp(220px, 60%, 520px); /* <-- smaller, responsive width */
-  aspect-ratio: 1 / 1;            /* square like the Figma card */
+  width: clamp(220px, 60%, 520px); 
+  aspect-ratio: 1 / 1;            
   border-radius: 16px;
   overflow: hidden;
 }

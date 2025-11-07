@@ -5,7 +5,6 @@ import Section from "../HomePage/Section";
 import EventCard from "./EventCard";
 import View from "../HomePage/View";
 import type { Event } from "../../types/events";
-import { useEventModal } from "../../context/EventModalContext";
 
 type EventsListProps = {
   title: string;
@@ -13,6 +12,7 @@ type EventsListProps = {
   active?: string;
   onChangeView?: (label: string) => void;
   events: Event[];
+  onEventClick?: (ev: Event) => void; // parent provides click behavior
 };
 
 // Layout constants
@@ -31,9 +31,8 @@ export default function EventList({
   active: controlledActive,
   onChangeView,
   events,
+  onEventClick, 
 }: EventsListProps) {
-  const { openEvent } = useEventModal();
-
   // default to first view
   const [uncontrolledActive, setUncontrolledActive] = useState<string>(
     controlledActive ?? views[0] ?? ""
@@ -53,9 +52,9 @@ export default function EventList({
 
   const handleOpen = useCallback(
     (ev: Event) => {
-      openEvent({ event: ev });
+      onEventClick?.(ev);
     },
-    [openEvent]
+    [onEventClick]
   );
 
   // Group events by month (preserves first-seen order)
@@ -130,17 +129,8 @@ export default function EventList({
                 }}
               >
                 {items.map((ev) => (
-                  <Box
-                    key={ev.id}
-                    role="button"
-                    tabIndex={0}
-                    onClick={() => handleOpen(ev)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") handleOpen(ev);
-                    }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <EventCard event={ev} />
+                  <Box key={ev.id}>
+                    <EventCard event={ev} onClick={() => handleOpen(ev)} />
                   </Box>
                 ))}
               </Box>

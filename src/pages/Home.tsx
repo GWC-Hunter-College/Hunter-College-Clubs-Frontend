@@ -9,7 +9,7 @@ import PageShell from "../components/Other/PageShell";
 import { useState, useEffect, useMemo } from "react";
 
 import { useAuthInfo } from "../types/auth";
-
+import { useEventModal } from "../context/EventModalContext";
 
 import type { Event } from "../types/events";
 import { fromJsonEvents } from "../types/events";
@@ -18,6 +18,10 @@ import EventList from "../components/Events/EventList";
 
 export default function Home() {
   const authInfo = useAuthInfo();
+  
+  const { openEvent } = useEventModal();
+  const onEventClick = (ev: Event) => openEvent({ event: ev });
+
 
   const [globalEvents, setGlobalEvents] = useState<Event[]>([]);
   const [myClubEvents, setMyClubEvents] = useState<Event[]>([]);
@@ -108,6 +112,7 @@ export default function Home() {
           views={["MY CLUBS", "GLOBAL"]}
           onChangeView={(v) => setView(v as "MY CLUBS" | "GLOBAL")}
           events={events}
+          onEventClick={onEventClick}
         />
       </Box>
     </PageShell>

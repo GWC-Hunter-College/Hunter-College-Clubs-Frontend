@@ -10,7 +10,7 @@ import type { Club } from "../types/club";
 import { fromJsonClubs } from "../types/club";
 import { API_BASE_URL } from "../config";
 
-export default function ClubCreatePage() {
+export default function EventCreatePage() {
   const auth = useAuthInfo();
 
   const [authorizedClubs, setAuthorizedClubs] = useState<Club[]>([]);

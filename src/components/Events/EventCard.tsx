@@ -8,9 +8,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import classes from "./EventCard.module.css";
-import type { Event } from "../../types/events"; 
-
-import { useEventModal } from "../../context/EventModalContext";
+import type { Event } from "../../types/events";
 
 function formatRange(startIso: string, endIso: string) {
   const s = new Date(startIso);
@@ -19,7 +17,7 @@ function formatRange(startIso: string, endIso: string) {
   const day = s.toLocaleDateString(undefined, {
     weekday: "short",
     month: "short",
-    day: "numeric"
+    day: "numeric",
   });
 
   const fmtTime = (d: Date) =>
@@ -33,29 +31,46 @@ function formatRange(startIso: string, endIso: string) {
   return `${day} • ${timeRange}`;
 }
 
-type Props = { event: Event };
+type Props = {
+  event: Event;
+  onClick?: () => void; // parent decides what clicking does (modal, navigate, etc.)
+};
 
-export default function EventCard({ event }: Props) {
+export default function EventCard({ event, onClick }: Props) {
   const theme = useMantineTheme();
-  const { openEvent } = useEventModal();
-
-  const handleOpen = () => openEvent({ event }); 
 
   return (
     <Card
       className={classes.tile}
-      // component={Link}
-      // to={to}
-      onClick={handleOpen}
+      onClick={onClick}
       shadow="lg"
       radius="md"
       p={0}
-      style={{ overflow: "hidden", textDecoration: "none" }}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : -1}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
+      style={{
+        overflow: "hidden",
+        textDecoration: "none",
+        cursor: onClick ? "pointer" : "default",
+      }}
     >
       {/* Square aspect wrapper */}
       <Box className={classes.square} aria-label={event.altText || event.title}>
         {/* Background image with cover + hover zoom */}
-        <Box className={classes.bg} style={{ backgroundImage: `url(${event.flyer})` }} />
+        <Box
+          className={classes.bg}
+          style={{ backgroundImage: `url(${event.flyer})` }}
+        />
         {/* Overlay for readability */}
         <Box className={classes.overlay} />
 

@@ -12,6 +12,8 @@ import type { Club } from "../types/club";
 import { fromJsonClub } from "../types/club";
 
 import { useAuthInfo } from "../types/auth";
+import { useEventModal } from "../context/EventModalContext";
+
 
 import PageShell from "../components/Other/PageShell";
 
@@ -26,6 +28,8 @@ export default function ClubPage() {
 
   const navigate = useNavigate();
   const auth = useAuthInfo();
+  const { openEvent } = useEventModal();
+  const onEventClick = (ev: Event) => openEvent({ event: ev });
 
   // --- membership for current club ---
   const [myRole, setMyRole] = useState<Club["role"] | null>(null);
@@ -219,6 +223,7 @@ export default function ClubPage() {
           views={["Upcoming", "Previous"]}
           onChangeView={(v) => setView(v as "Upcoming" | "Previous")}
           events={filtered}
+          onEventClick={onEventClick}
         />
       </Box>
     </PageShell>

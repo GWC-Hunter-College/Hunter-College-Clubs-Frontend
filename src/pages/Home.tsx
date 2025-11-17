@@ -7,6 +7,7 @@ import Hero from "../components/HomePage/Hero"
 import PageShell from "../components/Other/PageShell";
 
 import { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useAuthInfo } from "../types/auth";
 
@@ -18,9 +19,12 @@ import EventList from "../components/Events/EventList";
 
 export default function Home() {
   const authInfo = useAuthInfo();
+  const navigate = useNavigate();
 
   const [globalEvents, setGlobalEvents] = useState<Event[]>([]);
   const [myClubEvents, setMyClubEvents] = useState<Event[]>([]);
+  const [clubs, setClubs] = useState<any[]>([]);
+  const [loadingClubs, setLoadingClubs] = useState(true);
   const [view, setView] = useState<"MY CLUBS" | "GLOBAL">("MY CLUBS");
   const [loading, setLoading] = useState(false);
 
@@ -55,6 +59,42 @@ export default function Home() {
       cancelled = true;
     };
   }, [])
+
+  // Fetch clubs for MyClubs component
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/me/clubs");
+        const json = await res.json();
+        if (cancelled) return;
+
+        const data = Array.isArray(json) ? json : json?.clubs ?? json;
+        setClubs(Array.isArray(data) ? data : [data].filter(Boolean));
+      } catch (e) {
+        console.error("Failed to fetch /me/clubs", e);
+        setClubs([]);
+      } finally {
+        if (!cancelled) setLoadingClubs(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleClubClick = (club: any) => {
+    navigate(`/club/${club.id}`);
+  };
+
+  const handleDirectoryClick = () => {
+    navigate(`/clubs`);
+  };
+
+  const handleCreateClub = () => {
+    navigate("/club/create");
+  };
 
   const { events } = useMemo(() => {
     const events = view === "MY CLUBS" ? myClubEvents : globalEvents;
@@ -96,7 +136,7 @@ export default function Home() {
         {/* Right rail becomes its own row on small; stacks on md+ */}
         <Grid.Col span={{ base: 12, md: 3, lg: 3 }}>
           <SimpleGrid cols={{ base: 2, md: 1 }} spacing="1.25rem">
-            <MyClubs />
+            <MyClubs clubs={clubs} loading={loadingClubs} onClubClick={handleClubClick} onDirectoryClick={handleDirectoryClick} onCreateClub={handleCreateClub} isSignedIn={authInfo?.signedIn} />
             <ToClubDirectory />
           </SimpleGrid>
         </Grid.Col>

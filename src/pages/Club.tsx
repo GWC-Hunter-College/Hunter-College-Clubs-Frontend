@@ -23,11 +23,13 @@ export default function ClubPage() {
 
   const { clubId } = useParams<{ clubId: string }>();
   const [error, setError] = useState<string | null>(null);
-  
+
   const navigate = useNavigate();
   const auth = useAuthInfo();
 
-  console.log("in club.tsx");
+  // --- membership for current club ---
+  const [myRole, setMyRole] = useState<Club["role"] | null>(null);
+  const [checkingMembership, setCheckingMembership] = useState(false);
 
   // load club and club events
   useEffect(() => {
@@ -48,13 +50,13 @@ export default function ClubPage() {
             console.log(`✅ Loaded club ${clubData.name} from API`);
           }
         } catch (err) {
-          console.warn("⚠️ API fetch failed", err);
+          console.warn("API fetch failed", err);
         }
         if (!clubData) {
           setError("Club not found");
           return;
         }
-        // ✅ Ensure placeholder logo if missing
+        // Ensure placeholder logo if missing
         if (clubData) {
           clubData.image = placeholderLogo;
         }
@@ -85,6 +87,46 @@ export default function ClubPage() {
     };
   }, [clubId]);
 
+  // ---- Check membership via /me/clubs (use ACCESS token from auth) ----
+  useEffect(() => {
+    let cancelled = false;
+
+    if (!auth.signedIn || !clubId) {
+      setMyRole(null);
+      return;
+    }
+
+    const token = auth.getAccessToken();
+    if (!token) {
+      setMyRole(null);
+      return;
+    }
+
+    (async () => {
+      setCheckingMembership(true);
+      try {
+        const res = await fetch(`${API_BASE_URL}/me/clubs`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const json = await res.json();
+
+        const list: Array<Pick<Club, "id" | "name" | "role">> = Array.isArray(json?.clubs)
+          ? json.clubs
+          : [];
+        const found = list.find((c) => String(c.id) === String(clubId));
+        if (!cancelled) setMyRole(found?.role ?? null);
+      } catch {
+        if (!cancelled) setMyRole(null);
+      } finally {
+        if (!cancelled) setCheckingMembership(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [auth.signedIn, auth.accessToken, clubId]);
+
   // Helpers (day-based comparisons)
   const startOfDay = (d: Date) => {
     const x = new Date(d);
@@ -111,23 +153,20 @@ export default function ClubPage() {
   }, [eventsAll]);
 
   const filtered = view === "Upcoming" ? upcoming : previous;
+
   if (error) {
     return (
       <Container py="xl">
         <Title order={2} c="red.4" mb="md">
           {error}
         </Title>
-        <Button
-          variant="subtle"
-          onClick={() => navigate(-1)}
-          leftSection="←"
-        >
+        <Button variant="subtle" onClick={() => navigate(-1)} leftSection="←">
           Go Back
         </Button>
       </Container>
     );
   }
-  
+
   // === Loading skeleton ===
   if (loading) {
     return (
@@ -143,11 +182,20 @@ export default function ClubPage() {
     );
   }
 
+  // Map membership → FeaturedClubCard.action
+  // during membership check we hide the button (`none`) to avoid flicker
+  const action: "none" | "join" | "leave" =
+    !auth.signedIn || checkingMembership || myRole === "owner"
+      ? "none"
+      : myRole === "member" || myRole === "eboard"
+      ? "leave"
+      : "join";
+
   // === Main page ===
   return (
     <PageShell
       pageTitle={club?.name ?? "Club"}
-      back={{to: "/clubs"}}
+      back={{ to: "/clubs" }}
       user={{ auth }}
       size="xl"
       padded
@@ -155,14 +203,13 @@ export default function ClubPage() {
       {/* ==== Section 1: Hero ==== */}
       <Box px={{ base: "md", sm: "lg" }} py="lg">
         <Box maw={1100} w="100%">
-
-          {/* <Space h="md" /> */}
-
-          {/* Club Info */}
           {club ? (
-            <FeaturedClubCard club={club} />
+            <FeaturedClubCard
+              club={{ ...club, role: (myRole ?? club.role) as Club["role"] }}
+              action={action}
+            />
           ) : (
-            <div style={{ height: 200 }} /> // placeholder avoids hook order changes
+            <div style={{ height: 200 }} />
           )}
         </Box>
       </Box>

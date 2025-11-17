@@ -21,6 +21,7 @@ export default function MyClubs() {
         const res = await fetch("/api/me/clubs");
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
+        console.log("MyClubs data: ", json);
         if (cancelled) return;
       
         const data = Array.isArray(json) ? json : json?.clubs ?? json;

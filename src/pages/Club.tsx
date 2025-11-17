@@ -27,6 +27,8 @@ export default function ClubPage() {
   const navigate = useNavigate();
   const auth = useAuthInfo();
 
+  console.log("in club.tsx");
+
   // load club and club events
   useEffect(() => {
     let cancelled = false;
@@ -39,6 +41,7 @@ export default function ClubPage() {
         try {
           const res = await fetch(`${API_BASE_URL}/clubs/${clubId}`);
           const json = await res.json();
+          console.log(json);
 
           if (json.club) {
             clubData = json.club;
@@ -62,7 +65,8 @@ export default function ClubPage() {
         }
 
         // Load demo events
-        const resEvents = await fetch("/data/demo-event.json");
+        const resEvents = await fetch(`${API_BASE_URL}/events`);
+        // const resEvents = await fetc(`${API_BASE_URL}/events/${clubId}`);
         const jsonEvents = await resEvents.json();
 
         if (!cancelled) {

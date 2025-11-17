@@ -11,11 +11,12 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuthInfo } from "../types/auth";
 
-
 import type { Event } from "../types/events";
 import { fromJsonEvents } from "../types/events";
 
 import EventList from "../components/Events/EventList";
+
+import { API_BASE_URL } from "../config.ts";
 
 export default function Home() {
   const authInfo = useAuthInfo();
@@ -33,11 +34,17 @@ export default function Home() {
     let cancelled = false;
     (async () => {
       try {
-        const global = await fetch("/data/demo-event.json");
-        const myClubs = await fetch("/data/demo-event-me.json");
+
+        // const myClubs = await fetch("/data/demo-event-me.json");
+        const myClubs = await fetch(`${API_BASE_URL}/events`);
+        const global = await fetch(`${API_BASE_URL}/events`);
+        // TODO: change myClubs to use prod url
 
         const globalJson = await global.json();
         const myClubsJson = await myClubs.json();
+    
+        console.log("here: ", globalJson);
+        console.log(myClubsJson);
 
         if (cancelled) {
           return;

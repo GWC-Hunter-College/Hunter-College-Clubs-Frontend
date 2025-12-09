@@ -67,12 +67,30 @@ export default function Home() {
     };
   }, [])
 
-  // Fetch clubs for MyClubs component
+    // Fetch clubs for MyClubs component
   useEffect(() => {
     let cancelled = false;
+
+    // If not signed in or no access token, clear clubs and stop
+    if (!authInfo.signedIn) {
+      setClubs([]);
+      setLoadingClubs(false);
+      return;
+    }
+
+    const token = authInfo.getAccessToken();
+    if (!token) {
+      setClubs([]);
+      setLoadingClubs(false);
+      return;
+    }
+
     (async () => {
+      setLoadingClubs(true);
       try {
-        const res = await fetch("/api/me/clubs");
+        const res = await fetch(`${API_BASE_URL}/me/clubs`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const json = await res.json();
         if (cancelled) return;
 
@@ -89,7 +107,8 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [authInfo.signedIn, authInfo.accessToken]);
+
 
   const handleClubClick = (club: any) => {
     navigate(`/club/${club.id}`);
@@ -143,7 +162,14 @@ export default function Home() {
         {/* Right rail becomes its own row on small; stacks on md+ */}
         <Grid.Col span={{ base: 12, md: 3, lg: 3 }}>
           <SimpleGrid cols={{ base: 2, md: 1 }} spacing="1.25rem">
-            <MyClubs clubs={clubs} loading={loadingClubs} onClubClick={handleClubClick} onDirectoryClick={handleDirectoryClick} onCreateClub={handleCreateClub} isSignedIn={authInfo?.signedIn} />
+            <MyClubs 
+              clubs={clubs} 
+              loading={loadingClubs} 
+              onClubClick={handleClubClick} 
+              onDirectoryClick={handleDirectoryClick} 
+              onCreateClub={handleCreateClub} 
+              isSignedIn={authInfo?.signedIn} 
+            />
             <ToClubDirectory />
           </SimpleGrid>
         </Grid.Col>

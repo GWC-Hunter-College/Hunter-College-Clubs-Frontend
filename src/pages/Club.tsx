@@ -30,6 +30,7 @@ export default function ClubPage() {
   // --- membership for current club ---
   const [myRole, setMyRole] = useState<Club["role"] | null>(null);
   const [checkingMembership, setCheckingMembership] = useState(false);
+  const [membershipUpdating, setMembershipUpdating] = useState(false);
 
   // load club and club events
   useEffect(() => {
@@ -183,13 +184,94 @@ export default function ClubPage() {
   }
 
   // Map membership → FeaturedClubCard.action
-  // during membership check we hide the button (`none`) to avoid flicker
+  // during membership check or mutation we hide the button (`none`) to avoid flicker
+  const membershipBusy = checkingMembership || membershipUpdating;
+
   const action: "none" | "join" | "leave" =
-    !auth.signedIn || checkingMembership || myRole === "owner"
+    !auth.signedIn || membershipBusy || myRole === "owner"
       ? "none"
       : myRole === "member" || myRole === "eboard"
       ? "leave"
       : "join";
+
+  // ---- Join / leave handlers ----
+  const handleJoin = async () => {
+    if (!clubId) return;
+
+    if (!auth.signedIn) {
+      // If not signed in, send them through Cognito
+      auth.signIn();
+      return;
+    }
+
+    const token = auth.getAccessToken();
+    if (!token) {
+      console.warn("No access token; cannot join club.");
+      return;
+    }
+
+    setMembershipUpdating(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/clubs/${clubId}/members/me`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.error("Failed to join club", res.status, text);
+        return;
+      }
+
+      // Optimistically update local role
+      setMyRole("member");
+    } catch (err) {
+      console.error("Error joining club", err);
+    } finally {
+      setMembershipUpdating(false);
+    }
+  };
+
+  const handleLeave = async () => {
+    if (!clubId) return;
+
+    if (!auth.signedIn) {
+      auth.signIn();
+      return;
+    }
+
+    const token = auth.getAccessToken();
+    if (!token) {
+      console.warn("No access token; cannot leave club.");
+      return;
+    }
+
+    setMembershipUpdating(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/clubs/${clubId}/members/me`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.error("Failed to leave club", res.status, text);
+        return;
+      }
+
+      // Optimistically clear role
+      setMyRole(null);
+    } catch (err) {
+      console.error("Error leaving club", err);
+    } finally {
+      setMembershipUpdating(false);
+    }
+  };
+
 
   // === Main page ===
   return (
@@ -207,6 +289,8 @@ export default function ClubPage() {
             <FeaturedClubCard
               club={{ ...club, role: (myRole ?? club.role) as Club["role"] }}
               action={action}
+              onJoinClick={handleJoin}
+              onLeaveClick={handleLeave}
             />
           ) : (
             <div style={{ height: 200 }} />

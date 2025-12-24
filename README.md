@@ -1,69 +1,48 @@
-# React + TypeScript + Vite
+# Hunter College Clubs Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend web app for browsing Hunter College clubs and events, viewing a club’s detail page, and joining or leaving clubs.
 
-Currently, two official plugins are available:
+## What’s in this repo
+- Route-based pages using React Router
+- Auth via OIDC (AWS Cognito) using `react-oidc-context`
+- Club directory and club detail pages
+- Membership join and leave actions (authenticated)
+- “My Clubs” sidebar (authenticated)
+- Staging deploy workflow to S3 + CloudFront via GitHub Actions
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Tech stack
+- React + TypeScript + Vite
+- Mantine UI
+- react-router-dom
+- react-oidc-context
 
-## Expanding the ESLint configuration
+## Routes
+Defined in `src/App.tsx`.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- `/` Home
+- `/clubs` Club Directory
+- `/club/:clubId` Club Detail
+- `/event/:eventId` Event Detail (currently demo or stub)
+- `/club/create` Club Create (WIP)
+- `/event/create` Event Create (WIP)
+- `/auth` Auth debug (dev)
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Repo structure
+- `src/pages/` Route-level screens
+- `src/components/` Reusable UI components
+- `src/context/` Shared UI state (event modal)
+- `src/types/` Shared types + normalizers
+- `public/data/` Demo JSON fixtures
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## Docs
+- `docs/setup.md` Local setup + required backend/API assumptions
+- `docs/api.md` API contract the frontend expects
+- `docs/overview.md` Architecture + deployment notes
+- `docs/pages.md` Page-by-page behavior and data flow
+- `docs/components.md` Reusable components and shared state
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Contributing
+- Keep route-level fetching and wiring in `src/pages/`.
+- Keep reusable UI in `src/components/`.
+- Prefer typed helpers in `src/types/` for API payload normalization.
+- When changing routes or API calls, update the docs in `/docs`.

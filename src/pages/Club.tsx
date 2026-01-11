@@ -195,6 +195,31 @@ export default function ClubPage() {
       : "join";
 
   // ---- Join / leave handlers ----
+  // helper for reading return first
+  async function readApiErrorMessage(res: Response): Promise<string> {
+    let raw = "";
+    try {
+      raw = await res.text();
+    } catch (err) {
+      console.warn("Failed to read response body", err);
+      return "<failed to read response body>";
+    }
+
+    try {
+      const parsed = JSON.parse(raw) as unknown;
+      if (parsed && typeof parsed === "object") {
+        const obj = parsed as Record<string, unknown>;
+        if (typeof obj.error === "string") return obj.error;
+        if (typeof obj.message === "string") return obj.message;
+      }
+    } catch {
+      console.warn("Error in parsing API error")
+    }
+
+    return raw || "<empty response body>";
+  }
+
+  // join and leave functions
   const handleJoin = async () => {
     if (!clubId) return;
 
@@ -220,8 +245,8 @@ export default function ClubPage() {
       });
 
       if (!res.ok) {
-        const text = await res.text().catch(() => "");
-        console.error("Failed to join club", res.status, text);
+        const msg = await readApiErrorMessage(res);
+        console.error("Failed to join club", res.status, msg);
         return;
       }
 
@@ -258,8 +283,8 @@ export default function ClubPage() {
       });
 
       if (!res.ok) {
-        const text = await res.text().catch(() => "");
-        console.error("Failed to leave club", res.status, text);
+        const msg = await readApiErrorMessage(res);
+        console.error("Failed to leave club", res.status, msg);
         return;
       }
 

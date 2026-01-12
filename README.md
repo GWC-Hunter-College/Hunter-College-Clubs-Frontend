@@ -35,11 +35,11 @@ Defined in `src/App.tsx`.
 - `public/data/` Demo JSON fixtures
 
 ## Docs
-- `docs/setup.md` Local setup + required backend/API assumptions
-- `docs/api.md` API contract the frontend expects
-- `docs/overview.md` Architecture + deployment notes
-- `docs/pages.md` Page-by-page behavior and data flow
-- `docs/components.md` Reusable components and shared state
+- [Setup](docs/setup.md)
+- [API contract](docs/api.md)
+- [Architecture + deployment](docs/overview.md)
+- [Pages](docs/pages.md)
+- [Components](docs/components.md)
 
 ## Contributing
 - Keep route-level fetching and wiring in `src/pages/`.

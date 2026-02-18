@@ -29,8 +29,7 @@ export default function ClubPage() {
 
   // --- membership for current club ---
   const [myRole, setMyRole] = useState<Club["role"] | null>(null);
-  const [checkingMembership, setCheckingMembership] = useState(false);
-  const [membershipUpdating, setMembershipUpdating] = useState(false);
+  const [membershipLoading, setMembershipLoading] = useState(false);
 
   // load club and club events
   useEffect(() => {
@@ -53,12 +52,14 @@ export default function ClubPage() {
         } catch (err) {
           console.warn("API fetch failed", err);
         }
+
         if (!clubData) {
           setError("Club not found");
           return;
         }
+
         // Ensure placeholder logo if missing
-        if (clubData) {
+        if (!clubData.image) {
           clubData.image = placeholderLogo;
         }
 
@@ -69,7 +70,7 @@ export default function ClubPage() {
 
         // Load demo events
         const resEvents = await fetch(`${API_BASE_URL}/events`);
-        // const resEvents = await fetc(`${API_BASE_URL}/events/${clubId}`);
+        // const resEvents = await fetch(`${API_BASE_URL}/events/${clubId}`);
         const jsonEvents = await resEvents.json();
 
         if (!cancelled) {
@@ -104,7 +105,7 @@ export default function ClubPage() {
     }
 
     (async () => {
-      setCheckingMembership(true);
+      setMembershipLoading(true);
       try {
         const res = await fetch(`${API_BASE_URL}/me/clubs`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -119,7 +120,7 @@ export default function ClubPage() {
       } catch {
         if (!cancelled) setMyRole(null);
       } finally {
-        if (!cancelled) setCheckingMembership(false);
+        if (!cancelled) setMembershipLoading(false);
       }
     })();
 
@@ -137,7 +138,7 @@ export default function ClubPage() {
   const dateOnlyGTE = (aIso: string, bDate: Date) =>
     startOfDay(new Date(aIso)).getTime() >= startOfDay(bDate).getTime();
 
-  // Partition by END DAY: if event ends today or later → Upcoming
+  // Partition by END DAY: if event ends today or later -> Upcoming
   const { upcoming, previous } = useMemo(() => {
     const now = new Date();
     const up: Event[] = [];
@@ -183,19 +184,16 @@ export default function ClubPage() {
     );
   }
 
-  // Map membership → FeaturedClubCard.action
-  // during membership check or mutation we hide the button (`none`) to avoid flicker
-  const membershipBusy = checkingMembership || membershipUpdating;
-
+  // Map membership -> FeaturedClubCard.action
+  // during membership check or mutation we hide the button ("none") to avoid flicker
   const action: "none" | "join" | "leave" =
-    !auth.signedIn || membershipBusy || myRole === "owner"
+    !auth.signedIn || membershipLoading || myRole === "owner"
       ? "none"
       : myRole === "member" || myRole === "eboard"
       ? "leave"
       : "join";
 
   // ---- Join / leave handlers ----
-  // helper for reading return first
   async function readApiErrorMessage(res: Response): Promise<string> {
     let raw = "";
     try {
@@ -213,18 +211,16 @@ export default function ClubPage() {
         if (typeof obj.message === "string") return obj.message;
       }
     } catch {
-      console.warn("Error in parsing API error")
+      console.warn("Error in parsing API error");
     }
 
     return raw || "<empty response body>";
   }
 
-  // join and leave functions
   const handleJoin = async () => {
     if (!clubId) return;
 
     if (!auth.signedIn) {
-      // If not signed in, send them through Cognito
       auth.signIn();
       return;
     }
@@ -235,7 +231,7 @@ export default function ClubPage() {
       return;
     }
 
-    setMembershipUpdating(true);
+    setMembershipLoading(true);
     try {
       const res = await fetch(`${API_BASE_URL}/clubs/${clubId}/members/me`, {
         method: "POST",
@@ -250,12 +246,11 @@ export default function ClubPage() {
         return;
       }
 
-      // Optimistically update local role
       setMyRole("member");
     } catch (err) {
       console.error("Error joining club", err);
     } finally {
-      setMembershipUpdating(false);
+      setMembershipLoading(false);
     }
   };
 
@@ -273,7 +268,7 @@ export default function ClubPage() {
       return;
     }
 
-    setMembershipUpdating(true);
+    setMembershipLoading(true);
     try {
       const res = await fetch(`${API_BASE_URL}/clubs/${clubId}/members/me`, {
         method: "DELETE",
@@ -288,15 +283,13 @@ export default function ClubPage() {
         return;
       }
 
-      // Optimistically clear role
       setMyRole(null);
     } catch (err) {
       console.error("Error leaving club", err);
     } finally {
-      setMembershipUpdating(false);
+      setMembershipLoading(false);
     }
   };
-
 
   // === Main page ===
   return (

@@ -29,7 +29,7 @@ export default function ClubPage() {
 
   // --- membership for current club ---
   const [myRole, setMyRole] = useState<Club["role"] | null>(null);
-  const [checkingMembership, setCheckingMembership] = useState(false);
+  const [membershipLoading, setMembershipLoading] = useState(false);
 
   // load club and club events
   useEffect(() => {
@@ -52,12 +52,14 @@ export default function ClubPage() {
         } catch (err) {
           console.warn("API fetch failed", err);
         }
+
         if (!clubData) {
           setError("Club not found");
           return;
         }
+
         // Ensure placeholder logo if missing
-        if (clubData) {
+        if (!clubData.image) {
           clubData.image = placeholderLogo;
         }
 
@@ -68,7 +70,7 @@ export default function ClubPage() {
 
         // Load demo events
         const resEvents = await fetch(`${API_BASE_URL}/events`);
-        // const resEvents = await fetc(`${API_BASE_URL}/events/${clubId}`);
+        // const resEvents = await fetch(`${API_BASE_URL}/events/${clubId}`);
         const jsonEvents = await resEvents.json();
 
         if (!cancelled) {
@@ -103,7 +105,7 @@ export default function ClubPage() {
     }
 
     (async () => {
-      setCheckingMembership(true);
+      setMembershipLoading(true);
       try {
         const res = await fetch(`${API_BASE_URL}/me/clubs`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -118,7 +120,7 @@ export default function ClubPage() {
       } catch {
         if (!cancelled) setMyRole(null);
       } finally {
-        if (!cancelled) setCheckingMembership(false);
+        if (!cancelled) setMembershipLoading(false);
       }
     })();
 
@@ -136,7 +138,7 @@ export default function ClubPage() {
   const dateOnlyGTE = (aIso: string, bDate: Date) =>
     startOfDay(new Date(aIso)).getTime() >= startOfDay(bDate).getTime();
 
-  // Partition by END DAY: if event ends today or later → Upcoming
+  // Partition by END DAY: if event ends today or later -> Upcoming
   const { upcoming, previous } = useMemo(() => {
     const now = new Date();
     const up: Event[] = [];
@@ -182,14 +184,112 @@ export default function ClubPage() {
     );
   }
 
-  // Map membership → FeaturedClubCard.action
-  // during membership check we hide the button (`none`) to avoid flicker
+  // Map membership -> FeaturedClubCard.action
+  // during membership check or mutation we hide the button ("none") to avoid flicker
   const action: "none" | "join" | "leave" =
-    !auth.signedIn || checkingMembership || myRole === "owner"
+    !auth.signedIn || membershipLoading || myRole === "owner"
       ? "none"
       : myRole === "member" || myRole === "eboard"
       ? "leave"
       : "join";
+
+  // ---- Join / leave handlers ----
+  async function readApiErrorMessage(res: Response): Promise<string> {
+    let raw = "";
+    try {
+      raw = await res.text();
+    } catch (err) {
+      console.warn("Failed to read response body", err);
+      return "<failed to read response body>";
+    }
+
+    try {
+      const parsed = JSON.parse(raw) as unknown;
+      if (parsed && typeof parsed === "object") {
+        const obj = parsed as Record<string, unknown>;
+        if (typeof obj.error === "string") return obj.error;
+        if (typeof obj.message === "string") return obj.message;
+      }
+    } catch {
+      console.warn("Error in parsing API error");
+    }
+
+    return raw || "<empty response body>";
+  }
+
+  const handleJoin = async () => {
+    if (!clubId) return;
+
+    if (!auth.signedIn) {
+      auth.signIn();
+      return;
+    }
+
+    const token = auth.getAccessToken();
+    if (!token) {
+      console.warn("No access token; cannot join club.");
+      return;
+    }
+
+    setMembershipLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/clubs/${clubId}/members/me`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const msg = await readApiErrorMessage(res);
+        console.error("Failed to join club", res.status, msg);
+        return;
+      }
+
+      setMyRole("member");
+    } catch (err) {
+      console.error("Error joining club", err);
+    } finally {
+      setMembershipLoading(false);
+    }
+  };
+
+  const handleLeave = async () => {
+    if (!clubId) return;
+
+    if (!auth.signedIn) {
+      auth.signIn();
+      return;
+    }
+
+    const token = auth.getAccessToken();
+    if (!token) {
+      console.warn("No access token; cannot leave club.");
+      return;
+    }
+
+    setMembershipLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/clubs/${clubId}/members/me`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const msg = await readApiErrorMessage(res);
+        console.error("Failed to leave club", res.status, msg);
+        return;
+      }
+
+      setMyRole(null);
+    } catch (err) {
+      console.error("Error leaving club", err);
+    } finally {
+      setMembershipLoading(false);
+    }
+  };
 
   // === Main page ===
   return (
@@ -207,6 +307,8 @@ export default function ClubPage() {
             <FeaturedClubCard
               club={{ ...club, role: (myRole ?? club.role) as Club["role"] }}
               action={action}
+              onJoinClick={handleJoin}
+              onLeaveClick={handleLeave}
             />
           ) : (
             <div style={{ height: 200 }} />

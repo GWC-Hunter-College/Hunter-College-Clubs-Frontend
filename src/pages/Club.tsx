@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import EventList from "../components/Events/EventList";
 import FeaturedClubCard from "../components/ClubPage/FeaturedClubCard";
-import { API_BASE_URL } from "../config";
+import { API_BASE_URL, USE_MOCK_API } from "../config";
 import placeholderLogo from "../assets/placeholder.png";
 
 import type { Event } from "../types/events";
@@ -63,6 +63,8 @@ export default function ClubPage() {
 
         if (!cancelled && clubData) {
           const normalizedClub = fromJsonClub(clubData);
+          // The legacy normalizer drops tags; preserve fixture tags only for design previews.
+          if (USE_MOCK_API && normalizedClub) normalizedClub.tags = clubData.tags ?? [];
           setClub(normalizedClub);
         }
 
@@ -154,6 +156,24 @@ export default function ClubPage() {
 
   const filtered = view === "Upcoming" ? upcoming : previous;
 
+  async function changeMockMembership(method: "POST" | "DELETE") {
+    if (!USE_MOCK_API || checkingMembership) return;
+    setCheckingMembership(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/clubs/${clubId}/members/me`, {
+        method,
+        headers: { Authorization: `Bearer ${auth.getAccessToken()}` },
+      });
+      if (!response.ok) throw new Error(`Mock membership request failed (${response.status})`);
+      const result = await response.json();
+      setMyRole(result.role);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setCheckingMembership(false);
+    }
+  }
+
   if (error) {
     return (
       <Container py="xl">
@@ -207,6 +227,8 @@ export default function ClubPage() {
             <FeaturedClubCard
               club={{ ...club, role: (myRole ?? club.role) as Club["role"] }}
               action={action}
+              onJoinClick={USE_MOCK_API ? () => { void changeMockMembership("POST"); } : undefined}
+              onLeaveClick={USE_MOCK_API ? () => { void changeMockMembership("DELETE"); } : undefined}
             />
           ) : (
             <div style={{ height: 200 }} />

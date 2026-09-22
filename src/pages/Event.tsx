@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Container, Skeleton, Stack } from "@mantine/core";
 import type { Event } from "../types/events";
+import { useParams } from "react-router-dom";
+import { API_BASE_URL, USE_MOCK_API } from "../config";
 
 import EventHero from "../components/EventPage/EventHero";
 import EventHeader from "../components/EventPage/EventHeader";
@@ -22,10 +24,28 @@ const DEMO_EVENT: Event = {
 export default function EventPage() {
   const [event, setEvent] = useState<Event | null>(null);
   const [loading] = useState(false);
+  const { eventId } = useParams();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setEvent(DEMO_EVENT);
-  }, []);
+    if (!USE_MOCK_API) {
+      setEvent(DEMO_EVENT);
+      return;
+    }
+    let cancelled = false;
+    setEvent(null);
+    setError(null);
+    fetch(`${API_BASE_URL}/events/${eventId}`)
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Event not found');
+        return response.json();
+      })
+      .then((data) => { if (!cancelled) setEvent(data.event); })
+      .catch((error: Error) => { if (!cancelled) setError(error.message); });
+    return () => { cancelled = true; };
+  }, [eventId]);
+
+  if (USE_MOCK_API && error) return <Container py="lg">{error}</Container>;
 
   if (loading || !event) {
     return (

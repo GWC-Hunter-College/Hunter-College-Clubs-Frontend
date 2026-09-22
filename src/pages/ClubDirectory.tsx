@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { API_BASE_URL } from "../config";
+import { API_BASE_URL, USE_MOCK_API } from "../config";
 import placeholderImg from "../assets/placeholder.png";
 import MyClubs from "../components/Other/MyClubs";
 import SearchBar from "../components/ClubPage/SearchBar";
@@ -32,6 +32,17 @@ export default function ClubDirectory() {
   const navigate = useNavigate();
 
   const auth = useAuthInfo();
+  const [designMemberships, setDesignMemberships] = useState<Club[]>([]);
+
+  useEffect(() => {
+    if (!USE_MOCK_API) return;
+    let cancelled = false;
+    fetch(`${API_BASE_URL}/me/clubs`)
+      .then((response) => response.json())
+      .then((data) => { if (!cancelled) setDesignMemberships(data.clubs); })
+      .catch((error: unknown) => console.error('Could not load design memberships', error));
+    return () => { cancelled = true; };
+  }, [auth.signedIn]);
 
   useEffect(() => {
     let cancelled = false;
@@ -90,7 +101,11 @@ export default function ClubDirectory() {
     >
       <Flex gap="2rem" align="stretch">
         {/* LEFT SIDEBAR */}
-        <MyClubs />
+        <MyClubs {...(USE_MOCK_API ? {
+          clubs: designMemberships,
+          isSignedIn: auth.signedIn,
+          onClubClick: (club: { id: string | number }) => navigate(`/club/${club.id}`),
+        } : {})} />
 
         {/* MAIN CONTENT */}
         <Flex direction="column" gap="1.5rem" style={{ flex: 1 }}>

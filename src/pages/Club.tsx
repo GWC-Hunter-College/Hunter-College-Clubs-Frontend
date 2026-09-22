@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import EventList from "../components/Events/EventList";
 import FeaturedClubCard from "../components/ClubPage/FeaturedClubCard";
-import { API_BASE_URL } from "../config";
+import { API_BASE_URL, USE_MOCK_API } from "../config";
 import placeholderLogo from "../assets/placeholder.png";
 
 import type { Event } from "../types/events";
@@ -65,6 +65,8 @@ export default function ClubPage() {
 
         if (!cancelled && clubData) {
           const normalizedClub = fromJsonClub(clubData);
+          // The legacy normalizer drops tags; preserve fixture tags only for design previews.
+          if (USE_MOCK_API && normalizedClub) normalizedClub.tags = clubData.tags ?? [];
           setClub(normalizedClub);
         }
 

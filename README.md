@@ -2,6 +2,19 @@
 
 Frontend web app for browsing Hunter College clubs and events, viewing a club’s detail page, and joining or leaving clubs.
 
+## Local design mode (no AWS/backend)
+
+```bash
+npm ci
+VITE_USE_MOCK_API=true npm run dev:mock -- --host 127.0.0.1 --port 5173 --strictPort
+```
+
+Open **http://127.0.0.1:5173/**. No API or Cognito configuration is needed for this mode.
+Alternatively, copy `.env.mock.example` to `.env.mock.local`, then run `npm run dev:mock`.
+The flag only works with the development server; production and staging builds always use the real API/auth configuration.
+
+See **[docs/design-mode.md](docs/design-mode.md)** for capture routes, personas, fixture details, tests, and existing screen limitations.
+
 ## What’s in this repo (site features)
 - Browse clubs and discover events across campus
 - View club details, including basic club info and club branding (logo)

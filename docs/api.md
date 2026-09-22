@@ -3,6 +3,11 @@
 This document lists the HTTP endpoints the frontend currently calls and the contract it expects.
 If the backend changes, update this file alongside the frontend changes.
 
+Implementation notes: Home currently calls the literal `/api/me/clubs` without an auth header.
+Join/leave contracts below are intended endpoints; staging's current button handlers only log messages.
+The opt-in [local design mode](design-mode.md) mocks both membership URL forms and supplies mock-only
+join/leave and event-detail requests. Create Club submission remains a local stub, and Create Event remains a skeleton.
+
 ## Conventions
 
 ### Base URL

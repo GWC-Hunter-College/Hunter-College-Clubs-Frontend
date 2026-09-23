@@ -33,7 +33,7 @@ export default function EventArt({ src, alt, size = 64, radius = 12, clubId = 0,
       aria-label={alt}
     >
       {title && (
-        <span className={classes.fallbackTitle} style={{ fontSize: Math.max(10, Number(size) * 0.09) }}>
+        <span className={classes.fallbackTitle} style={{ fontSize: typeof size === "number" ? Math.max(10, size * 0.09) : 14 }}>
           {title}
         </span>
       )}

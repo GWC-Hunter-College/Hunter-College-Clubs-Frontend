@@ -57,8 +57,9 @@ type RawJson =
     };
 
 export const fromJsonEvent = (raw: RawJson): Event => {
-  // Already canonical? Just return.
-  if ("start" in raw && "end" in raw && "flyer" in raw && "owner" in raw) {
+  // Already canonical? Just return. Only check required fields: optional ones like
+  // `flyer`/`owner` are dropped by JSON.stringify when undefined, so they can't gate this.
+  if ("start" in raw && "end" in raw) {
     return raw as Event;
   }
 

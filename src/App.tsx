@@ -1,13 +1,15 @@
 import './App.css'
 import { Routes, Route } from "react-router-dom";
 import Auth from "./pages/Auth";
+import Home from "./pages/Home";
+import Events from "./pages/Events";
 import Placeholder from "./pages/Placeholder";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Placeholder title="Home" phase="Phase 1" />} />
-      <Route path="/events" element={<Placeholder title="Events" phase="Phase 1" />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/events" element={<Events />} />
       <Route path="/clubs" element={<Placeholder title="Clubs" phase="Phase 2" />} />
       <Route path="/club/create" element={<Placeholder title="New club" phase="Phase 5" />} />
       <Route path="/club/:clubId/event/new" element={<Placeholder title="New event" phase="Phase 5" />} />

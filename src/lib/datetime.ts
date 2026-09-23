@@ -66,6 +66,16 @@ export function formatMonthHeader(iso: string, timezone?: string) {
   return `${month} ${year}`;
 }
 
+/** "WED SEP 23" — mobile day-group label. */
+export function formatDayLabel(iso: string, timezone?: string) {
+  const d = new Date(iso);
+  const tz = tzOf(timezone);
+  const weekday = new Intl.DateTimeFormat("en-US", { weekday: "short", timeZone: tz }).format(d).toUpperCase();
+  const month = new Intl.DateTimeFormat("en-US", { month: "short", timeZone: tz }).format(d).toUpperCase();
+  const day = new Intl.DateTimeFormat("en-US", { day: "numeric", timeZone: tz }).format(d);
+  return `${weekday} ${month} ${day}`;
+}
+
 /** {weekday: "WED", day: "23"} for the AgendaDay date column. */
 export function formatDayColumn(iso: string, timezone?: string) {
   const d = new Date(iso);

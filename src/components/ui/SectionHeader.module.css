@@ -17,3 +17,10 @@
   color: var(--text-primary);
   margin: 0;
 }
+
+@media (max-width: 1023px) {
+  .title {
+    font-size: 18px;
+    line-height: 24px;
+  }
+}

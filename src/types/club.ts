@@ -2,10 +2,11 @@
 export type Club = {
   id: number;
   name: string;
-  logo?: string; 
+  logo?: string;
   role?: "member" | "eboard" | "owner";
-	description: string;
+  description: string;
   tags: string[];
+  memberCount?: number;
 };
 
 const normalizeRole = (v: any): Club["role"] => {
@@ -28,8 +29,9 @@ export const fromJsonClub = (v: any): Club | null => {
     name,
     logo,
     role: normalizeRole(v.role),
-		description: typeof v.description === "string" ? v.description : undefined,
-		tags: []
+    description: typeof v.description === "string" ? v.description : "",
+    tags: Array.isArray(v.tags) ? v.tags.filter((t: unknown) => typeof t === "string") : [],
+    memberCount: typeof v.memberCount === "number" ? v.memberCount : undefined,
   };
 };
 

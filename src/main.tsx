@@ -1,15 +1,16 @@
 import { StrictMode } from 'react'
 import type { ComponentType } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from "react-router-dom"; 
+import { BrowserRouter } from "react-router-dom";
+import { MantineProvider } from '@mantine/core';
+import '@mantine/core/styles.css';
 import './index.css'
 import App from './App.tsx'
+import { theme } from './theme.ts';
 
 import { AuthProvider } from "react-oidc-context";
 import type { AuthProviderProps } from "react-oidc-context";
 import { COGNITO_ISSUER, COGNITO_CLIENT_ID, COGNITO_REDIRECT_URI, USE_MOCK_API } from './config.ts';
-
-import { MantineProvider } from '@mantine/core';
 
 
 const cognitoAuthConfig = {
@@ -44,20 +45,7 @@ async function bootstrap() {
   <StrictMode>
     <MantineProvider
       defaultColorScheme="dark"
-      theme={{
-        fontFamily: "Inter, sans-serif",
-        headings: { fontFamily: "Space Mono, monospace", fontWeight: "700" },
-        primaryColor: "grape", // you can swap to a custom palette
-        defaultRadius: "md",
-        components: {
-          Card: {
-            defaultProps: { withBorder: true, radius: "lg", shadow: "sm" },
-          },
-          Button: {
-            defaultProps: { radius: "xl" },
-          },
-        },
-      }}>
+      theme={theme}>
       <AuthenticationProvider {...cognitoAuthConfig}>
         <BrowserRouter>
           <App />

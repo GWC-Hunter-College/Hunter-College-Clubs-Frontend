@@ -1,29 +1,23 @@
 import './App.css'
 import { Routes, Route } from "react-router-dom";
 import Auth from "./pages/Auth";
-import Home from "./pages/Home";
-import ClubDirectory from './pages/ClubDirectory';
-import Club from "./pages/Club";
-import Event from "./pages/Event";
-import ClubCreate from "./pages/ClubCreate"
-import EventCreate from "./pages/EventCreate"
-import { EventModalProvider } from "./context/EventModalContext";
-
+import Placeholder from "./pages/Placeholder";
 
 function App() {
   return (
-    <EventModalProvider>
-      <Routes> 
-        <Route path="/" element={<Home />} />
-        <Route path="/clubs" element={<ClubDirectory />} />
-        <Route path="/club/:clubId" element={<Club />} />
-        <Route path="/event/:eventId" element={<Event />} />
-        <Route path="/club/create" element={<ClubCreate />} />
-        <Route path="/event/create" element={<EventCreate />} />
-        <Route path="/auth" element={<Auth />} />
-      </Routes>
-    </EventModalProvider>
-    
+    <Routes>
+      <Route path="/" element={<Placeholder title="Home" phase="Phase 1" />} />
+      <Route path="/events" element={<Placeholder title="Events" phase="Phase 1" />} />
+      <Route path="/clubs" element={<Placeholder title="Clubs" phase="Phase 2" />} />
+      <Route path="/club/create" element={<Placeholder title="New club" phase="Phase 5" />} />
+      <Route path="/club/:clubId/event/new" element={<Placeholder title="New event" phase="Phase 5" />} />
+      <Route path="/club/:clubId" element={<Placeholder title="Club" phase="Phase 2" />} />
+      <Route path="/event/create" element={<Placeholder title="New event" phase="Phase 5" />} />
+      <Route path="/event/:eventId" element={<Placeholder title="Event" phase="Phase 3" />} />
+      <Route path="/my-clubs" element={<Placeholder title="My Clubs" phase="Phase 4" />} />
+      <Route path="/create" element={<Placeholder title="Create" phase="Phase 5" />} />
+      <Route path="/auth" element={<Auth />} />
+    </Routes>
   );
 }
 

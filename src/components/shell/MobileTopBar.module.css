@@ -1,0 +1,29 @@
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: 60px;
+  background: var(--bg-canvas);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+.wordmark {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.wordmark span {
+  color: var(--brand-primary);
+}
+.detailTitle {
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0 8px;
+}

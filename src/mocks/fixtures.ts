@@ -6,7 +6,7 @@ export type DesignEvent = Event & { description: string };
 
 // GWC (id 1) comes from public/data/demo-club.json. All descriptions are demo copy.
 export const additionalClubs: DesignClub[] = [
-  { id: 2, name: 'Computer Science Club', logo: '/react.svg', verified: true,
+  { id: 2, name: 'Computer Science Club', verified: true,
     description: 'Build projects, practice technical interviews, and meet other Hunter students who love computing. Our weekly study jams welcome every experience level.',
     tags: ['Technology', 'Career', 'Academic'] },
   { id: 3, name: 'Studio Arts Collective', logo: '/hero.png', verified: true,
@@ -15,7 +15,7 @@ export const additionalClubs: DesignClub[] = [
   { id: 4, name: 'Culinary Society', logo: '/card.png', verified: true,
     description: 'Explore recipes and food traditions with fellow students. We host beginner cooking workshops, recipe exchanges, and community potlucks.',
     tags: ['Culture', 'Food', 'Social'] },
-  { id: 5, name: 'Robotics Club', logo: '/react.svg', verified: true,
+  { id: 5, name: 'Robotics Club', verified: true,
     description: 'Design, program, and test small robots with a student team. Bring your curiosity to hands-on build sessions and friendly engineering challenges.',
     tags: ['Engineering', 'Technology'] },
   { id: 6, name: 'Chess Club', logo: '/logo.png', verified: true,
@@ -35,7 +35,7 @@ export const additionalClubs: DesignClub[] = [
 export const additionalEvents = [
   { id: 13, title: 'Girls Who Code — Club Fair', location: 'Hunter West Lobby', clubId: 1, flyer: '/ra.png', days: 3, durationHours: 26,
     description: 'Meet the Girls Who Code team, explore student projects, and find out about upcoming workshops and mentorship opportunities. All majors are welcome.' },
-  { id: 14, title: 'Robotics Open Build Lab', location: 'Hunter North, Lab 204', clubId: 5, flyer: '/react.svg', days: 5, durationHours: 2,
+  { id: 14, title: 'Robotics Open Build Lab', location: 'Hunter North, Lab 204', clubId: 5, flyer: undefined, days: 5, durationHours: 2,
     description: 'Work with a small team to assemble and program a tabletop robot. Materials are provided; no previous robotics experience is needed.' },
   { id: 15, title: 'Chess and Conversation', location: 'Student Lounge, Hunter West', clubId: 6, flyer: '/card.png', days: 7, durationHours: 2,
     description: 'Join casual chess games and meet other players. Club volunteers will help new players learn the rules and practice their first strategies.' },

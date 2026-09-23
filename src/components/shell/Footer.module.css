@@ -1,0 +1,32 @@
+.footer {
+  border-top: 1px solid var(--border-subtle);
+  padding: 32px var(--size-gutter-desktop);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.wordmark {
+  color: var(--text-primary);
+}
+.wordmark span {
+  color: var(--brand-primary);
+}
+.tagline {
+  color: var(--text-muted);
+}
+.links {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+}

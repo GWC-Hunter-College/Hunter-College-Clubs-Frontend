@@ -1,0 +1,28 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.eyebrow {
+  color: var(--brand-primary);
+}
+.title {
+  color: var(--text-primary);
+  margin: 0;
+}
+.subtitle {
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 640px;
+}
+
+@media (max-width: 1023px) {
+  .header {
+    gap: 4px;
+  }
+  /* Display/M on mobile in place of Display/L */
+  .responsiveTitle {
+    font-size: 28px;
+    line-height: 34px;
+  }
+}

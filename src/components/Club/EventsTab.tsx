@@ -118,7 +118,7 @@ export default function EventsTab({ club, upcoming, past, mobile, canManage, onN
                 <PastEventRow
                   key={event.id}
                   to={`/event/${event.id}`}
-                  locationState={{ origin: "club", clubId: club.id, clubName: club.name }}
+                  locationState={{ origin: "club", clubId: club.id, clubName: club.name, section: "past" }}
                   artSrc={event.flyer}
                   artAlt={event.altText ?? event.title}
                   artClubId={club.id}

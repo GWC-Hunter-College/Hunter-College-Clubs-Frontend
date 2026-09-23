@@ -5,6 +5,7 @@ import TopNav from "./TopNav";
 import Footer from "./Footer";
 import MobileTopBar from "./MobileTopBar";
 import MobileTabBar from "./MobileTabBar";
+import { useShellState } from "./useShell";
 
 /**
  * ≥1024px: sticky top nav + footer. <1024px: mobile top bar + fixed bottom tab bar.
@@ -15,12 +16,13 @@ import MobileTabBar from "./MobileTabBar";
  */
 export default function AppShell({ children }: PropsWithChildren) {
   const isDesktop = useMediaQuery("(min-width: 1024px)", true, { getInitialValueInEffect: false });
+  const { hideMobileTabBar } = useShellState();
 
   return (
     <div className={classes.shell}>
       {isDesktop ? <TopNav /> : <MobileTopBar />}
       <main className={classes.main}>{children}</main>
-      {isDesktop ? <Footer /> : <MobileTabBar />}
+      {isDesktop ? <Footer /> : !hideMobileTabBar && <MobileTabBar />}
     </div>
   );
 }

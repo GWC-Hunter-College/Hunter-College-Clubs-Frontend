@@ -11,6 +11,9 @@ export type ShellState = {
   setMobileHeader: (header: MobileHeader) => void;
   navOverride: NavKey | null;
   setNavOverride: (key: NavKey | null) => void;
+  /** The Event page replaces the mobile tab bar with its own fixed action bar. */
+  hideMobileTabBar: boolean;
+  setHideMobileTabBar: (hide: boolean) => void;
 };
 
 export const ShellContext = createContext<ShellState | null>(null);

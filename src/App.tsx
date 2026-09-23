@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Events from "./pages/Events";
 import Clubs from "./pages/Clubs";
 import Club from "./pages/Club";
+import EventPage from "./pages/Event";
 import Placeholder from "./pages/Placeholder";
 import { ShellProvider } from "./components/shell/ShellContext";
 
@@ -19,7 +20,7 @@ function App() {
         <Route path="/club/:clubId/event/new" element={<Placeholder title="New event" phase="Phase 5" />} />
         <Route path="/club/:clubId" element={<Club />} />
         <Route path="/event/create" element={<Placeholder title="New event" phase="Phase 5" />} />
-        <Route path="/event/:eventId" element={<Placeholder title="Event" phase="Phase 3" />} />
+        <Route path="/event/:eventId" element={<EventPage />} />
         <Route path="/my-clubs" element={<Placeholder title="My Clubs" phase="Phase 4" />} />
         <Route path="/create" element={<Placeholder title="Create" phase="Phase 5" />} />
         <Route path="/auth" element={<Auth />} />

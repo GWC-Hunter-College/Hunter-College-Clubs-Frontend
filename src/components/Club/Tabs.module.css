@@ -1,0 +1,63 @@
+.row {
+  display: flex;
+  justify-content: center;
+  gap: 56px;
+  border-top: 1px solid var(--border-subtle);
+}
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+  background: transparent;
+  border: none;
+  border-top: 2px solid transparent;
+  margin-top: -1px;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+.tab.active {
+  border-top-color: var(--text-primary);
+  color: var(--text-primary);
+}
+.tab.active .label {
+  color: var(--text-primary);
+}
+.label {
+  color: var(--text-muted);
+}
+
+.mobileRow {
+  display: flex;
+  border-top: 1px solid var(--border-subtle);
+}
+.mobileTab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 0;
+  background: transparent;
+  border: none;
+  border-top: 2px solid transparent;
+  margin-top: -1px;
+  cursor: pointer;
+  color: var(--border-strong);
+  position: relative;
+}
+.mobileTab.active {
+  border-top-color: var(--text-primary);
+  color: var(--text-primary);
+}
+.tooltip {
+  position: absolute;
+  top: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text-primary);
+  color: var(--text-on-primary);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  pointer-events: none;
+}

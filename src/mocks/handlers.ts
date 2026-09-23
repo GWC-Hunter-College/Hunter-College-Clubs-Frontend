@@ -21,6 +21,13 @@ export function createHandlers({ clubs, events }: Awaited<ReturnType<typeof load
       const club = clubs.find((item) => item.id === Number(params.clubId));
       return club ? HttpResponse.json({ club }) : HttpResponse.json({ message: 'Club not found' }, { status: 404 });
     }),
+    // Includes drafts: the Club page filters them out of its public tabs itself, and its
+    // Manage tab (managers only) needs them.
+    http.get('/__design_api/clubs/:clubId/events', ({ params }) => {
+      const clubId = Number(params.clubId);
+      if (!clubs.some((club) => club.id === clubId)) return HttpResponse.json({ message: 'Club not found' }, { status: 404 });
+      return HttpResponse.json({ events: events.filter((event) => event.owner?.id === clubId) });
+    }),
     http.get('/__design_api/me/clubs', myClubs),
     // Home currently uses this literal alias without an Authorization header.
     http.get('/api/me/clubs', myClubs),

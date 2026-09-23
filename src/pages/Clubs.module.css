@@ -1,0 +1,26 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.empty {
+  text-align: center;
+  padding: 64px 16px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 1023px) {
+  .page {
+    gap: 16px;
+  }
+}

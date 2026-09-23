@@ -1,12 +1,12 @@
 # API Contract (Frontend Expectations)
 
-This document lists the HTTP endpoints the frontend currently calls and the contract it expects.
-If the backend changes, update this file alongside the frontend changes.
+This document lists the HTTP endpoints the frontend calls and the contract it expects. If the
+backend changes, update this file alongside the frontend changes.
 
-Implementation notes: Home currently calls the literal `/api/me/clubs` without an auth header.
-Join/leave contracts below are intended endpoints; staging's current button handlers only log messages.
-The opt-in [local design mode](design-mode.md) mocks both membership URL forms and supplies mock-only
-join/leave and event-detail requests. Create Club submission remains a local stub, and Create Event remains a skeleton.
+Implementation notes: the opt-in [local design mode](design-mode.md) mocks every endpoint below.
+`POST /clubs/:clubId/events` and `POST /clubs` are answered in memory (nothing persists past a
+reload) and accept a few mock-only extensions beyond the documented request shape — see each
+endpoint's Notes.
 
 ## Conventions
 
@@ -34,88 +34,139 @@ Unless otherwise noted:
 ### Events
 
 #### `GET /events`
-Auth: Unauthenticated  
-Used by:
-- Home (`/`)
-- Club detail (`/club/:clubId`) (currently also fetches events)
+Auth: Unauthenticated
+Used by: Home (`/`), Events (`/events`)
 
-Purpose:
-- Retrieve a list of events for display.
+Retrieves every event, including drafts. Callers filter out `status: "draft"` client-side —
+drafts are never shown in a public list, only to their club's managers.
 
-Notes:
-- If you later add filtering (my clubs vs global), consider:
-  - `GET /me/events`
-  - `GET /clubs/:clubId/events`
-  - query params like `GET /events?scope=global`
+---
+
+#### `GET /events/:eventId`
+Auth: Unauthenticated
+Used by: Event (`/event/:eventId`)
+
+Retrieves a single event by id. `404` when not found.
+
+---
+
+#### `GET /clubs/:clubId/events`
+Auth: Unauthenticated
+Used by: Club (`/club/:clubId`), New event step 1 (`/event/create`, to list drafts), New event
+form (`/club/:clubId/event/new`, to prefill from a draft)
+
+Retrieves every event owned by one club, including drafts. `404` when the club doesn't exist.
+
+---
+
+#### `GET /me/events`
+Auth: **Authenticated**
+Used by: My Clubs (`/my-clubs`)
+
+Retrieves every non-draft event owned by a club the current user belongs to. `401` when not
+authenticated.
+
+---
+
+#### `POST /clubs/:clubId/events`
+Auth: **Authenticated**
+Used by: New event form (`/club/:clubId/event/new`) — Save Draft and Post Event
+
+Request body:
+```json
+{
+  "event": { "title": "string", "location": "string", "rsvpLink": "string?", "startDate": "ISO 8601", "endDate": "ISO 8601", "timezone": "string?" },
+  "description": "string?"
+}
+```
+
+Expected behavior:
+- `200` with `{ "eventId": number }` on success.
+- `401` if not authenticated.
+- `404` if the club doesn't exist.
+
+Notes (mock-side extensions, not yet in the documented shape above — the real backend needs to
+decide how it wants these):
+- `status`: `"draft" | "posted"`, defaults to `"posted"` if omitted.
+- `tags`: `string[]`, accepted but currently unused (the Event type has no tags field).
+- `flyer`: the chosen flyer, as a `blob:` object URL in design mode. There's no upload endpoint
+  yet; a real implementation needs some way to reference an uploaded image.
+- `altText`: alt text for the flyer.
 
 ---
 
 ### Clubs
 
 #### `GET /clubs?verified=true`
-Auth: Unauthenticated  
-Used by:
-- Club Directory (`/clubs`)
+Auth: Unauthenticated
+Used by: Clubs (`/clubs`); Events, Home, and the Club page (to resolve an event's host club
+name/logo by id, since `owners.owner.name` is empty)
 
-Purpose:
-- Retrieve a list of verified clubs for directory display.
+Retrieves verified clubs. `verified=false` or omitted retrieves the rest / everything.
 
 ---
 
 #### `GET /clubs/:clubId`
-Auth: Unauthenticated  
-Used by:
-- Club Detail (`/club/:clubId`)
+Auth: Unauthenticated
+Used by: Club (`/club/:clubId`), Event (`/event/:eventId`, for the host club), New event form
 
-Purpose:
-- Retrieve a single club’s details.
+Retrieves a single club's details. `404` when not found.
+
+---
+
+#### `POST /clubs`
+Auth: **Authenticated**
+Used by: New club form (`/club/create`)
+
+Request body:
+```json
+{ "club": { "name": "string", "description": "string" } }
+```
+
+Expected behavior:
+- `200` with `{ "clubId": number }` on success. The creator becomes the club's `owner`.
+- `401` if not authenticated.
+- The created club is unverified, so — like on the real backend — it doesn't appear on the Clubs
+  page until verified, but does appear in My Clubs for its owner.
+
+Notes (mock-side extensions, not yet in the documented shape above):
+- `logo`: the chosen logo, as a `blob:` object URL in design mode (same caveat as event flyers).
+- `tags`: `string[]`, the selected topics.
 
 ---
 
 ### Membership
 
 #### `GET /me/clubs`
-Auth: **Authenticated**  
-Used by:
-- Home (`/`) for “My Clubs”
-- Club Detail (`/club/:clubId`) to infer membership state and role
+Auth: **Authenticated**
+Used by: Club, My Clubs, Create hub, New event step 1, New event form, Event (for the manager
+bar) — everywhere the viewer's role needs to be known
 
-Purpose:
-- Retrieve the current user’s clubs (and any membership metadata the UI uses).
+Retrieves the current user's clubs, each with a `role` (`member` | `eboard` | `owner`).
 
 ---
 
 #### `POST /clubs/:clubId/members/me`
-Auth: **Authenticated**  
-Used by:
-- Club Detail (`/club/:clubId`) join action
+Auth: **Authenticated**
+Used by: Club page join action
 
-Purpose:
-- Join a club as the current user.
+Joins a club as the current user.
 
 Expected behavior:
 - `200` or `201` on success.
 - `401` if not authenticated.
-- `409` if already a member (optional but helpful).
+- `404` if the club doesn't exist.
 
 ---
 
 #### `DELETE /clubs/:clubId/members/me`
-Auth: **Authenticated**  
-Used by:
-- Club Detail (`/club/:clubId`) leave action
+Auth: **Authenticated**
+Used by: Club page leave action (after the confirm modal)
 
-Purpose:
-- Leave a club as the current user.
+Leaves a club as the current user.
 
 Expected behavior:
 - `200` or `204` on success.
 - `401` if not authenticated.
+- `403` if the current user owns the club (owners can't leave).
 - `404` if not a member (optional but helpful).
-
-## Suggested future additions (optional)
-If you plan to finish the WIP pages, these endpoints tend to pair well:
-
-- `GET /events/:eventId` (Event Detail page)
-- `POST /clubs` (Club Create page)
-- `POST /events` or `POST /clubs/:clubId/events` (Event Create page)

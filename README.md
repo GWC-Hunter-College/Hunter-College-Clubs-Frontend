@@ -16,35 +16,32 @@ The flag only works with the development server; production and staging builds a
 See **[docs/design-mode.md](docs/design-mode.md)** for capture routes, personas, fixture details, tests, and existing screen limitations.
 
 ## What’s in this repo (site features)
-- Browse clubs and discover events across campus
-- View club details, including basic club info and club branding (logo)
+- Browse clubs and discover upcoming events across campus, with a searchable agenda
+- View club details — header, membership, events (upcoming/past), and manager-only tools
 - Sign in to access authenticated experiences tied to your account
-- Join and leave clubs (membership actions)
-- View your memberships (“My Clubs”) for quick access
-- Create new clubs (WIP)
-- Create new events (WIP)
-- Upload images for club logos and club events (WIP)
+- Join and leave clubs, with a confirmation step before leaving
+- View your memberships and their events in one place (“My Clubs”)
+- Create a new club, with a live preview of how it will look
+- Post a new event for a club you manage — save a draft or publish it, with a live preview
+- Share an event (copy link, email, .ics download, or the native share sheet)
 
 ## Pages
 Defined in `src/App.tsx`.
 
-- **Home**
-  - Landing experience showing events and entry points into the rest of the site
-  - Includes a “My Clubs” section when signed in
-- **Club Directory**
-  - Browse a list of verified clubs
-  - Search to find a specific club
-- **Club Detail**
-  - A club homepage with club information and actions
-  - Allows signed-in users to join or leave the club
-- **Event Detail** (demo or stub)
-  - Intended to show a single event’s details
-- **Create Club** (WIP)
-  - Intended flow for creating a new club and uploading its branding
-- **Create Event** (WIP)
-  - Intended flow for creating a new event (including media upload)
-- **Auth Debug** (dev)
-  - Development-only page to inspect auth state and tokens
+- **Home** (`/`) — hero with a strip of upcoming event flyers, then a grid of upcoming events
+- **Events** (`/events`) — searchable agenda of every upcoming event, grouped by month/day
+- **Clubs** (`/clubs`) — searchable grid of verified clubs
+- **Club** (`/club/:clubId`) — header (membership, stats, role, tags), tabs for Events, Board
+  (coming soon), Announcements (coming soon), and Manage (eboard/owner only)
+- **Event** (`/event/:eventId`) — gallery, host, when/where, RSVP/calendar/share actions, and a
+  manager bar for the host club's eboard/owner
+- **My Clubs** (`/my-clubs`, signed in) — stats, your clubs, and an agenda of their events;
+  signed out shows a sign-in gate
+- **Create** (`/create`, signed in) — hub linking to the club and event creation flows
+- **New event, step 1** (`/event/create`, signed in) — pick a club you manage or resume a draft
+- **New event form** (`/club/:clubId/event/new`, signed in) — details form with a live preview
+- **New club** (`/club/create`, signed in) — details form with a live preview
+- **Auth Debug** (`/auth`, dev) — development-only page to inspect auth state and tokens
 
 For page-by-page details, see **[docs/pages.md](docs/pages.md)**.
 
@@ -78,8 +75,13 @@ For endpoint expectations, see **[docs/api.md](docs/api.md)**.
 
 ## Repo structure
 - `src/pages/` Route-level screens
-- `src/components/` Reusable UI components
-- `src/context/` Shared UI state (event modal)
+- `src/components/ui/` Shared design-system components (buttons, cards, inputs, overlays, ...)
+- `src/components/shell/` App shell: top nav/footer, mobile top bar/tab bar, and their state
+- `src/components/Home/`, `src/components/Club/`, `src/components/Event/`, `src/components/Create/`
+  Page-specific components
+- `src/hooks/` Data-fetching hooks (one per resource: clubs, events, membership, ...)
+- `src/lib/` Framework-free helpers (date/time formatting, .ics generation, share, club tints)
+- `src/styles/` CSS custom properties and text-style classes for the design tokens
 - `src/types/` Shared types + normalizers
 - `public/data/` Demo JSON fixtures
 

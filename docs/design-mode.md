@@ -1,6 +1,9 @@
 # Local frontend design mode
 
-This mode populates the current UI for local inspection and Figma capture. It does not change styles, layouts, components, or deployment workflows. The work branch is `chore/frontend-design-mock-mode`, based on fetched `origin/staging` at `1d65444`.
+Design mode runs the whole app against in-memory MSW fixtures instead of the real backend, so
+every screen and state can be built and verified without AWS credentials, a backend, or Cognito
+settings. It changes no deployment workflow; production/staging builds always use the real
+API/auth path (see [Isolation and maintenance](#isolation-and-maintenance)).
 
 ## Run
 
@@ -11,88 +14,110 @@ npm ci
 VITE_USE_MOCK_API=true npm run dev:mock -- --host 127.0.0.1 --port 5173 --strictPort
 ```
 
-Open **http://127.0.0.1:5173/** (localhost port 5173). Keep that hostname consistent while browsing; MSW registers per origin. No AWS account, backend, credentials, Cognito settings, or API base URL is needed. Existing real settings in `.env` are ignored by the mock API/auth path.
+Open **http://127.0.0.1:5173/** (localhost port 5173). Keep that hostname consistent while
+browsing; MSW registers per origin. Existing real settings in `.env` are ignored by the mock
+API/auth path.
 
-For a persistent local preference, copy `.env.mock.example` to `.env.mock.local`, then run `npm run dev:mock`. Do not overwrite an existing local env file. `.env.mock.local` is ignored by Git. `npm run dev:mock` selects Vite's `mock` env files; the explicit `VITE_USE_MOCK_API=true` flag is still required.
+For a persistent local preference, copy `.env.mock.example` to `.env.mock.local`, then run
+`npm run dev:mock`. Do not overwrite an existing local env file. `.env.mock.local` is ignored by
+Git. `npm run dev:mock` selects Vite's `mock` env files; the explicit `VITE_USE_MOCK_API=true`
+flag is still required.
 
-Stop the server with Ctrl+C. To return to the normal frontend, run `VITE_USE_MOCK_API=false npm run dev` and reload the page. Reload after changing modes or roles. The mock worker only intercepts clients that have explicitly started MSW; a normal page does not activate it.
+Stop the server with Ctrl+C. To return to the normal frontend, run `VITE_USE_MOCK_API=false npm
+run dev` and reload the page. Reload after changing modes or roles. The mock worker only
+intercepts clients that have explicitly started MSW; a normal page does not activate it.
 
-## Capture routes and states
+## Routes and states
 
-| Route | What is available |
+| Route | What to check |
 | --- | --- |
-| `/` | Home, populated My Clubs with role indicators, and event cards. Click a card to capture the existing modal. |
-| `/clubs` | Eight verified clubs, search, populated My Clubs, and creation links. The directory retains its existing placeholder images. |
-| `/club/1` | Girls Who Code: default E-board membership, LEAVE action, description, tags, logo, Upcoming/Previous events. |
-| `/club/2` | Computer Science Club: ordinary member state. |
-| `/club/3` | Studio Arts Collective: owner state, without join/leave actions. |
-| `/club/5` | Robotics Club: not joined, with working JOIN/LEAVE actions. |
-| `/event/13` | Girls Who Code Club Fair: multi-day event detail. |
-| `/event/2` | Existing workshop fixture adapted into a single-day event detail. |
-| `/club/create` | Authenticated form, live title/description/image preview, existing stub submit. |
-| `/event/create` | The current Event Create Page skeleton. There is no implemented event form yet. |
+| `/` | Hero (event-flyer strip, static dots) and the upcoming-events grid. |
+| `/events` | Searchable agenda grouped by month/day; empty states for no match / nothing upcoming. |
+| `/clubs` | Searchable grid of the 8 verified clubs (1 unverified club is excluded). |
+| `/club/1` | Girls Who Code: eboard by default — Joined menu, Manage tab, drafts. |
+| `/club/2` | Computer Science Club: member — no Manage tab, can leave. |
+| `/club/3` | Studio Arts Collective: owner — no "Leave club" in the Joined menu. |
+| `/club/5` | Robotics Club: not joined — "+ JOIN CLUB", a flyer-less upcoming event. |
+| `/club/1?tab=board` / `?tab=announcements` / `?tab=manage` | The other three tabs. |
+| `/event/13` | Girls Who Code Club Fair: multi-day, upcoming, extra gallery images, manager bar. |
+| `/event/17` | Campus Sustainability Walk: cancelled (status pill, share-only actions). |
+| `/event/14` | Robotics Open Build Lab: no flyer (tint-gradient cover). |
+| `/event/20` | Spring Kickoff Social: past, with an extra photo. |
+| `/my-clubs` | Stats, your clubs, and an agenda across them (signed in by default). |
+| `/create` | Hub; the event option is enabled because the default persona manages clubs. |
+| `/event/create` | Step 1: pick a managed club or resume the seeded "Hack Night" / "Portfolio Night" drafts. |
+| `/club/1/event/new` | The event form and its live preview; add `?draft=30` to resume the Hack Night draft. |
+| `/club/create` | The club form, its live preview, and the topic chips (max 3). |
 | `/auth` | Existing auth debug screen, displaying clearly fake tokens and local sign-in/sign-out. |
 
 ## Authentication and state
 
-`src/mocks/MockAuthProvider.tsx` supplies the same `react-oidc-context` context consumed by both `useAuthInfo` and `/auth`. It never mounts the real AuthProvider or constructs a UserManager. Sign-in, Google popup, and sign-out methods update local state without navigating to Cognito. The representative user is Alex Rivera, `alex.rivera@example.test`; the access token is the literal `design-only-access-token`, which has no real authority.
+`src/mocks/MockAuthProvider.tsx` supplies the same `react-oidc-context` context consumed by both
+`useAuthInfo` and `/auth`. It never mounts the real AuthProvider or constructs a UserManager.
+Sign-in, Google popup, and sign-out methods update local state without navigating to Cognito. The
+representative user is Alex Rivera, `alex.rivera@example.test`; the access token is the literal
+`design-only-access-token`, which has no real authority.
 
 Set `VITE_MOCK_ROLE` when starting the dev server (or in `.env.mock.local`):
 
 | Value | Initial state |
 | --- | --- |
-| `eboard` (default) | GWC E-board, CS member, Studio Arts owner. |
+| `eboard` (default) | GWC e-board, CS member, Studio Arts owner. |
 | `member` | GWC member, CS member, Studio Arts owner. |
 | `owner` | GWC owner, CS member, Studio Arts owner. |
 | `user` | Signed in, no memberships. |
 | `guest` | Signed out; local sign-in reveals the representative member's clubs. |
 
-Example: `VITE_USE_MOCK_API=true VITE_MOCK_ROLE=guest npm run dev:mock`.
+Example: `VITE_USE_MOCK_API=true VITE_MOCK_ROLE=guest npm run dev:mock`. Signed-out visitors see
+the sign-in gate on My Clubs, Create, and the create-flow pages; every other page stays
+browsable, per the design.
 
-These are club membership roles. The current frontend has no admin role or admin-only route; the `admin.png` avatar asset does not indicate authorization. No admin behavior is invented. OIDC lifecycle subscriptions are unused by current screens and explicitly unsupported by the mock context.
+These are club membership roles. The current frontend has no admin role or admin-only route; the
+`admin.png` avatar asset does not indicate authorization.
 
-Membership mutations persist across navigation in the current tab. Reloading resets memberships and auth to the selected persona. No changes are stored or sent to a server. A joined club appears in My Clubs when navigating back to Home or Directory.
+Membership mutations, new drafts/events/clubs, and the selected persona's sign-in state all
+persist across client-side navigation in the current tab, and all reset on reload (nothing is
+sent to a server).
 
 ## API contracts and fixtures
 
-The existing app calls `fetch` directly from pages. `src/config.ts` reads `VITE_API_BASE_URL`; there is no shared API client or active mock layer. Home additionally calls the literal `/api/me/clubs` without a token. Its two event tabs both request `/events`. Club Detail uses the normalizers in `src/types/club.ts` and `src/types/events.ts`; Directory and My Clubs consume response objects directly.
+`src/mocks/data.ts` builds the in-memory `clubs`/`events` arrays once per page load, adapting the
+original `public/data/demo-*.json` fixtures and `src/mocks/fixtures.ts`'s additions.
+`src/mocks/handlers.ts` serves every endpoint documented in [api.md](api.md) from those arrays,
+mutating them in place for the two `POST` endpoints. `API_BASE_URL` is `/__design_api` in design
+mode, independent of the real env value.
 
-MSW intercepts actual browser requests after startup loads the fixtures and before React renders. In mock mode, `API_BASE_URL` is `/__design_api`, independent of the real env value. The following paths are relative to that local base unless stated otherwise:
+There are **9 clubs** (Girls Who Code + 8 fixture clubs, one of which is an unverified example)
+and **22 events**, including:
+- one multi-day event (Girls Who Code Club Fair, `/event/13`)
+- one event with no flyer (Robotics Open Build Lab, `/event/14`)
+- one cancelled event (Campus Sustainability Walk, `/event/17`)
+- two drafts, visible only via their club's Manage tab or step 1 of New Event ("Hack Night" for
+  GWC with no flyer, "Portfolio Night" for Studio Arts)
+- past events spanning four semesters, so the Club page's semester grouping and "LOAD ... AND
+  EARLIER" both have real data to show
+- extra gallery images on the Club Fair event and two past events
 
-| Method/path | Response/behavior |
-| --- | --- |
-| `GET /events` | `{ events: [...] }`, used by Home and Club Detail. |
-| `GET /events/:eventId` | `{ event: {...} }` or 404, used by the mock-only Event Detail adapter. |
-| `GET /clubs` | `{ clubs: [...] }`, including unverified clubs. |
-| `GET /clubs?verified=true` | Eight verified clubs; `false` returns the unverified example. |
-| `GET /clubs/:clubId` | `{ club: {...} }` or 404. |
-| `GET /me/clubs` | `{ clubs: [...] }` with member/eboard/owner roles; empty when signed out. |
-| `GET /api/me/clubs` (origin-relative) | Same membership response for Home's existing literal URL. |
-| `POST /clubs/:clubId/members/me` | Joins the club, returning `{ role: "member" }`; repeat joins preserve the existing role. |
-| `DELETE /clubs/:clubId/members/me` | Leaves the club, returning `{ role: null }`; owners receive 403. |
-
-Membership writes require local signed-in state and the demo bearer token; missing authorization returns 401 and unknown clubs return 404. Unknown design API requests return 501. Unhandled external API requests are blocked by MSW instead of falling through to AWS. Static assets, Vite modules, and the existing optional Google Fonts requests are allowed.
-
-All three original fixtures are loaded unchanged from `public/data/`:
-
-- `demo-club.json`: GWC's identity/logo and description opening are reused. The mock adapter replaces lorem ipsum and supplies tags and memberships separately.
-- `demo-event.json`: twelve event identities, titles, durations, artwork, and relationships form the base dataset.
-- `demo-event-me.json`: merged with the global fixture by event ID; its entries currently overlap, so no duplicate cards are created.
-
-The old event shape (`startDate`, `endDate`, `thumbnailUrl`, `owners`) still works with the current event normalizer. The club fixture has no tags, and the club normalizer drops tags. The Club page preserves mock fixture tags only when design mode is enabled; the real normalizer is unchanged.
-
-`src/mocks/fixtures.ts` adds eight clubs (CS, Studio Arts, Culinary, Robotics, Chess, Climate Action, Film, and an unverified example), descriptions/categories, and five events. There are **nine clubs and seventeen events** total. Runtime adaptation remaps the old event club IDs to agree with GWC's fixture ID 1, replaces fictional venue names, removes external image dependencies, enriches event descriptions, and gives RSVP buttons local detail destinations. The local `/logo.png`, `/card.png`, `/ra.png`, `/hero.png`, and `/react.svg` assets are reused.
-
-Dates are relative to the browser's current day at startup, retaining event durations and supplying both past and upcoming dates. This keeps captures populated in future semesters. These are demo schedules and descriptions, not actual campus information.
+Dates are relative to the browser's current day at startup. Images not in the redesign's asset
+table (old `bit.ly` demo links, `react.svg`) are treated as absent, so `EventArt`/`ClubLogo`
+render their tint-gradient fallback instead — this is what "flyer-less" fixtures like Robotics
+Open Build Lab exercise. RSVP links are absolute `https://forms.gle/...` URLs; the Playwright
+suite checks their `href` but never navigates to them.
 
 ## Isolation and maintenance
 
-- Both `import.meta.env.DEV` and the exact string flag `true` are required. The dynamic mock import is behind the compile-time DEV guard.
-- Vite's dev middleware serves the installed MSW worker only when the flag is enabled. No worker is copied into `public/` or `dist/`.
-- Production/staging builds eliminate the mock provider, handlers, new fixture data, and mock-only page branches even if `VITE_USE_MOCK_API=true` is set at build time. Original public demo files continue to be copied by Vite as before.
-- The disabled path retains the configured API base, real AuthProvider, real redirects/token handling, and the existing page behavior. No env secrets or deployment files were changed.
-- A mock startup failure stops startup with a console error; it never falls back to real authentication or a real backend.
-- All mock implementation/data lives in `src/mocks/`, with small guarded adapters in `main.tsx`, `config.ts`, Club, Club Directory, and Event. Handlers derive from the actual current callers; no old stub API was restored.
+- Both `import.meta.env.DEV` and the exact string flag `true` are required. The dynamic mock
+  import is behind the compile-time `DEV` guard.
+- Vite's dev middleware serves the installed MSW worker only when the flag is enabled. No worker
+  is copied into `public/` or `dist/`.
+- Production/staging builds eliminate the mock provider, handlers, and fixture data even if
+  `VITE_USE_MOCK_API=true` is set at build time.
+- The disabled path retains the configured API base, real `AuthProvider`, real redirects/token
+  handling, and normal-mode page behavior. No env secrets or deployment files were changed.
+- A mock startup failure stops startup with a console error; it never falls back to real
+  authentication or a real backend.
+- All mock implementation/data lives in `src/mocks/`, with small guarded adapters in `main.tsx`
+  and `config.ts`.
 
 ## Validation
 
@@ -104,21 +129,28 @@ npm run test:mock
 VITE_USE_MOCK_API=true npm run build -- --mode staging
 ```
 
-The Playwright suite starts isolated mock and normal dev servers on ports 5174 and 5175. It checks all seven routes, images, console errors, external requests, search/navigation, memberships, modal/past events, sign-in/sign-out, form/image previews, handler contracts, and the original API/OIDC paths with mock mode disabled. Optional Google Fonts responses are stubbed to exercise rendering without internet. Screenshots are saved under ignored `test-results/`. If using a separately installed Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to its executable.
+The Playwright suite (`tests/design-mode.spec.ts`) starts isolated mock and normal dev servers on
+ports 5174 and 5175. It checks: every route renders with no console errors, no failed requests,
+no external requests, and every image loaded; directory search and navigation; join/leave
+persisting across SPA navigation via the Joined menu and its confirm modal, and resetting on
+reload; owners can't leave; the event page's description, RSVP link, share popover (including the
+copy-link button) and `.ics` download; past events and semester grouping; sign-out/sign-in in
+mock auth with the club-create form and its logo preview; the signed-out gates on My Clubs and
+the create flows; the full create-event (draft → resume → post) and create-club flows end to end,
+each verified to show up where it should (Events, Home, the club page); the mock API contracts
+for every endpoint including the two `POST` ones; a 390px-viewport pass over Home, Club, and
+Event checking for no horizontal overflow and the mobile chrome; and the "disabled mode uses the
+real API URL and OIDC provider" test. Optional Google Fonts responses are stubbed to exercise
+rendering without internet. Screenshots are saved under ignored `test-results/`. If using a
+separately installed Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to its executable.
 
-Baseline before this change: build passed; lint reported 8 errors and 3 warnings in BackButton, EventModalContext, Home, club normalizers, and existing hook dependencies. Those unrelated issues are unchanged. The build's existing large-chunk warning remains.
+## Existing limitations
 
-Validated on this branch: **14/14 browser tests passed**, normal build/typecheck passed, staging build with the mock flag forced on passed, and the compiled JavaScript was byte-identical between those builds. Compiled assets contain no MSW implementation, demo auth token, design API path, new fixture data, or worker file. Targeted lint of new code and adapters passed; full lint retains the baseline findings. No stylesheet or existing public fixture was modified.
-
-## Existing limitations preserved for capture
-
-- Create Event is a static skeleton. There is no event creation/upload API call to mock.
-- Create Club previews local files, but its submit handler only logs a payload and finishes. It does not save a club or upload to S3.
-- Normal Event Detail is a hardcoded demo independent of the route ID. Only design mode loads the selected mock event into the existing components.
-- Join/leave in the current staging code only logs messages. Design mode supplies handlers; the disabled path retains the original behavior.
-- Home's MY CLUBS/GLOBAL tabs and every Club Detail currently share the global event endpoint. The mock does not invent missing per-club filtering; Home's Upcoming Events heading may include past events.
-- Directory images are hardcoded placeholders, even though fixture logos are available on club details, event owners, and My Clubs.
-- Home's My Clubs arrow points to Directory; clicking the club card itself opens the club. This existing navigation remains.
-- Event modal URL query values do not restore a modal on page reload. Open a card to capture the modal.
-- Existing Google Fonts stylesheets still use the internet. Without them the existing font fallbacks render; local content and API/auth functionality need no network. For exact font appearance, allow Google Fonts during capture.
-- RSVP opens a local event detail page; it does not register an attendee. This is an in-memory design aid, not a fake backend.
+- "Edit event", "Cancel event", "More photos", and "Co-hosting clubs" all show a "This feature
+  isn't available yet." notice when used — no backend endpoint is designed for any of them yet.
+- Created events/clubs and membership changes are session-only: they reset on reload, same as
+  before the redesign.
+- Flyer and logo uploads are kept as in-memory `blob:` object URLs; there's no upload endpoint in
+  design mode or the documented backend contract yet.
+- Normal (non-mock) mode still builds and keeps today's working calls (clubs list, club detail,
+  `/me/clubs`, join/leave, Cognito sign-in); the new screens aren't proven against a real backend.

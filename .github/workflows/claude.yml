@@ -30,8 +30,23 @@ jobs:
         with:
           fetch-depth: 1
 
+      # Vite 7 needs Node 20.19+ / 22.12+. Installing up front lets Claude
+      # build, lint and test its own changes without broad shell access.
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # Bash is off by default. Allow only the project's own checks,
+          # the Playwright browser install they need, and file moves/removals.
+          claude_args: |
+            --allowedTools "Bash(npm ci),Bash(npm run build),Bash(npm run lint),Bash(npm run test:mock),Bash(npm run test:mock:*),Bash(npx playwright install:*),Bash(git rm:*),Bash(git mv:*)"

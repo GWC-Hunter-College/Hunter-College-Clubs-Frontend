@@ -1,0 +1,14 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.cards {
+  display: flex;
+  gap: 24px;
+}
+.mobileCards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

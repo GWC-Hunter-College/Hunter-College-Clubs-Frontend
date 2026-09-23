@@ -29,11 +29,16 @@ export function Field({ label, required, icon, helperText, errorText, id, ...res
   return (
     <div className={classes.fieldWrap}>
       <label htmlFor={id} className={`${classes.fieldLabel} text-body-m-strong`}>
-        {label} {required && <span className={classes.required}>*</span>}
+        {label}{" "}
+        {required && (
+          <span className={classes.required} aria-hidden="true">
+            *
+          </span>
+        )}
       </label>
       <div className={`${classes.inputRow} ${errorText ? classes.invalid : ""}`}>
         {icon}
-        <input id={id} className="text-body-m" aria-invalid={Boolean(errorText)} {...rest} />
+        <input id={id} className="text-body-m" required={required} aria-required={required} aria-invalid={Boolean(errorText)} {...rest} />
       </div>
       {errorText ? (
         <span className={`${classes.errorText} text-caption`}>{errorText}</span>

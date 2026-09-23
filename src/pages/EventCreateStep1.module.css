@@ -1,0 +1,94 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.panels {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.panel {
+  background: var(--bg-surface);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.eyebrow {
+  color: var(--brand-primary);
+  margin: 0;
+}
+.clubRows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.clubRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 78px;
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text-primary);
+  width: 100%;
+}
+.clubRow.selected {
+  background: var(--bg-brand-tint);
+  border-color: var(--brand-primary);
+  box-shadow: var(--glow-nav-active);
+}
+.clubName {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.helper {
+  color: var(--text-muted);
+  margin: 0;
+}
+.continueRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.draftRows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.draftRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-radius: var(--radius-lg);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  text-decoration: none;
+  color: var(--text-primary);
+}
+.draftText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.draftText p {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.draftSub {
+  color: var(--text-muted);
+}

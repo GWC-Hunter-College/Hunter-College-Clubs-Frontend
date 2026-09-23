@@ -7,7 +7,10 @@ import Clubs from "./pages/Clubs";
 import Club from "./pages/Club";
 import EventPage from "./pages/Event";
 import MyClubs from "./pages/MyClubs";
-import Placeholder from "./pages/Placeholder";
+import Create from "./pages/Create";
+import EventCreateStep1 from "./pages/EventCreateStep1";
+import EventForm from "./pages/EventForm";
+import ClubForm from "./pages/ClubForm";
 import { ShellProvider } from "./components/shell/ShellContext";
 
 function App() {
@@ -17,13 +20,13 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/events" element={<Events />} />
         <Route path="/clubs" element={<Clubs />} />
-        <Route path="/club/create" element={<Placeholder title="New club" phase="Phase 5" />} />
-        <Route path="/club/:clubId/event/new" element={<Placeholder title="New event" phase="Phase 5" />} />
+        <Route path="/club/create" element={<ClubForm />} />
+        <Route path="/club/:clubId/event/new" element={<EventForm />} />
         <Route path="/club/:clubId" element={<Club />} />
-        <Route path="/event/create" element={<Placeholder title="New event" phase="Phase 5" />} />
+        <Route path="/event/create" element={<EventCreateStep1 />} />
         <Route path="/event/:eventId" element={<EventPage />} />
         <Route path="/my-clubs" element={<MyClubs />} />
-        <Route path="/create" element={<Placeholder title="Create" phase="Phase 5" />} />
+        <Route path="/create" element={<Create />} />
         <Route path="/auth" element={<Auth />} />
       </Routes>
     </ShellProvider>

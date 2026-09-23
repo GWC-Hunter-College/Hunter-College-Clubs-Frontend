@@ -1,0 +1,123 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.row {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+.formCol {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.previewCol {
+  width: 400px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 88px;
+}
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.cardTitle {
+  color: var(--text-primary);
+  margin: 0;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.helper {
+  color: var(--text-muted);
+  margin: 0;
+}
+.actionBar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.previewEyebrow {
+  color: var(--brand-primary);
+  margin: 0 0 12px;
+}
+.previewCard {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.previewBanner {
+  position: relative;
+  height: 120px;
+  background: var(--bg-deep);
+  overflow: hidden;
+}
+.previewLogoWrap {
+  position: absolute;
+  left: 21px;
+  top: 78px;
+}
+.previewInitials {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
+  background: var(--brand-strong);
+  color: #fff;
+  border: 4px solid var(--bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.previewBody {
+  padding: 40px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.previewName {
+  color: var(--text-primary);
+  margin: 0;
+}
+.previewDesc {
+  color: var(--text-secondary);
+  margin: 0;
+}
+.previewNote {
+  color: var(--text-muted);
+  margin: 12px 0 0;
+}
+
+@media (max-width: 1023px) {
+  .row {
+    flex-direction: column;
+  }
+  .previewCol {
+    display: none;
+  }
+  .actionBar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    background: var(--bg-deep);
+    border-top: 1px solid var(--border-subtle);
+    padding: 12px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+  .actionBar > * {
+    flex: 1;
+  }
+}

@@ -31,6 +31,15 @@ export function createHandlers({ clubs, events }: Awaited<ReturnType<typeof load
     http.get('/__design_api/me/clubs', myClubs),
     // Home currently uses this literal alias without an Authorization header.
     http.get('/api/me/clubs', myClubs),
+    http.get('/__design_api/me/events', ({ request }) => {
+      if (!getSignedIn() || request.headers.get('Authorization') !== `Bearer ${MOCK_ACCESS_TOKEN}`) {
+        return HttpResponse.json({ message: 'Sign in required' }, { status: 401 });
+      }
+      const myClubIds = new Set(memberships.keys());
+      return HttpResponse.json({
+        events: events.filter((event) => event.owner && myClubIds.has(event.owner.id) && event.status !== 'draft'),
+      });
+    }),
     ...(['post', 'delete'] as const).map((method) => http[method]('/__design_api/clubs/:clubId/members/me', ({ params, request }) => {
       if (!getSignedIn() || request.headers.get('Authorization') !== `Bearer ${MOCK_ACCESS_TOKEN}`) {
         return HttpResponse.json({ message: 'Sign in required' }, { status: 401 });

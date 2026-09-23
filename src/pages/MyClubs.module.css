@@ -1,0 +1,67 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.sectionHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+.sectionHeaderRow .search {
+  width: 380px;
+  max-width: 100%;
+}
+.title {
+  color: var(--text-primary);
+  margin: 0;
+}
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.agenda {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.monthGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.meta span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 1023px) {
+  .page {
+    gap: 24px;
+  }
+  .statsRow {
+    gap: 8px;
+  }
+  .scroller {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+}

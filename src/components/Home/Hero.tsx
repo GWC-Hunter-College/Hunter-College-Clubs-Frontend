@@ -11,9 +11,9 @@ type HeroProps = {
 };
 
 const DESKTOP_TILES = [
-  { width: 264, height: 264, left: 16, top: 84 },
-  { width: 232, height: 336, left: 296, top: 148 },
-  { width: 232, height: 336, left: 544, top: 36 },
+  { width: 203, height: 203, left: 12, top: 65 },
+  { width: 178, height: 258, left: 228, top: 114 },
+  { width: 178, height: 258, left: 419, top: 28 },
 ];
 
 const MOBILE_TILES = [

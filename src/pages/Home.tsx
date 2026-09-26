@@ -37,8 +37,7 @@ export default function Home() {
 
           <section>
             <SectionHeader
-              eyebrow="UPCOMING"
-              title="Happening at Hunter CS"
+              title="Upcoming Events"
               action={
                 <Button to="/events" variant="ghost" size={isDesktop ? "m" : "s"}>
                   {isDesktop ? "SEE AS A LIST →" : "LIST →"}

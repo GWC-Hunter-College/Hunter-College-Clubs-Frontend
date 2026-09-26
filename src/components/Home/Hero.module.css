@@ -1,6 +1,6 @@
 .card {
   position: relative;
-  height: 520px;
+  height: 400px;
   background: var(--bg-deep);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
@@ -12,17 +12,16 @@
   position: relative;
   width: 132px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .spineText {
-  position: absolute;
-  left: 50%;
-  bottom: 24px;
-  transform: translateX(-50%) rotate(-90deg);
-  transform-origin: bottom left;
+  transform: rotate(-90deg);
   white-space: nowrap;
   font-family: "Roboto Mono", monospace;
   font-weight: 700;
-  font-size: 84px;
+  font-size: 64px;
   letter-spacing: 0.04em;
   color: #fff;
 }
@@ -101,13 +100,12 @@
   position: relative;
   width: 64px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .mobileSpineText {
-  position: absolute;
-  left: 50%;
-  bottom: 16px;
-  transform: translateX(-50%) rotate(-90deg);
-  transform-origin: bottom left;
+  transform: rotate(-90deg);
   white-space: nowrap;
   font-family: "Roboto Mono", monospace;
   font-weight: 700;

@@ -1,7 +1,7 @@
 .tile {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
   text-decoration: none;
   color: inherit;
@@ -27,6 +27,13 @@
   box-shadow: var(--glow-tile-hover);
 }
 
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
 .when {
   margin: 0;
   color: var(--brand-primary);
@@ -49,7 +56,7 @@
 .meta {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   min-width: 0;
 }
 

@@ -1,0 +1,19 @@
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 0;
+  margin-bottom: var(--space-5);
+}
+.crumb svg {
+  color: var(--brand-primary);
+  flex-shrink: 0;
+}
+.sep {
+  margin: 0 4px;
+  color: var(--text-secondary);
+}

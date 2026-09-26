@@ -1,97 +1,69 @@
 # Hunter College Clubs Frontend
 
-Frontend web app for browsing Hunter College clubs and events, viewing a club’s detail page, and joining or leaving clubs.
+A home base for student clubs at Hunter College Computer Science: one place to see what clubs
+exist, what they're doing, and what's coming up.
 
-## Local design mode (no AWS/backend)
+Anyone can browse without an account, looking through the clubs on campus and seeing what
+events they're running, from workshops to socials to build nights. Club leaders can give their
+club a page, post photos and details for their events, and manage who's helping run things.
+Members can sign in to join clubs, keep track of the ones they're part of, and see everything
+those clubs have coming up in one place.
 
-```bash
-npm ci
-VITE_USE_MOCK_API=true npm run dev:mock -- --host 127.0.0.1 --port 5173 --strictPort
-```
+## Preview
 
-Open **http://127.0.0.1:5173/**. No API or Cognito configuration is needed for this mode.
-Alternatively, copy `.env.mock.example` to `.env.mock.local`, then run `npm run dev:mock`.
-The flag only works with the development server; production and staging builds always use the real API/auth configuration.
+The screenshots below are from the current design, running on mock/demo data rather than a live
+club directory. They're a preview of the interface, not real Hunter CS clubs or events. See
+[docs/design-mode.md](docs/design-mode.md) to run it yourself and try it out.
 
-See **[docs/design-mode.md](docs/design-mode.md)** for capture routes, personas, fixture details, tests, and existing screen limitations.
+### Home
+Upcoming events from every club, at a glance.
 
-## What’s in this repo (site features)
-- Browse clubs and discover events across campus
-- View club details, including basic club info and club branding (logo)
-- Sign in to access authenticated experiences tied to your account
-- Join and leave clubs (membership actions)
-- View your memberships (“My Clubs”) for quick access
-- Create new clubs (WIP)
-- Create new events (WIP)
-- Upload images for club logos and club events (WIP)
+| Desktop | Mobile |
+| --- | --- |
+| ![Home page](docs/screenshots/home.png) | ![Home page on mobile](docs/screenshots/home-mobile.png) |
 
-## Pages
-Defined in `src/App.tsx`.
+### Clubs
+Browse and search every club on campus.
 
-- **Home**
-  - Landing experience showing events and entry points into the rest of the site
-  - Includes a “My Clubs” section when signed in
-- **Club Directory**
-  - Browse a list of verified clubs
-  - Search to find a specific club
-- **Club Detail**
-  - A club homepage with club information and actions
-  - Allows signed-in users to join or leave the club
-- **Event Detail** (demo or stub)
-  - Intended to show a single event’s details
-- **Create Club** (WIP)
-  - Intended flow for creating a new club and uploading its branding
-- **Create Event** (WIP)
-  - Intended flow for creating a new event (including media upload)
-- **Auth Debug** (dev)
-  - Development-only page to inspect auth state and tokens
+| Desktop | Mobile |
+| --- | --- |
+| ![Clubs directory](docs/screenshots/clubs.png) | ![Clubs directory on mobile](docs/screenshots/clubs-mobile.png) |
 
-For page-by-page details, see **[docs/pages.md](docs/pages.md)**.
+### Club page
+A club's own page: who's on it, what they're hosting, and how to join.
 
-## Tech stack
+| Desktop | Mobile |
+| --- | --- |
+| ![Club page](docs/screenshots/club.png) | ![Club page on mobile](docs/screenshots/club-mobile.png) |
 
-### App dependencies (in this repo)
-These are the libraries the React app uses directly to implement the UI and page behavior.  
-For UI/component details, see **[docs/components.md](docs/components.md)**.
+### Event page
+The details for one event, with RSVP, calendar, and sharing.
 
-- **React + TypeScript**: component-based UI and type-safe models for clubs, events, and membership state
-- **Vite**: fast dev server and production builds
-- **React Router**: route-based navigation for the pages listed above
-- **Mantine UI**: reusable UI components and layout primitives used across pages and cards
-- **react-oidc-context**: OIDC client logic used by the app to manage sign-in state and tokens
+| Desktop | Mobile |
+| --- | --- |
+| ![Event page](docs/screenshots/event.png) | ![Event page on mobile](docs/screenshots/event-mobile.png) |
 
-### Repo automation and delivery
-CI/CD configuration that builds and deploys the site.  
-For deployment details, see **[docs/overview.md](docs/overview.md)**.
+## About this repository
 
-- **GitHub Actions**: builds the Vite app on the staging branch and runs the deployment workflow
-- **Backend API integration (`fetch`)**: frontend request logic that relies on `VITE_API_BASE_URL` to load data and perform authenticated actions (see `docs/api.md`)
+This repo is the frontend only. It's a React and TypeScript app that talks to a separate backend
+API for club and event data, and to AWS Cognito for sign-in. The backend is being developed in
+a different repository and isn't finished yet, so this frontend also has a mock mode that stands
+in for it with sample data, which is what the screenshots above were taken from.
 
-### External services this frontend connects to
-These are the AWS services the app expects to exist and integrates with at runtime or during deploy.
-For endpoint expectations, see **[docs/api.md](docs/api.md)**.
+The `docs/` folder has more detail for anyone working on the code:
 
-- **AWS Cognito (OIDC)**: identity provider used for authentication; issues tokens used for authenticated API calls
-- **Amazon S3**: hosts the built static site assets
-- **Amazon CloudFront**: CDN for caching and serving the site, with invalidations after deploy
-- **Backend API**: serves club/event data and membership actions consumed by this frontend (see `docs/api.md`)
+- [docs/setup.md](docs/setup.md) - running the app locally, including against a real backend
+- [docs/design-mode.md](docs/design-mode.md) - running it with mock data instead
+- [docs/pages.md](docs/pages.md) - every screen, route by route
+- [docs/components.md](docs/components.md) - the reusable UI pieces and where they live
+- [docs/api.md](docs/api.md) - the endpoints the frontend expects from the backend
+- [docs/overview.md](docs/overview.md) - how the code is organized and how staging deploys
 
-## Repo structure
-- `src/pages/` Route-level screens
-- `src/components/` Reusable UI components
-- `src/context/` Shared UI state (event modal)
-- `src/types/` Shared types + normalizers
-- `public/data/` Demo JSON fixtures
+## Contributors
 
-## Docs
-- [Setup](docs/setup.md)
-- [API contract](docs/api.md)
-- [Architecture + deployment](docs/overview.md)
-- [Pages](docs/pages.md)
-- [Components](docs/components.md)
-
-## Contributing
-- Keep route-level fetching and wiring in `src/pages/`.
-- Keep reusable UI in `src/components/`.
-- Prefer typed helpers in `src/types/` for API payload normalization.
-- When changing routes or API calls, update the docs in `/docs`.
+- [Kyle Bautista](https://github.com/KymaiselHunter)
+- [Maliha Tasnim](https://github.com/MalihaT111)
+- [Michael Wong](https://github.com/michaelwong3049)
+- [Lena Ngo](https://github.com/lenan14)
+- [Anthony Lau](https://github.com/lausan3)
+- [Kelly Lin](https://github.com/Kxlcl), Designer

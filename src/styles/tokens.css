@@ -1,0 +1,97 @@
+/* Redesign 4 design tokens, exposed as CSS custom properties.
+   Values come from docs/redesign/tokens.json (not shipped in this repo; see the PR description). */
+:root {
+  /* Backgrounds */
+  --bg-canvas: #11091d;
+  --bg-deep: #190b30;
+  --bg-surface: #2a1f3f;
+  --bg-surface-2: #352850;
+  --bg-input: #2f283d;
+  --bg-tint: rgba(231, 214, 255, 0.15);
+  --bg-paper: #f7f6fa;
+  --bg-brand-tint: rgba(181, 127, 255, 0.24);
+  --bg-scrim: rgba(11, 6, 20, 0.62);
+  --bg-success-tint: rgba(84, 216, 80, 0.16);
+  --bg-warning-tint: rgba(255, 206, 59, 0.16);
+  --bg-danger-tint: rgba(255, 135, 135, 0.16);
+  --bg-muted-tint: rgba(158, 147, 181, 0.16);
+
+  /* Text */
+  --text-primary: #ffffff;
+  --text-secondary: #d9d0e8;
+  --text-muted: #9e93b5;
+  --text-on-paper: #1a1226;
+  --text-on-paper-muted: #5b5270;
+  --text-on-primary: #1a1226;
+
+  /* Brand */
+  --brand-primary: #b57fff;
+  --brand-strong: #7454f6;
+  --brand-deep: #854cd5;
+  --brand-glow: #7c3aed;
+  --brand-soft: #e7d6ff;
+  --accent-sun: #ff5a6e;
+  --accent-grid: #4f86c6;
+
+  /* Roles */
+  --role-owner: #f28dff;
+  --role-eboard: #ffce3b;
+  --role-member: #54d850;
+
+  /* States */
+  --state-danger: #e03131;
+  --state-danger-soft: #ff8787;
+  --state-success: #54d850;
+  --state-warning: #ffce3b;
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.32);
+  --border-outline: #ffffff;
+  --border-focus: #b57fff;
+
+  /* Space */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  /* Size */
+  --size-tab-bar: 64px;
+  --size-target-min: 44px;
+  --size-gutter-desktop: 48px;
+  --size-gutter-mobile: 16px;
+  --size-content-max: 1248px;
+
+  /* Effects (literal values, not variables in Figma, kept here for reuse) */
+  --glow-nav-active: 0 0 18px 0 rgba(124, 58, 237, 0.4);
+  --glow-button-primary: 0 0 18px 0 rgba(124, 58, 237, 0.6);
+  --glow-button-primary-l: 0 0 20px 0 rgba(124, 58, 237, 0.6);
+  --glow-club-card: 0 0 22px 0 rgba(124, 58, 237, 0.35);
+  --glow-stat-card: 0 0 22px 0 rgba(124, 58, 237, 0.3);
+  --glow-logo-ring: 0 0 20px 0 rgba(124, 58, 237, 0.6);
+  --glow-tile-hover: 0 0 24px 0 rgba(124, 58, 237, 0.5);
+  --shadow-menu: 0 12px 28px 0 rgba(0, 0, 0, 0.6);
+  --shadow-board-item: 0 10px 18px 0 rgba(0, 0, 0, 0.5);
+  --blur-board-teaser: blur(8px);
+  --blur-gate-preview: blur(14px);
+
+  /* Club tint gradients (literal, not Figma variables) */
+  --tint-cyan-from: #22d3ee;
+  --tint-cyan-to: #2563eb;
+  --tint-cyan-text: #0b1020;
+  --tint-violet-from: #4b2a7b;
+  --tint-violet-to: #7c3aed;
+  --tint-violet-text: #ffffff;
+}

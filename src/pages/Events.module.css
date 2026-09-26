@@ -1,0 +1,36 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.agenda {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.monthGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.empty {
+  text-align: center;
+  padding: 64px 16px;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.clubLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.clubLine span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,22 @@
+.trigger {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 2px solid var(--border-strong);
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  flex-shrink: 0;
+}
+.trigger img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.email {
+  color: var(--text-muted);
+  padding: 8px 12px;
+  display: block;
+}

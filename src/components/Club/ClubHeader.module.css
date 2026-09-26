@@ -1,0 +1,129 @@
+.header {
+  display: flex;
+  gap: 48px;
+  padding: 8px 0;
+}
+.logoBlock {
+  width: 148px;
+  height: 148px;
+  flex-shrink: 0;
+  border: 2px solid var(--brand-primary);
+  border-radius: var(--radius-xl);
+  padding: 4px;
+  box-shadow: var(--glow-logo-ring);
+}
+.logoBlock img,
+.logoBlock > span {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.name {
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.joinedTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px 0 18px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface-2);
+  border: 1px solid var(--border-strong);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.joinedTrigger[data-open="true"] {
+  background: var(--bg-brand-tint);
+}
+
+.stats {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.statNumber {
+  color: var(--text-primary);
+}
+.statLabel {
+  color: var(--text-secondary);
+}
+
+.bio {
+  color: var(--text-secondary);
+  max-width: 620px;
+  margin: 0;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Mobile */
+.mobileHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.mobileTopRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.mobileLogoBlock {
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+  border: 2px solid var(--brand-primary);
+  border-radius: var(--radius-lg);
+  padding: 3px;
+}
+.mobileLogoBlock img,
+.mobileLogoBlock > span {
+  width: 100% !important;
+  height: 100% !important;
+}
+.mobileStats {
+  flex: 1;
+  display: flex;
+  justify-content: space-around;
+}
+.mobileStat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.mobileNameRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mobileButtons {
+  display: flex;
+  gap: 8px;
+}
+.mobileButtons > * {
+  flex: 1;
+}

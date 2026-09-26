@@ -1,0 +1,28 @@
+.logo {
+  display: block;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.monogram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  font-family: "Roboto Mono", monospace;
+  font-weight: 700;
+}
+
+.wrap {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.roleDot {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+}

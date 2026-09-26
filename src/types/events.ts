@@ -6,8 +6,11 @@ export type Event = {
 
   start: string;            // ISO
   end: string;              // ISO
+  timezone?: string;        // IANA name; defaults to America/New_York when absent
 
-  flyer?: string;            // event  thumbnail
+  flyer?: string;            // event thumbnail
+  images?: string[];         // extra gallery images after the flyer
+  description?: string;
 
   owner?: {
     id: number;
@@ -42,6 +45,9 @@ type RawJson =
       startDate: string;   // "YYYY-MM-DD HH:mm:ss"
       endDate: string;
       thumbnailUrl: string;
+      description?: string;
+      timezone?: string;
+      images?: string[];
       rsvpLink?: string;
       status?: string;
       owners?: {
@@ -51,8 +57,9 @@ type RawJson =
     };
 
 export const fromJsonEvent = (raw: RawJson): Event => {
-  // Already canonical? Just return.
-  if ("start" in raw && "end" in raw && "flyer" in raw && "owner" in raw) {
+  // Already canonical? Just return. Only check required fields: optional ones like
+  // `flyer`/`owner` are dropped by JSON.stringify when undefined, so they can't gate this.
+  if ("start" in raw && "end" in raw) {
     return raw as Event;
   }
 
@@ -66,7 +73,10 @@ export const fromJsonEvent = (raw: RawJson): Event => {
     location: r.location,
     start,
     end,
+    timezone: r.timezone,
     flyer: r.thumbnailUrl,
+    images: r.images,
+    description: r.description,
     owner: r.owners?.owner
       ? { id: r.owners.owner.id, logo: r.owners.owner.thumbnailUrl }
       : undefined,
@@ -78,6 +88,7 @@ export const fromJsonEvent = (raw: RawJson): Event => {
     status:
       r.status === "posted" ? "posted" :
       r.status === "cancelled" ? "cancelled" :
+      r.status === "draft" ? "draft" :
       r.status ? "draft" : undefined,
     altText: `${r.title} at ${r.location}`,
   };
@@ -85,3 +96,9 @@ export const fromJsonEvent = (raw: RawJson): Event => {
 
 export const fromJsonEvents = (arr: RawJson[] | undefined | null): Event[] =>
   Array.isArray(arr) ? arr.map(fromJsonEvent) : [];
+
+// An event is upcoming while its end day is today or later.
+export const isUpcoming = (event: Pick<Event, "end">, now = new Date()) => {
+  const startOfDay = (d: Date) => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
+  return startOfDay(new Date(event.end)).getTime() >= startOfDay(now).getTime();
+};

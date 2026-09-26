@@ -1,0 +1,125 @@
+/* Redesign 4 text styles. One class per named style in docs/redesign/tokens.json `textStyle`. */
+
+.text-display-l {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 48px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.text-display-m {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 34px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.text-heading-l {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 32px;
+}
+.text-heading-m {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 24px;
+}
+.text-heading-s {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.text-month-italic {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 20px;
+  line-height: 26px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.text-body-l {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+}
+.text-body-m {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+}
+.text-body-m-strong {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+}
+.text-caption {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+}
+.text-meta-mono {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+}
+.text-meta-mono-caps {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.text-button-l {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.text-button-m {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.text-role {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 700;
+  font-style: italic;
+  font-size: 13px;
+  line-height: 16px;
+}
+.text-wordmark {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 20px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.text-chip {
+  font-family: "Roboto Mono", monospace;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

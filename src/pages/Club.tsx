@@ -1,332 +1,202 @@
-import { Box, Container, Stack, Skeleton, Title, Button } from "@mantine/core";
-import { useEffect, useMemo, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import EventList from "../components/Events/EventList";
-import FeaturedClubCard from "../components/ClubPage/FeaturedClubCard";
-import { API_BASE_URL, USE_MOCK_API } from "../config";
-import placeholderLogo from "../assets/placeholder.png";
-
-import type { Event } from "../types/events";
-import { fromJsonEvents } from "../types/events";
-import type { Club } from "../types/club";
-import { fromJsonClub } from "../types/club";
-
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useMediaQuery } from "@mantine/hooks";
+import AppShell from "../components/shell/AppShell";
+import PageContainer from "../components/ui/PageContainer";
+import Breadcrumb from "../components/ui/Breadcrumb";
+import Button from "../components/ui/Button";
+import ComingSoonPanel from "../components/ui/ComingSoonPanel";
+import ConfirmModal from "../components/ui/ConfirmModal";
+import ClubHeader from "../components/Club/ClubHeader";
+import Tabs, { type ClubTab } from "../components/Club/Tabs";
+import EventsTab from "../components/Club/EventsTab";
+import BoardTab from "../components/Club/BoardTab";
+import ManageTab from "../components/Club/ManageTab";
+import { useMobileDetailHeader, useNavOverride } from "../components/shell/useShell";
+import useClub from "../hooks/useClub";
+import useMembership from "../hooks/useMembership";
+import useClubEvents from "../hooks/useClubEvents";
 import { useAuthInfo } from "../types/auth";
+import { API_BASE_URL } from "../config";
+import { isUpcoming } from "../types/events";
+import { copyToClipboard, nativeShare, canNativeShare } from "../lib/share";
+import { IconBell } from "@tabler/icons-react";
+import classes from "./Club.module.css";
 
-import PageShell from "../components/Other/PageShell";
-
-export default function ClubPage() {
-  const [loading, setLoading] = useState(true);
-  const [club, setClub] = useState<Club | null>(null);
-  const [eventsAll, setEventsAll] = useState<Event[]>([]);
-  const [view, setView] = useState<"Upcoming" | "Previous">("Upcoming");
-
+export default function Club() {
   const { clubId } = useParams<{ clubId: string }>();
-  const [error, setError] = useState<string | null>(null);
-
+  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation() as { state?: { origin?: string } };
   const navigate = useNavigate();
+  const isDesktop = useMediaQuery("(min-width: 1024px)", true, { getInitialValueInEffect: false });
   const auth = useAuthInfo();
 
-  // --- membership for current club ---
-  const [myRole, setMyRole] = useState<Club["role"] | null>(null);
-  const [membershipLoading, setMembershipLoading] = useState(false);
+  const { club, loading, notFound } = useClub(clubId);
+  const { role, refresh: refreshMembership } = useMembership(clubId);
+  const { events } = useClubEvents(clubId);
 
-  // load club and club events
+  const [leaveOpen, setLeaveOpen] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const tabParam = searchParams.get("tab");
+  const activeTab: ClubTab = tabParam === "board" || tabParam === "announcements" || tabParam === "manage" ? tabParam : "events";
+  const canManage = role === "eboard" || role === "owner";
+
+  const origin = location.state?.origin === "my-clubs" ? "my-clubs" : "clubs";
+
   useEffect(() => {
-    let cancelled = false;
+    document.title = club ? `${club.name} · Hunter CS` : "Club · Hunter CS";
+  }, [club]);
 
-    (async () => {
-      try {
-        let clubData = null;
+  useNavOverride(role ? "my-clubs" : "clubs");
 
-        // --- Fetch club info ---
-        try {
-          const res = await fetch(`${API_BASE_URL}/clubs/${clubId}`);
-          const json = await res.json();
-          console.log(json);
+  const handleShare = useCallback(() => {
+    if (!club) return;
+    const url = `${window.location.origin}/club/${club.id}`;
+    if (canNativeShare()) void nativeShare({ title: club.name, url });
+    else void copyToClipboard(url);
+  }, [club]);
 
-          if (json.club) {
-            clubData = json.club;
-            console.log(`✅ Loaded club ${clubData.name} from API`);
-          }
-        } catch (err) {
-          console.warn("API fetch failed", err);
-        }
+  useMobileDetailHeader(club?.name ?? "Club", origin === "my-clubs" ? "/my-clubs" : "/clubs", club ? handleShare : undefined);
 
-        if (!clubData) {
-          setError("Club not found");
-          return;
-        }
+  const { upcoming, past } = useMemo(() => {
+    const nonDraft = events.filter((e) => e.status !== "draft");
+    const up = nonDraft.filter((e) => isUpcoming(e)).sort((a, b) => +new Date(a.start) - +new Date(b.start));
+    const prev = nonDraft.filter((e) => !isUpcoming(e)).sort((a, b) => +new Date(b.start) - +new Date(a.start));
+    return { upcoming: up, past: prev };
+  }, [events]);
 
-        // Ensure placeholder logo if missing
-        if (!clubData.image) {
-          clubData.image = placeholderLogo;
-        }
+  const manageRows = useMemo(
+    () => events.filter((e) => e.status === "draft" || (e.status !== "cancelled" && isUpcoming(e))),
+    [events],
+  );
 
-        if (!cancelled && clubData) {
-          const normalizedClub = fromJsonClub(clubData);
-          // The legacy normalizer drops tags; preserve fixture tags only for design previews.
-          if (USE_MOCK_API && normalizedClub) normalizedClub.tags = clubData.tags ?? [];
-          setClub(normalizedClub);
-        }
-
-        // Load demo events
-        const resEvents = await fetch(`${API_BASE_URL}/events`);
-        // const resEvents = await fetch(`${API_BASE_URL}/events/${clubId}`);
-        const jsonEvents = await resEvents.json();
-
-        if (!cancelled) {
-          const normalizedEvents = fromJsonEvents(jsonEvents?.events);
-          setEventsAll(normalizedEvents);
-        }
-      } catch (e) {
-        console.error("❌ Failed to load club page", e);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [clubId]);
-
-  // ---- Check membership via /me/clubs (use ACCESS token from auth) ----
-  useEffect(() => {
-    let cancelled = false;
-
-    if (!auth.signedIn || !clubId) {
-      setMyRole(null);
-      return;
-    }
-
-    const token = auth.getAccessToken();
-    if (!token) {
-      setMyRole(null);
-      return;
-    }
-
-    (async () => {
-      setMembershipLoading(true);
-      try {
-        const res = await fetch(`${API_BASE_URL}/me/clubs`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const json = await res.json();
-
-        const list: Array<Pick<Club, "id" | "name" | "role">> = Array.isArray(json?.clubs)
-          ? json.clubs
-          : [];
-        const found = list.find((c) => String(c.id) === String(clubId));
-        if (!cancelled) setMyRole(found?.role ?? null);
-      } catch {
-        if (!cancelled) setMyRole(null);
-      } finally {
-        if (!cancelled) setMembershipLoading(false);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [auth.signedIn, auth.accessToken, clubId]);
-
-  // Helpers (day-based comparisons)
-  const startOfDay = (d: Date) => {
-    const x = new Date(d);
-    x.setHours(0, 0, 0, 0);
-    return x;
+  const setTab = (tab: ClubTab) => {
+    if (tab === "events") searchParams.delete("tab");
+    else searchParams.set("tab", tab);
+    setSearchParams(searchParams, { replace: true });
   };
-  const dateOnlyGTE = (aIso: string, bDate: Date) =>
-    startOfDay(new Date(aIso)).getTime() >= startOfDay(bDate).getTime();
 
-  // Partition by END DAY: if event ends today or later -> Upcoming
-  const { upcoming, previous } = useMemo(() => {
-    const now = new Date();
-    const up: Event[] = [];
-    const prev: Event[] = [];
-    for (const ev of eventsAll) {
-      const endIso = ev.end ?? ev.start;
-      if (dateOnlyGTE(endIso, now)) up.push(ev);
-      else prev.push(ev);
-    }
-    // Sorts
-    up.sort((a, b) => +new Date(a.start) - +new Date(b.start));
-    prev.sort((a, b) => +new Date(b.start) - +new Date(a.start));
-    return { upcoming: up, previous: prev };
-  }, [eventsAll]);
-
-  const filtered = view === "Upcoming" ? upcoming : previous;
-
-  if (error) {
-    return (
-      <Container py="xl">
-        <Title order={2} c="red.4" mb="md">
-          {error}
-        </Title>
-        <Button variant="subtle" onClick={() => navigate(-1)} leftSection="←">
-          Go Back
-        </Button>
-      </Container>
-    );
-  }
-
-  // === Loading skeleton ===
-  if (loading) {
-    return (
-      <Container py="lg">
-        <Stack gap="md">
-          <Skeleton h={50} radius="md" />
-          <Skeleton h={200} radius="md" />
-          <Skeleton h={200} radius="md" />
-          <Skeleton h={200} radius="md" />
-          <Skeleton h={60} radius="md" />
-        </Stack>
-      </Container>
-    );
-  }
-
-  // Map membership -> FeaturedClubCard.action
-  // during membership check or mutation we hide the button ("none") to avoid flicker
-  const action: "none" | "join" | "leave" =
-    !auth.signedIn || membershipLoading || myRole === "owner"
-      ? "none"
-      : myRole === "member" || myRole === "eboard"
-      ? "leave"
-      : "join";
-
-  // ---- Join / leave handlers ----
-  async function readApiErrorMessage(res: Response): Promise<string> {
-    let raw = "";
-    try {
-      raw = await res.text();
-    } catch (err) {
-      console.warn("Failed to read response body", err);
-      return "<failed to read response body>";
-    }
-
-    try {
-      const parsed = JSON.parse(raw) as unknown;
-      if (parsed && typeof parsed === "object") {
-        const obj = parsed as Record<string, unknown>;
-        if (typeof obj.error === "string") return obj.error;
-        if (typeof obj.message === "string") return obj.message;
-      }
-    } catch {
-      console.warn("Error in parsing API error");
-    }
-
-    return raw || "<empty response body>";
-  }
+  const goNewEvent = () => navigate(`/club/${clubId}/event/new`);
 
   const handleJoin = async () => {
-    if (!clubId) return;
-
+    if (!club) return;
     if (!auth.signedIn) {
       auth.signIn();
       return;
     }
-
     const token = auth.getAccessToken();
-    if (!token) {
-      console.warn("No access token; cannot join club.");
-      return;
-    }
-
-    setMembershipLoading(true);
+    if (!token) return;
+    setError(null);
     try {
-      const res = await fetch(`${API_BASE_URL}/clubs/${clubId}/members/me`, {
+      const res = await fetch(`${API_BASE_URL}/clubs/${club.id}/members/me`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
       if (!res.ok) {
-        const msg = await readApiErrorMessage(res);
-        console.error("Failed to join club", res.status, msg);
+        setError("We couldn’t join this club right now. Please try again.");
         return;
       }
-
-      setMyRole("member");
-    } catch (err) {
-      console.error("Error joining club", err);
-    } finally {
-      setMembershipLoading(false);
+      await refreshMembership();
+    } catch {
+      setError("We couldn’t join this club right now. Please try again.");
     }
   };
 
   const handleLeave = async () => {
-    if (!clubId) return;
-
-    if (!auth.signedIn) {
-      auth.signIn();
-      return;
-    }
-
+    if (!club) return;
     const token = auth.getAccessToken();
-    if (!token) {
-      console.warn("No access token; cannot leave club.");
-      return;
-    }
-
-    setMembershipLoading(true);
+    if (!token) return;
+    setLeaving(true);
+    setError(null);
     try {
-      const res = await fetch(`${API_BASE_URL}/clubs/${clubId}/members/me`, {
+      const res = await fetch(`${API_BASE_URL}/clubs/${club.id}/members/me`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
       if (!res.ok) {
-        const msg = await readApiErrorMessage(res);
-        console.error("Failed to leave club", res.status, msg);
+        setError("We couldn’t leave this club right now. Please try again.");
         return;
       }
-
-      setMyRole(null);
-    } catch (err) {
-      console.error("Error leaving club", err);
+      await refreshMembership();
+      setLeaveOpen(false);
+    } catch {
+      setError("We couldn’t leave this club right now. Please try again.");
     } finally {
-      setMembershipLoading(false);
+      setLeaving(false);
     }
   };
 
-  // === Main page ===
-  return (
-    <PageShell
-      pageTitle={club?.name ?? "Club"}
-      back={{ to: "/clubs" }}
-      user={{ auth }}
-      size="xl"
-      padded
-    >
-      {/* ==== Section 1: Hero ==== */}
-      <Box px={{ base: "md", sm: "lg" }} py="lg">
-        <Box maw={1100} w="100%">
-          {club ? (
-            <FeaturedClubCard
-              club={{ ...club, role: (myRole ?? club.role) as Club["role"] }}
-              action={action}
-              onJoinClick={handleJoin}
-              onLeaveClick={handleLeave}
-            />
-          ) : (
-            <div style={{ height: 200 }} />
-          )}
-        </Box>
-      </Box>
+  if (notFound) {
+    return (
+      <AppShell>
+        <PageContainer>
+          <div className={classes.notFound}>
+            <p className="text-body-l">We couldn&rsquo;t find that club.</p>
+            <Button to="/clubs" variant="ghost" size="m">
+              BROWSE CLUBS &rarr;
+            </Button>
+          </div>
+        </PageContainer>
+      </AppShell>
+    );
+  }
 
-      {/* ==== Section 2: Events ==== */}
-      <Box py="lg">
-        <EventList
-          title="Club Events"
-          views={["Upcoming", "Previous"]}
-          onChangeView={(v) => setView(v as "Upcoming" | "Previous")}
-          events={filtered}
-        />
-      </Box>
-    </PageShell>
+  if (loading || !club) {
+    return (
+      <AppShell>
+        <PageContainer detail />
+      </AppShell>
+    );
+  }
+
+  return (
+    <AppShell>
+      <PageContainer detail>
+        <div className={classes.page}>
+          {isDesktop && <Breadcrumb segments={[origin === "my-clubs" ? "MY CLUBS" : "CLUBS", club.name.toUpperCase()]} to={origin === "my-clubs" ? "/my-clubs" : "/clubs"} />}
+          {error && <p className={`${classes.error} text-caption`}>{error}</p>}
+          <ClubHeader
+            club={club}
+            role={role}
+            signedIn={auth.signedIn}
+            canManage={canManage}
+            upcomingCount={upcoming.length}
+            pastCount={past.length}
+            mobile={!isDesktop}
+            onJoin={handleJoin}
+            onShare={handleShare}
+            onLeaveRequest={() => setLeaveOpen(true)}
+            onNewEvent={goNewEvent}
+          />
+          <Tabs active={activeTab} onChange={setTab} showManage={canManage} mobile={!isDesktop} />
+
+          {activeTab === "events" && (
+            <EventsTab club={club} upcoming={upcoming} past={past} mobile={!isDesktop} canManage={canManage} onNewEvent={goNewEvent} />
+          )}
+          {activeTab === "board" && <BoardTab />}
+          {activeTab === "announcements" && (
+            <ComingSoonPanel
+              icon={<IconBell size={32} />}
+              title="Announcements are coming soon"
+              text="This feature isn’t available yet. Later, the e-board will be able to post updates here."
+              tone="surface"
+            />
+          )}
+          {activeTab === "manage" && canManage && <ManageTab club={club} events={manageRows} onNewEvent={goNewEvent} />}
+        </div>
+      </PageContainer>
+
+      <ConfirmModal
+        opened={leaveOpen}
+        onClose={() => setLeaveOpen(false)}
+        title={`Leave ${club.name}?`}
+        body="You can rejoin any time. Owners and e-board access won’t be preserved if you leave and rejoin."
+        confirmLabel="LEAVE CLUB"
+        onConfirm={handleLeave}
+        confirming={leaving}
+      />
+    </AppShell>
   );
 }

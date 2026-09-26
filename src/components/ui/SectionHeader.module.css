@@ -1,0 +1,26 @@
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: var(--space-5);
+}
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.eyebrow {
+  color: var(--brand-primary);
+}
+.title {
+  color: var(--text-primary);
+  margin: 0;
+}
+
+@media (max-width: 1023px) {
+  .title {
+    font-size: 18px;
+    line-height: 24px;
+  }
+}

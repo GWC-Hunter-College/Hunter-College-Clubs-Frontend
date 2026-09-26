@@ -1,0 +1,175 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.row {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+.formCol {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.previewCol {
+  width: 400px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 88px;
+}
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.cardTitle {
+  color: var(--text-primary);
+  margin: 0;
+}
+.fieldRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.hostedBy {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px 10px 10px;
+  background: var(--bg-input);
+  border-radius: var(--radius-md);
+}
+.hostedByText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.hostedByEyebrow {
+  color: var(--text-muted);
+  margin: 0;
+}
+.hostedByName {
+  color: var(--text-primary);
+  margin: 0;
+}
+.lockedOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.actionBar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.previewEyebrow {
+  color: var(--brand-primary);
+  margin: 0 0 12px;
+}
+.previewCard {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.previewArt {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.previewArt img,
+.previewArt > div {
+  width: 100%;
+  height: 100%;
+}
+.dateBadge {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  background: var(--bg-paper);
+  color: var(--text-on-paper);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+.previewLogo {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+}
+.previewTitle {
+  color: var(--text-primary);
+  margin: 0;
+}
+.previewWhen {
+  color: var(--text-secondary);
+  margin: 0;
+}
+.previewPlace {
+  color: var(--text-muted);
+  margin: 0;
+}
+.previewRowEyebrow {
+  color: var(--brand-primary);
+  margin: 16px 0 12px;
+}
+.previewRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  padding: 10px;
+}
+.previewRowText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.previewRowText p {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 1023px) {
+  .row {
+    flex-direction: column;
+  }
+  .previewCol {
+    display: none;
+  }
+  .fieldRow {
+    grid-template-columns: 1fr;
+  }
+  .actionBar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    background: var(--bg-deep);
+    border-top: 1px solid var(--border-subtle);
+    padding: 12px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+    justify-content: stretch;
+  }
+  .actionBar > * {
+    flex: 1;
+  }
+}

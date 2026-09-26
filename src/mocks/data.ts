@@ -1,7 +1,12 @@
 import { fromJsonClub } from '../types/club';
 import { fromJsonEvent } from '../types/events';
-import { additionalClubs, additionalEvents } from './fixtures';
+import { additionalClubs, additionalEvents, draftEvents } from './fixtures';
 import type { DesignClub, DesignEvent } from './fixtures';
+
+// Design-system §6: only these raster images are approved for reuse. Anything else (old
+// bit.ly demo links, react.svg) falls back to the club-tint art EventArt renders for flyer-less events.
+const ALLOWED_IMAGES = new Set(['/card.png', '/ra.png', '/hero.png', '/logo.png']);
+const allowedImage = (src: string | undefined) => (src && ALLOWED_IMAGES.has(src) ? src : undefined);
 
 function schedule(days: number, durationHours = 2) {
   const start = new Date();
@@ -25,7 +30,7 @@ export async function loadDesignData(): Promise<{ clubs: DesignClub[]; events: D
     throw new Error('The existing demo fixtures do not match the expected club/event contract.');
   }
   const clubs: DesignClub[] = [
-    { ...gwc, role: undefined, verified: true,
+    { ...gwc, role: undefined, verified: true, memberCount: 64,
       description: 'A community of students empowering each other through coding workshops, mentorship, and projects. Join Girls Who Code at Hunter for beginner-friendly learning, career conversations, and collaborative projects. All majors and experience levels are welcome.',
       tags: ['Technology', 'Women in STEM', 'Community'] },
     ...additionalClubs,
@@ -48,10 +53,10 @@ export async function loadDesignData(): Promise<{ clubs: DesignClub[]; events: D
       title,
       location: event.id === 2 ? 'Hunter North, Room 304' : event.id === 3 ? 'Hunter West, Room 505' : event.location,
       ...schedule(days, durationHours),
-      flyer: event.flyer?.startsWith('/') ? event.flyer : '/ra.png',
+      flyer: allowedImage(event.flyer) ?? '/ra.png',
       owner: owner(clubId),
       associates: event.associates?.map((associate) => owner(clubIds[associate.id])),
-      rsvpLink: `/event/${event.id}`,
+      rsvpLink: `https://forms.gle/hunter-cs-event-${event.id}`,
       altText: `${title} demo flyer`,
       description: `Join ${clubs.find((club) => club.id === clubId)?.name} for ${title.toLowerCase()}. Meet fellow students, exchange ideas, and try something new. This is a demo event for local design work.`,
     });
@@ -60,9 +65,17 @@ export async function loadDesignData(): Promise<{ clubs: DesignClub[]; events: D
     seeded.set(event.id, {
       id: event.id, title: event.title, location: event.location,
       ...schedule(event.days, event.durationHours),
+      flyer: event.flyer, owner: owner(event.clubId), associates: [], images: event.images,
+      status: event.status ?? 'posted', description: event.description,
+      altText: `${event.title} demo flyer`, rsvpLink: `https://forms.gle/hunter-cs-event-${event.id}`,
+    });
+  }
+  for (const event of draftEvents) {
+    seeded.set(event.id, {
+      id: event.id, title: event.title, location: event.location,
+      ...schedule(event.days, event.durationHours),
       flyer: event.flyer, owner: owner(event.clubId), associates: [],
-      status: 'posted', description: event.description,
-      altText: `${event.title} demo flyer`, rsvpLink: `/event/${event.id}`,
+      status: 'draft', description: event.description, altText: `${event.title} demo flyer`,
     });
   }
   return { clubs, events: [...seeded.values()].sort((a, b) => +new Date(a.start) - +new Date(b.start)) };

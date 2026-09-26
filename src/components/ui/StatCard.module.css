@@ -1,0 +1,38 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 22px;
+  background: var(--bg-surface);
+  border: 1px solid var(--brand-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glow-stat-card);
+}
+.icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--bg-brand-tint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand-primary);
+}
+.number {
+  color: var(--text-primary);
+  margin: 0;
+}
+.label {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.mobileCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--brand-soft);
+  border-radius: var(--radius-lg);
+}

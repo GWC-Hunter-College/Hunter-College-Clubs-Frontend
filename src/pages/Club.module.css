@@ -1,0 +1,24 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+.error {
+  color: var(--state-danger-soft);
+  margin: -8px 0 0;
+}
+.notFound {
+  text-align: center;
+  padding: 96px 16px;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+@media (max-width: 1023px) {
+  .page {
+    gap: 24px;
+  }
+}

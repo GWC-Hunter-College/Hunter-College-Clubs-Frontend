@@ -1,0 +1,47 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: 72px;
+  background: var(--bg-canvas);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--size-gutter-desktop);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.wordmark {
+  color: var(--text-primary);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.wordmark span {
+  color: var(--brand-primary);
+}
+
+.destinations {
+  display: flex;
+  gap: 4px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  color: var(--text-secondary);
+}
+.item.active {
+  background: var(--bg-brand-tint);
+  box-shadow: var(--glow-nav-active);
+  color: var(--text-primary);
+}

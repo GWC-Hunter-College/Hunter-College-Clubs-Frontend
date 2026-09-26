@@ -1,0 +1,20 @@
+.art {
+  display: block;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.fallback {
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-2);
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.fallbackTitle {
+  color: #fff;
+  font-family: "Roboto Mono", monospace;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}

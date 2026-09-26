@@ -1,0 +1,99 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: filter 120ms ease, background-color 120ms ease, transform 120ms ease;
+  font-family: "Roboto Mono", monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.btn:disabled,
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn:not(:disabled):not([aria-disabled="true"]):hover {
+  filter: brightness(1.08);
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Sizes (non-outline variants) */
+.size-l {
+  height: 52px;
+  padding: 0 28px;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.06em;
+}
+.size-m {
+  height: 44px;
+  padding: 0 24px;
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 0.06em;
+}
+.size-s {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 0.06em;
+}
+
+/* Outline is taller to account for its 2px border */
+.outline.size-l {
+  height: 56px;
+}
+.outline.size-m {
+  height: 48px;
+}
+.outline.size-s {
+  height: 40px;
+}
+
+/* Variants */
+.primary {
+  background: var(--brand-primary);
+  color: var(--text-on-primary);
+  box-shadow: var(--glow-button-primary);
+}
+.primary.size-l {
+  box-shadow: var(--glow-button-primary-l);
+}
+
+.secondary {
+  background: var(--brand-strong);
+  color: var(--text-primary);
+}
+
+.outline {
+  background: transparent;
+  color: var(--text-primary);
+  border: 2px solid var(--border-outline);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--brand-primary);
+}
+
+.danger {
+  background: var(--state-danger);
+  color: var(--text-primary);
+}

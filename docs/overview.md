@@ -37,11 +37,9 @@ If you want to standardize later:
 - Add a small `src/api/` layer for `fetchJson`, headers, and shared error handling.
 
 ### State management
-Shared UI state is handled via context in `src/context/`.
-
-- `EventModalContext` manages open/close state for the event modal.
-
-Most other state stays local to pages via `useState` and `useEffect`.
+Shared shell state (mobile header mode, active-nav override, tab bar visibility) is handled via
+context in `src/components/shell/` — see `docs/components.md`. Most other state stays local to
+pages via `useState` and `useEffect`, or lives in `src/hooks/` for data fetched from the API.
 
 ### Demo data
 JSON fixtures exist in `public/data/` for demo or local testing.

@@ -1,0 +1,170 @@
+.searchField {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--bg-input);
+  border: 1px solid var(--border-strong);
+  padding: 0 24px;
+  height: 60px;
+  color: var(--text-primary);
+}
+.searchField.compact {
+  height: 48px;
+  padding: 0 16px;
+}
+.searchField input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  min-width: 0;
+}
+.searchField input::placeholder {
+  color: var(--text-muted);
+}
+.searchField svg {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.fieldWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.fieldLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-primary);
+}
+.required {
+  color: var(--brand-primary);
+}
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  padding: 0 16px;
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+}
+.inputRow:focus-within {
+  border-color: var(--border-focus);
+}
+.inputRow.invalid {
+  border-color: var(--state-danger-soft);
+}
+.inputRow svg {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.inputRow input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  min-width: 0;
+  height: 100%;
+}
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  resize: vertical;
+  font-family: Inter, sans-serif;
+}
+.textarea:focus-visible {
+  border-color: var(--border-focus);
+}
+.helperText {
+  color: var(--text-muted);
+}
+.errorText {
+  color: var(--state-danger-soft);
+}
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 28px;
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  border: 2px dashed var(--brand-primary);
+  cursor: pointer;
+  color: var(--text-primary);
+}
+.dropzonePreview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+}
+.dropzonePreview img {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+.dropzoneRemove {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.lockedRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  text-align: left;
+  color: var(--text-primary);
+}
+.lockedRow.secondary {
+  opacity: 0.7;
+}
+.lockedRow svg {
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+.lockedRowText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.lockedNotice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-warning-tint);
+  color: var(--state-warning);
+  margin-top: 8px;
+}

@@ -1,115 +1,141 @@
 # Pages (Routes)
 
 This doc describes each route-level page: purpose, data flow, and the API endpoints it calls.
+Routes are declared in `src/App.tsx`. The app shell (top nav/footer on desktop, top bar/tab bar
+on mobile) wraps every page below via `src/components/shell/AppShell.tsx`.
 
 ## `/` Home
 File: `src/pages/Home.tsx`
 
 Purpose:
-- Landing or dashboard view
-- Shows upcoming events
-- Shows the “My Clubs” sidebar
+- Hero with a static strip of the next few upcoming events' flyers
+- Grid of upcoming events ("Happening at Hunter CS"), sorted by start date
 
 Data:
-- `GET /me/clubs` (authenticated, Bearer token)
-- `GET /events` (unauthenticated)
+- `GET /events` (unauthenticated), filtered client-side to non-draft, non-cancelled, upcoming
 
-Key components used:
-- `src/components/HomePage/Hero.tsx`
-- `src/components/HomePage/Heading.tsx`
-- `src/components/Other/MyClubs.tsx`
-- `src/components/Events/EventList.tsx`
+Key components: `src/components/Home/Hero.tsx`, `src/components/ui/EventTile.tsx`
 
-Notes:
-- The page maintains “MY CLUBS” vs “GLOBAL” view state. If you want club-scoped events, add a backend endpoint like `GET /me/events` or `GET /clubs/:id/events` and update the page.
-
-## `/clubs` Club Directory
-File: `src/pages/ClubDirectory.tsx`
+## `/events` Events
+File: `src/pages/Events.tsx`
 
 Purpose:
-- Browse clubs, search, and show club cards in a grid
+- Searchable agenda of every upcoming event, grouped by month and day
+
+Data:
+- `GET /events` (unauthenticated)
+- `GET /clubs?verified=true` (unauthenticated), to resolve each event's host club name/logo
+
+Key components: `src/components/ui/EventRow.tsx`, `src/components/ui/Agenda.tsx`
+
+## `/clubs` Clubs
+File: `src/pages/Clubs.tsx`
+
+Purpose:
+- Browse verified clubs, search by name or topic
 
 Data:
 - `GET /clubs?verified=true` (unauthenticated)
 
-Key components used:
-- `src/components/ClubPage/SearchBar.tsx`
-- `src/components/ClubPage/FeaturedClubCard.tsx`
+Key components: `src/components/ui/ClubCard.tsx`
 
-Notes:
-- Filters beyond verified and search can be added in the directory page and `SearchBar` component.
-
-## `/club/:clubId` Club Detail
+## `/club/:clubId` Club
 File: `src/pages/Club.tsx`
 
 Purpose:
-- Show a single club’s details
-- Allow membership join or leave for signed-in users
+- Club header (logo, membership control, stats, role, bio, tags)
+- Tabs: Events (upcoming + past, grouped by semester), Board (coming soon), Announcements
+  (coming soon), Manage (eboard/owner only — drafts and upcoming events with status)
 
 Data:
 - `GET /clubs/:clubId` (unauthenticated)
-- `GET /me/clubs` (authenticated, used to infer membership role)
-- `POST /clubs/:clubId/members/me` (authenticated, join)
-- `DELETE /clubs/:clubId/members/me` (authenticated, leave)
-- `GET /events` (currently fetched by the page)
+- `GET /clubs/:clubId/events` (unauthenticated; includes drafts — the page filters those out of
+  its public tabs itself and shows them only in Manage)
+- `GET /me/clubs` (authenticated), to derive the viewer's role
+- `POST` / `DELETE /clubs/:clubId/members/me` (authenticated), join/leave
 
-Key components used:
-- `src/components/ClubPage/FeaturedClubCard.tsx`
+Key components: `src/components/Club/ClubHeader.tsx`, `Tabs.tsx`, `EventsTab.tsx`, `BoardTab.tsx`,
+`ManageTab.tsx`
 
-Notes:
-- The join handler will prompt sign-in if the user is not authenticated.
-- Membership state is managed client-side using the auth token and role inference.
-
-## `/event/:eventId` Event Detail
+## `/event/:eventId` Event
 File: `src/pages/Event.tsx`
 
 Purpose:
-- Show details for a single event
+- Gallery (flyer + extra images), host, status (past/cancelled), when/where, actions
+  (RSVP/add-to-calendar/share for upcoming; view-photos/share for past; share-only for
+  cancelled), about, and a manager bar (eboard/owner of the host club) with edit/cancel
+  (both show a "not available yet" notice — no backend endpoint exists for either)
 
-Status:
-- Currently demo or stub.
+Data:
+- `GET /events/:eventId` (unauthenticated)
+- `GET /clubs/:clubId` (unauthenticated), for the host club's name/logo
+- `GET /me/clubs` (authenticated), to show the manager bar when applicable
 
-Future wiring:
-- Add `GET /events/:eventId` and wire the page to it.
+Key components: `src/components/Event/Gallery.tsx`, `WhenWhereCard.tsx`, `ManagerBar.tsx`,
+`SharePopover.tsx`
 
-Key components used:
-- `src/components/EventPage/EventHero.tsx`
-- `src/components/EventPage/EventHeader.tsx`
-- `src/components/EventPage/EventDetails.tsx`
-
-## `/club/create` Club Create
-File: `src/pages/ClubCreate.tsx`
-
-Purpose:
-- Create a club (UI exists as WIP)
-
-Status:
-- WIP UI.
-
-Key components used:
-- `src/components/ClubCreate/ClubFormPanel.tsx`
-
-Future wiring:
-- Add `POST /clubs` (authenticated) and form validation.
-- Add image upload if needed.
-
-## `/event/create` Event Create
-File: `src/pages/EventCreate.tsx`
+## `/my-clubs` My Clubs
+File: `src/pages/MyClubs.tsx`
 
 Purpose:
-- Create an event
+- Signed in: stat cards, a grid of your clubs (with each one's next event and role), and a
+  searchable agenda of upcoming events across all your clubs
+- Signed out: a blurred-preview sign-in gate (`src/components/ui/Gate.tsx`)
 
-Status:
-- Placeholder or WIP.
+Data:
+- `GET /me/clubs` (authenticated)
+- `GET /me/events` (authenticated)
 
-Future wiring:
-- Add `POST /events` (authenticated), or `POST /clubs/:clubId/events` if events are club-scoped.
+## `/create` Create hub
+File: `src/pages/Create.tsx`
+
+Purpose:
+- Two options: start a club, or post an event (disabled, with a caption, if the viewer manages
+  no clubs)
+- Signed out: sign-in gate
+
+Data:
+- `GET /me/clubs` (authenticated), to decide whether the event option is enabled
+
+## `/event/create` New event, step 1
+File: `src/pages/EventCreateStep1.tsx`
+
+Purpose:
+- Pick a club the viewer owns or is e-board of (preselected when there's only one), or resume a
+  draft from any of those clubs
+- Signed out: sign-in gate
+
+Data:
+- `GET /me/clubs` (authenticated)
+- `GET /clubs/:clubId/events` (unauthenticated) per managed club, filtered to drafts
+
+## `/club/:clubId/event/new` New event form
+File: `src/pages/EventForm.tsx`
+
+Purpose:
+- Basics, when/where, flyer (dropzone), locked options (more photos, co-hosting — both show a
+  "not available yet" notice), details, and a live preview that mirrors the posted result
+- `?draft=:eventId` prefills the form from an existing draft
+- Signed out: sign-in gate; signed in but not a manager of this club: access-denied panel
+
+Data:
+- `GET /clubs/:clubId` (unauthenticated)
+- `GET /me/clubs` (authenticated), to check the viewer manages this club
+- `GET /clubs/:clubId/events` (unauthenticated), to load a draft when `?draft=` is present
+- `POST /clubs/:clubId/events` (authenticated) — Save Draft or Post Event
+
+## `/club/create` New club
+File: `src/pages/ClubForm.tsx`
+
+Purpose:
+- Basics, logo (dropzone), topics (up to three), and a live "how it looks on Discover" preview
+- Signed out: sign-in gate
+
+Data:
+- `POST /clubs` (authenticated) — creates the club and makes the viewer its owner
 
 ## `/auth` Auth Debug
 File: `src/pages/Auth.tsx`
 
-Purpose:
-- Dev page to inspect auth status and tokens.
-
-Notes:
-- Avoid displaying raw tokens in production builds.
+Unchanged by the redesign. Dev-only page to inspect auth status and tokens; avoid displaying raw
+tokens in production builds.

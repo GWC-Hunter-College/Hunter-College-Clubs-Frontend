@@ -25,11 +25,11 @@ export default function EventTile({ event, club, mobile }: EventTileProps) {
       <p className={`${classes.when} text-meta-mono-caps`}>{formatRowWhen(event.start, event.end, event.timezone)}</p>
       <h3 className={classes.title}>{event.title}</h3>
       <div className={classes.meta}>
+        {!mobile && <span className={`${classes.location} text-caption`}>{event.location}</span>}
         <div className={classes.clubRow}>
           <ClubLogo clubId={club?.id ?? 0} name={clubName} logo={club?.logo} size={18} />
           <span className="text-caption">{clubName}</span>
         </div>
-        {!mobile && <span className={`${classes.location} text-caption`}>{event.location}</span>}
       </div>
     </Link>
   );

@@ -28,6 +28,7 @@
 }
 
 .when {
+  margin: 0;
   color: var(--brand-primary);
 }
 
@@ -67,7 +68,6 @@
 
 .location {
   display: block;
-  padding-left: 26px;
   color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;

@@ -65,4 +65,5 @@ The `docs/` folder has more detail for anyone working on the code:
 - [Maliha Tasnim](https://github.com/MalihaT111)
 - [Michael Wong](https://github.com/michaelwong3049)
 - [Lena Ngo](https://github.com/lenan14)
-- Kelly Lin, Designer
+- [Anthony Lau](https://github.com/lausan3)
+- [Kelly Lin](https://github.com/Kxlcl), Designer

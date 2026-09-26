@@ -3,69 +3,66 @@
 A home base for student clubs at Hunter College Computer Science: one place to see what clubs
 exist, what they're doing, and what's coming up.
 
-- **Browsing:** anyone — no account needed — can look through the clubs on campus and see
-  what events they're running, from workshops to socials to build nights.
-- **For clubs:** club leaders can give their club a page (with a logo, description, and
-  topics), post photos and details for their events, and manage who's helping run things.
-- **For members:** sign in to join clubs, keep track of the ones you're part of, and see
-  everything they have coming up in one place.
+Anyone can browse without an account, looking through the clubs on campus and seeing what
+events they're running, from workshops to socials to build nights. Club leaders can give their
+club a page, post photos and details for their events, and manage who's helping run things.
+Members can sign in to join clubs, keep track of the ones they're part of, and see everything
+those clubs have coming up in one place.
 
 ## Preview
 
-The screenshots below are from the current design, running against **mock/demo data** — not a
-live club directory. They're a preview of the interface, not real Hunter CS clubs or events.
+The screenshots below are from the current design, running on mock/demo data rather than a live
+club directory. They're a preview of the interface, not real Hunter CS clubs or events. See
+[docs/design-mode.md](docs/design-mode.md) to run it yourself and try it out.
 
-**Home** — upcoming events from every club, at a glance
-![Home page](docs/screenshots/home.png)
+### Home
+Upcoming events from every club, at a glance.
 
-**Clubs** — browse and search every club on campus
-![Clubs directory](docs/screenshots/clubs.png)
+| Desktop | Mobile |
+| --- | --- |
+| ![Home page](docs/screenshots/home.png) | ![Home page on mobile](docs/screenshots/home-mobile.png) |
 
-**Club page** — a club's own page: who's on it, what they're hosting, and how to join
-![Club page](docs/screenshots/club.png)
+### Clubs
+Browse and search every club on campus.
 
-**Event page** — the details for one event, with RSVP, calendar, and sharing
-![Event page](docs/screenshots/event.png)
+| Desktop | Mobile |
+| --- | --- |
+| ![Clubs directory](docs/screenshots/clubs.png) | ![Clubs directory on mobile](docs/screenshots/clubs-mobile.png) |
 
-<details>
-<summary>Mobile view</summary>
+### Club page
+A club's own page: who's on it, what they're hosting, and how to join.
 
-![Home page on mobile](docs/screenshots/home-mobile.png)
+| Desktop | Mobile |
+| --- | --- |
+| ![Club page](docs/screenshots/club.png) | ![Club page on mobile](docs/screenshots/club-mobile.png) |
 
-</details>
+### Event page
+The details for one event, with RSVP, calendar, and sharing.
 
-## Running it yourself
+| Desktop | Mobile |
+| --- | --- |
+| ![Event page](docs/screenshots/event.png) | ![Event page on mobile](docs/screenshots/event-mobile.png) |
 
-The quickest way to try it out uses mock data, so no backend or account setup is needed:
+## About this repository
 
-```bash
-npm ci
-VITE_USE_MOCK_API=true npm run dev:mock -- --host 127.0.0.1 --port 5173 --strictPort
-```
+This repo is the frontend only. It's a React and TypeScript app that talks to a separate backend
+API for club and event data, and to AWS Cognito for sign-in. The backend is being developed in
+a different repository and isn't finished yet, so this frontend also has a mock mode that stands
+in for it with sample data, which is what the screenshots above were taken from.
 
-Then open **http://127.0.0.1:5173/**. See **[docs/design-mode.md](docs/design-mode.md)** for
-what you can click through in that mode, and **[docs/setup.md](docs/setup.md)** for running it
-against a real backend instead.
+The `docs/` folder has more detail for anyone working on the code:
 
-## What's in this repo, technically
+- [docs/setup.md](docs/setup.md) - running the app locally, including against a real backend
+- [docs/design-mode.md](docs/design-mode.md) - running it with mock data instead
+- [docs/pages.md](docs/pages.md) - every screen, route by route
+- [docs/components.md](docs/components.md) - the reusable UI pieces and where they live
+- [docs/api.md](docs/api.md) - the endpoints the frontend expects from the backend
+- [docs/overview.md](docs/overview.md) - how the code is organized and how staging deploys
 
-This is the frontend only — a React + TypeScript app (Vite, React Router, Mantine UI) that talks
-to a separate backend API over `fetch`, and to AWS Cognito for sign-in. It doesn't store any
-data itself; **club and event data comes from that backend**, which is developed in a different
-repository and is still being built out. Until it's ready, the mock mode shown above stands in
-for it, so the interface can be built and tried without waiting on it.
+## Contributors
 
-The `docs/` folder has the details, if you're working on this code:
-
-- **[docs/pages.md](docs/pages.md)** — every screen, route by route
-- **[docs/components.md](docs/components.md)** — the reusable UI pieces and where they live
-- **[docs/api.md](docs/api.md)** — the exact endpoints the frontend expects from the backend
-- **[docs/design-mode.md](docs/design-mode.md)** — running with mock data, in depth
-- **[docs/setup.md](docs/setup.md)** — running against a real backend
-- **[docs/overview.md](docs/overview.md)** — how the code is organized and how staging deploys
-
-## Contributing
-- Keep route-level fetching and wiring in `src/pages/`.
-- Keep reusable UI in `src/components/`.
-- Prefer typed helpers in `src/types/` for API payload normalization.
-- When changing routes or API calls, update the docs in `/docs`.
+- [Kyle Bautista](https://github.com/KymaiselHunter)
+- [Maliha Tasnim](https://github.com/MalihaT111)
+- [Michael Wong](https://github.com/michaelwong3049)
+- [Lena Ngo](https://github.com/lenan14)
+- Kelly Lin, Designer

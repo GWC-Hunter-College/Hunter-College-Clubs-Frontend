@@ -1,7 +1,7 @@
 .tile {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
   text-decoration: none;
   color: inherit;
@@ -35,7 +35,6 @@
   color: var(--text-primary);
   margin: 0;
   line-height: 1.5;
-  min-height: 3em;
   transition: color 150ms ease;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -46,14 +45,30 @@
   color: var(--brand-soft);
 }
 
-.clubLine {
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.clubRow {
   display: flex;
   align-items: center;
   gap: 8px;
   color: var(--text-secondary);
   min-width: 0;
 }
-.clubLine span {
+.clubRow span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.location {
+  display: block;
+  padding-left: 26px;
+  color: var(--text-secondary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -65,7 +80,6 @@
     font-weight: 600;
     font-size: 14px;
     line-height: 20px;
-    min-height: 40px;
     text-transform: none;
     letter-spacing: 0;
   }
